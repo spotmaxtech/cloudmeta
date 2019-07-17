@@ -6,6 +6,19 @@ import (
 	"os"
 )
 
+// Instance price info
+type InstancePrice struct {
+	Region       string
+	InstanceType string
+	OnDemand     string
+	Reserved     string
+}
+
+// All region ec2 pricing
+type RegionPrice struct {
+	Regions map[string]map[string]*InstancePrice // ["us-west-1"]["t2.small"]
+}
+
 // Manage ec2 on-demand price
 // We download the on demand price of aws, so we use a model to access the data
 // Some types' price may be not found in
