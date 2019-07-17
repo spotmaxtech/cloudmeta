@@ -1,0 +1,67 @@
+{
+  "formatVersion": "v1.0",
+  "disclaimer": "This pricing list is for informational purposes only. All prices are subject to the additional terms included in the pricing pages on http://aws.amazon.com. All Free Tier prices are also subject to the terms included at https://aws.amazon.com/free/",
+  "offerCode": "AmazonEC2",
+  "version": "20190521221241",
+  "publicationDate": "2019-05-21T22:12:41Z",
+  "products": {
+    "G5FFNNK98ETA2UBE": {
+      "sku": "G5FFNNK98ETA2UBE",
+      "productFamily": "Compute Instance",
+      "attributes": {
+        "servicecode": "AmazonEC2",
+        "location": "Asia Pacific (Tokyo)",
+        "locationType": "AWS Region",
+        "instanceType": "c4.4xlarge",
+        "currentGeneration": "Yes",
+        "instanceFamily": "Compute optimized",
+        "vcpu": "16",
+        "physicalProcessor": "Intel Xeon E5-2666 v3 (Haswell)",
+        "clockSpeed": "2.9 GHz",
+        "memory": "30 GiB",
+        "storage": "EBS only",
+        "networkPerformance": "High",
+        "processorArchitecture": "64-bit",
+        "tenancy": "Shared",
+        "operatingSystem": "Linux",
+        "licenseModel": "No License required",
+        "usagetype": "APN1-UnusedBox:c4.4xlarge",
+        "operation": "RunInstances:0004",
+        "capacitystatus": "UnusedCapacityReservation",
+        "dedicatedEbsThroughput": "2000 Mbps",
+        "ecu": "62",
+        "enhancedNetworkingSupported": "Yes",
+        "instancesku": "VG6Z5GXNWTRXQJGE",
+        "normalizationSizeFactor": "32",
+        "preInstalledSw": "SQL Std",
+        "processorFeatures": "Intel AVX; Intel AVX2; Intel Turbo",
+        "servicename": "Amazon Elastic Compute Cloud"
+      }
+    }
+  },
+  "terms": {
+    "OnDemand": {
+      "G5FFNNK98ETA2UBE": {
+        "G5FFNNK98ETA2UBE.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "G5FFNNK98ETA2UBE",
+          "effectiveDate": "2019-05-01T00:00:00Z",
+          "priceDimensions": {
+            "G5FFNNK98ETA2UBE.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "G5FFNNK98ETA2UBE.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$2.928 per Unused Reservation Linux with SQL Std c4.4xlarge Instance Hour",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "2.9280000000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    }
+  }
+}
