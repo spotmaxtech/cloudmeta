@@ -8,5 +8,5 @@ Collect cloud meta data. Having fun.
 # Meta data content
 1. instance types
 2. pricing, on-demand, spot price
-3. advisor
+3. spot interrupt advisor
 4. regions
