@@ -11,13 +11,12 @@ type RegionInfo struct {
 }
 
 type AWSRegion struct {
-	key  string
-	data map[string]*RegionInfo
+	Data map[string]*RegionInfo
 }
 
 func (r *AWSRegion) Fetch(consul *gokit.Consul) error {
 	data := make(map[string]*RegionInfo)
-	value, err := consul.GetKey(r.key)
+	value, err := consul.GetKey(ConsulRegionKey)
 	if err != nil {
 		return err
 	}
@@ -36,48 +35,30 @@ func (r *AWSRegion) Fetch(consul *gokit.Consul) error {
 			Text: v.Text,
 		}
 	}
-	r.data = data
+	r.Data = data
 	return nil
 }
 
 func (r *AWSRegion) List() []*RegionInfo {
 	var values []*RegionInfo
-	for _, v := range r.data {
+	for _, v := range r.Data {
 		values = append(values, v)
 	}
 	return values
 }
 
 func (r *AWSRegion) GetRegionInfo(name string) *RegionInfo {
-	return r.data[name]
+	return r.Data[name]
 }
 
 // TODO: implement aliyun regions
 type AliRegion struct {
 }
 
-func NewAWSRegion(key string) *AWSRegion {
-	aws := AWSRegion{
-		key:  key,
-		data: make(map[string]*RegionInfo),
-	}
 
-	// default data for testing
-	for _, v := range []*RegionInfo{
-		{
-			Name: "us-east-1",
-			Text: "US East (N. Virginia)",
-		},
-		{
-			Name: "us-east-2",
-			Text: "US East (Ohio)",
-		},
-		{
-			Name: "us-west-2",
-			Text: "US West (Oregon)",
-		},
-	} {
-		aws.data[v.Name] = v
-	}
+func NewAWSRegion() *AWSRegion {
+	consul := gokit.NewConsul(DomainName)
+	var aws AWSRegion
+	aws.Fetch(consul)
 	return &aws
 }
