@@ -14,9 +14,10 @@ func TestAWSRegion(t *testing.T) {
 		err := region.Fetch(consul)
 		So(err, ShouldBeNil)
 		Convey("test use Region", func() {
-			aaJson, _ := json.Marshal(region)
+			So(region.key, ShouldEqual, TestConsulRegionKey)
+			aaJson, _ := json.Marshal(region.data)
 			t.Logf("%s\n", aaJson)
-			So(region.Data["us-east-1"].Name, ShouldEqual, "us-east-1")
+			So(region.data["us-east-1"].Name, ShouldEqual, "us-east-1")
 		})
 		Convey("test use List", func() {
 			list := region.List()

@@ -54,7 +54,7 @@ func NewAWSInstance(key string) *AWSInstance {
 	aws := AWSInstance{
 		key:  key,
 	}
-	aws.data = make(map[string]map[string]*InstInfo)
+	/*aws.data = make(map[string]map[string]*InstInfo)
 
 	// default data for testing
 	aws.data["us-east-1"] = make(map[string]*InstInfo)
@@ -67,6 +67,6 @@ func NewAWSInstance(key string) *AWSInstance {
 		},
 	} {
 		aws.data["us-east-1"][v.Name] = v
-	}
+	}*/
 	return &aws
 }
