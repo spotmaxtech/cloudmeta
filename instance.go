@@ -13,6 +13,13 @@ type Instance struct {
 	data map[string]InstInfo
 }
 
+func (i *Instance) Fetch() {
+	// TODO: 从meta中获取数据更新map
+	// if newData is error:
+	//      return
+	// i.data = newData
+}
+
 func (i *Instance) List() []string {
 	var names []string
 	for n := range i.data {
