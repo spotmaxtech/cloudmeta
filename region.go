@@ -11,12 +11,13 @@ type RegionInfo struct {
 }
 
 type AWSRegion struct {
+	Key  string
 	Data map[string]*RegionInfo
 }
 
 func (r *AWSRegion) Fetch(consul *gokit.Consul) error {
 	data := make(map[string]*RegionInfo)
-	value, err := consul.GetKey(ConsulRegionKey)
+	value, err := consul.GetKey(r.Key)
 	if err != nil {
 		return err
 	}
@@ -55,10 +56,9 @@ func (r *AWSRegion) GetRegionInfo(name string) *RegionInfo {
 type AliRegion struct {
 }
 
-
-func NewAWSRegion() *AWSRegion {
-	consul := gokit.NewConsul(DomainName)
-	var aws AWSRegion
-	aws.Fetch(consul)
+func NewAWSRegion(key string) *AWSRegion {
+	aws := AWSRegion{
+		Key: key,
+	}
 	return &aws
 }
