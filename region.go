@@ -10,12 +10,6 @@ type RegionInfo struct {
 	Text string `json:"text"`
 }
 
-type Region interface {
-	Fetch(consul *gokit.Consul)
-	List() []string
-	GetRegionInfo(name string) *RegionInfo
-}
-
 type AWSRegion struct {
 	Data map[string]*RegionInfo
 }
@@ -45,12 +39,12 @@ func (r *AWSRegion) Fetch(consul *gokit.Consul) error {
 	return nil
 }
 
-func (r *AWSRegion) List() []string {
-	var names []string
-	for n := range r.Data {
-		names = append(names, n)
+func (r *AWSRegion) List() []*RegionInfo {
+	var values []*RegionInfo
+	for _, v := range r.Data {
+		values = append(values, v)
 	}
-	return names
+	return values
 }
 
 func (r *AWSRegion) GetRegionInfo(name string) *RegionInfo {
@@ -60,6 +54,7 @@ func (r *AWSRegion) GetRegionInfo(name string) *RegionInfo {
 // TODO: implement aliyun regions
 type AliRegion struct {
 }
+
 
 func NewAWSRegion() *AWSRegion {
 	consul := gokit.NewConsul(DomainName)

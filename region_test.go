@@ -3,9 +3,8 @@ package cloudmeta
 import (
 	"encoding/json"
 	"fmt"
-	"testing"
-
 	. "github.com/smartystreets/goconvey/convey"
+	"testing"
 )
 
 func TestAWSRegion(t *testing.T) {
