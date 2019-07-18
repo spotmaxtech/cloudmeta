@@ -18,6 +18,8 @@ func TestAWSRegion(t *testing.T) {
 			region := NewAWSRegion(TestConsulRegionKey)
 			err := region.Fetch(consul)
 			So(err, ShouldBeNil)
+
+			So(region.data["us-east-1"].Name, ShouldEqual,"us-east-1")
 		})
 	})
 }
