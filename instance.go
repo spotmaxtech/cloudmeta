@@ -16,7 +16,7 @@ type InstInfo struct {
 
 type AWSInstance struct {
 	key  string
-	data map[string]*InstInfo
+	data map[string]map[string]*InstInfo
 }
 
 func (i *AWSInstance) Fetch(consul *gokit.Consul) error {
@@ -25,7 +25,7 @@ func (i *AWSInstance) Fetch(consul *gokit.Consul) error {
 		return err
 	}
 
-	var tempData map[string]*InstInfo
+	var tempData map[string]map[string]*InstInfo
 	if err = json.Unmarshal(value, &tempData); err != nil {
 		return err
 	}
@@ -34,16 +34,16 @@ func (i *AWSInstance) Fetch(consul *gokit.Consul) error {
 	return nil
 }
 
-func (i *AWSInstance) List() []*InstInfo {
+func (i *AWSInstance) List(region string) []*InstInfo {
 	var values []*InstInfo
-	for _, v := range i.data {
+	for _, v := range i.data[region] {
 		values = append(values, v)
 	}
 	return values
 }
 
-func (i *AWSInstance) GetInstInfo(name string) *InstInfo {
-	return i.data[name]
+func (i *AWSInstance) GetInstInfo(region string, name string) *InstInfo {
+	return i.data[region][name]
 }
 
 // TODO: implement aliyun
@@ -53,10 +53,11 @@ type AliInstance struct {
 func NewAWSInstance(key string) *AWSInstance {
 	aws := AWSInstance{
 		key:  key,
-		data: make(map[string]*InstInfo),
 	}
+	aws.data = make(map[string]map[string]*InstInfo)
 
 	// default data for testing
+	aws.data["us-east-1"] = make(map[string]*InstInfo)
 	for _, v := range []*InstInfo{
 		{
 			Name:     "c4.xlarge",
@@ -65,7 +66,7 @@ func NewAWSInstance(key string) *AWSInstance {
 			Category: "Compute Optimized",
 		},
 	} {
-		aws.data[v.Name] = v
+		aws.data["us-east-1"][v.Name] = v
 	}
 	return &aws
 }

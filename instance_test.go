@@ -14,7 +14,7 @@ func TestAWSInstance(t *testing.T) {
 			err := instance.Fetch(consul)
 			So(err, ShouldBeNil)
 
-			So(instance.data["c4.xlarge"].Name, ShouldEqual, "c4.xlarge")
+			So(instance.data["us-east-1"]["c4.xlarge"].Name, ShouldEqual, "c4.xlarge")
 		})
 	})
 }
