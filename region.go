@@ -10,12 +10,6 @@ type RegionInfo struct {
 	Text string `json:"text"`
 }
 
-type Region interface {
-	Fetch(consul *gokit.Consul)
-	List() []string
-	GetRegionInfo(name string) *RegionInfo
-}
-
 type AWSRegion struct {
 	key  string
 	data map[string]*RegionInfo
@@ -29,7 +23,7 @@ func (r *AWSRegion) Fetch(consul *gokit.Consul) error {
 	}
 
 	type MsData struct {
-		Text string	`json:"text"`
+		Text string `json:"text"`
 	}
 	var tempData map[string]*MsData
 	if err = json.Unmarshal(value, &tempData); err != nil {
@@ -46,12 +40,12 @@ func (r *AWSRegion) Fetch(consul *gokit.Consul) error {
 	return nil
 }
 
-func (r *AWSRegion) List() []string {
-	var names []string
-	for n := range r.data {
-		names = append(names, n)
+func (r *AWSRegion) List() []*RegionInfo {
+	var values []*RegionInfo
+	for _, v := range r.data {
+		values = append(values, v)
 	}
-	return names
+	return values
 }
 
 func (r *AWSRegion) GetRegionInfo(name string) *RegionInfo {
@@ -69,7 +63,7 @@ func NewAWSRegion(key string) *AWSRegion {
 	}
 
 	// default data for testing
-	for _, r := range []*RegionInfo{
+	for _, v := range []*RegionInfo{
 		{
 			Name: "us-east-1",
 			Text: "US East (N. Virginia)",
@@ -83,7 +77,7 @@ func NewAWSRegion(key string) *AWSRegion {
 			Text: "US West (Oregon)",
 		},
 	} {
-		aws.data[r.Name] = r
+		aws.data[v.Name] = v
 	}
 	return &aws
 }

@@ -6,15 +6,15 @@ import (
 	"testing"
 )
 
-func TestAWSRegion(t *testing.T) {
+func TestAWSInstance(t *testing.T) {
 	Convey("test use case", t, func() {
 		consul := gokit.NewConsul(TestConsulAddress)
 		Convey("test consul fetch", func() {
-			region := NewAWSRegion(TestConsulRegionKey)
-			err := region.Fetch(consul)
+			instance := NewAWSInstance(TestConsulInstanceKey)
+			err := instance.Fetch(consul)
 			So(err, ShouldBeNil)
 
-			So(region.data["us-east-1"].Name, ShouldEqual, "us-east-1")
+			So(instance.data["c4.xlarge"].Name, ShouldEqual, "c4.xlarge")
 		})
 	})
 }
