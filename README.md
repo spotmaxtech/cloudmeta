@@ -10,3 +10,6 @@ Collect cloud meta data. Having fun.
 2. pricing, on-demand, spot price
 3. spot interrupt advisor
 4. regions
+
+# factory
+create and update meta data factory tools
