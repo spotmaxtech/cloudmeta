@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # download  spot advisor data
 wget https://spot-bid-advisor.s3.amazonaws.com/spot-advisor-data.json
 
