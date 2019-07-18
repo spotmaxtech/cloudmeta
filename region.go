@@ -28,14 +28,20 @@ func (r *AWSRegion) Fetch(consul *gokit.Consul) error {
 		return err
 	}
 
-	var tempData []*RegionInfo
+	type MsData struct {
+		Text string	`json:"text"`
+	}
+	var tempData map[string]*MsData
 	if err = json.Unmarshal(value, &tempData); err != nil {
 		return err
 	}
-	for _, i := range tempData {
-		data[i.Name] = i
-	}
 
+	for k, v := range tempData {
+		data[k] = &RegionInfo{
+			Name: k,
+			Text: v.Text,
+		}
+	}
 	r.data = data
 	return nil
 }
@@ -75,10 +81,6 @@ func NewAWSRegion(key string) *AWSRegion {
 		{
 			Name: "us-west-2",
 			Text: "US West (Oregon)",
-		},
-		{
-			Name: "ap-southeast-1",
-			Text: "Asia Pacific (Singapore)",
 		},
 	} {
 		aws.data[r.Name] = r
