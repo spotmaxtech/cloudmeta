@@ -1,15 +1,15 @@
 package cloudmeta
 
 type InterruptInfo struct {
-	Name     string  `json:"name"`
-	Rate     string  `json:"rate"`
-	RateDesc float32 `json:"rate_desc"`
+	Name     string `json:"name"`
+	Rate     int    `json:"rate"`
+	RateDesc string `json:"rate_desc"`
 }
 
 type InterruptAdvisor struct {
-	data map[string]*InterruptInfo
+	data map[string]map[string]*InterruptInfo
 }
 
-func (ia *InterruptAdvisor) GetInterruptInfo(name string) *InterruptInfo {
-	return ia.data[name]
+func (ia *InterruptAdvisor) GetInterruptInfo(region string, name string) *InterruptInfo {
+	return ia.data[region][name]
 }
