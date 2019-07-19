@@ -11,12 +11,23 @@ import (
 )
 
 const (
-	AdvisorUrl = "https://spot-bid-advisor.s3.amazonaws.com/spot-advisor-data.json"
-	ConsulAddr = "consul.spotmaxtech.com"
+	AdvisorUrl   = "https://spot-bid-advisor.s3.amazonaws.com/spot-advisor-data.json"
+	ConsulAddr   = "consul.spotmaxtech.com"
 	InterruptKey = "cloudmeta/aws/interruptrate.json"
+	RegionKey    = "cloudmeta/aws/region.json"
 )
 
 func main() {
+	// consul
+	consul := gokit.NewConsul(ConsulAddr)
+
+	// region
+	metaRegion := cloudmeta.NewAWSRegion(RegionKey)
+	if err := metaRegion.Fetch(consul); err != nil {
+		panic(err)
+	}
+	regions := metaRegion.Keys()
+
 	resp, err := http.Get(AdvisorUrl)
 	if err != nil {
 		panic(err)
@@ -38,6 +49,10 @@ func main() {
 
 	advisor := make(map[string]map[string]*cloudmeta.InterruptInfo)
 	for region, platform := range data["spot_advisor"].(map[string]interface{}) {
+		if !regions.Contains(region) {
+			continue
+		}
+
 		regionData := make(map[string]*cloudmeta.InterruptInfo)
 		platformName := "Linux"
 		for instance, value := range platform.(map[string]interface{})[platformName].(map[string]interface{}) {
@@ -82,7 +97,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	consul := gokit.NewConsul(ConsulAddr)
+
 	err = consul.PutKey(InterruptKey, bytes)
 	if err != nil {
 		panic(err)

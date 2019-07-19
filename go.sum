@@ -129,6 +129,8 @@ github.com/spotmaxtech/gokit v0.1.0 h1:5mp7eA1TVIvPYMMFkWajocMahBR16r+HQ3m/PAALq
 github.com/spotmaxtech/gokit v0.1.0/go.mod h1:1/3uTJEL+Jnbv6vgkC3xvSYxO0Z4q2FlfjIdKUB0MBQ=
 github.com/spotmaxtech/gokit v0.1.1 h1:ZX5OzuS87s6uWqG+EbHsZFZdxp3nA3kQVvWCy0fp6H8=
 github.com/spotmaxtech/gokit v0.1.1/go.mod h1:RgNmDQ9gzbP5TNv/uzU6ahffu5PiM3O/p4DkMi4s3wA=
+github.com/spotmaxtech/gokit v0.1.2 h1:QqX88F9Io3deQs3b1G+4I/CCfzR9Xjx2wvDXqpsuhn0=
+github.com/spotmaxtech/gokit v0.1.2/go.mod h1:3pUODN71Jr7CVHew7n1ZLzl4wU2UbxPqPkn4RNfN4os=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
