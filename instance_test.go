@@ -20,11 +20,33 @@ func TestAWSInstance(t *testing.T) {
 			t.Logf("%s\n", aaJson)
 			So(instance.data["us-east-1"]["c4.xlarge"].Name, ShouldEqual, "c4.xlarge")
 		})
-		/*Convey("test use List", func() {
-			list := instance.List()
-			So(len(list), ShouldNotBeZeroValue)
-			aaJson, _ := json.Marshal(list)
+		Convey("test use Filter", func() {
+			filterMap := []*FilterType{
+				{
+					region: "us-east-1",
+					machineType: []string{"m4.xlarge", "c4.xlarge"},
+				},
+				{
+					region: "us-east-2",
+					machineType: []string{"r4.xlarge"},
+				},
+			}
+			// filterMap := []*FilterType{}
+			/*filterMap := []*FilterType{
+				{
+					region: "us-east-1",
+				},
+			}*/
+			/*filterMap := []*FilterType{
+				{
+					region: "us-east-1",
+					machineType: []string{"m4.xlarge"},
+				},
+			}*/
+			filter := instance.Filter(filterMap)
+			So(len(filter.data), ShouldNotBeZeroValue)
+			aaJson, _ := json.Marshal(filter.data)
 			t.Logf("%s\n", aaJson)
-		})*/
+		})
 	})
 }

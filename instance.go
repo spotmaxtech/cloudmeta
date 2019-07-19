@@ -14,9 +14,18 @@ type InstInfo struct {
 	Category string  `json:"category"`
 }
 
-type AWSInstance struct {
-	key  string
+type AWSInstanceData struct {
 	data map[string]map[string]*InstInfo
+}
+
+type AWSInstance struct {
+	key string
+	AWSInstanceData
+}
+
+type FilterType struct {
+	region      string
+	machineType []string
 }
 
 func (i *AWSInstance) Fetch(consul *gokit.Consul) error {
@@ -46,13 +55,40 @@ func (i *AWSInstance) GetInstInfo(region string, name string) *InstInfo {
 	return i.data[region][name]
 }
 
+func (i *AWSInstance) Filter(list []*FilterType) *AWSInstanceData {
+	var FilterData AWSInstanceData
+	if len(list) <= 0 {
+		FilterData.data = i.data
+		return &FilterData
+	}
+
+	data := make(map[string]map[string]*InstInfo)
+	for _, v := range list {
+		region := v.region
+		machineType := v.machineType
+
+		if len(machineType) > 0 {
+			mapInstInfo := make(map[string]*InstInfo)
+			for _, l := range machineType {
+				mapInstInfo[l] = i.data[region][l]
+				data[region] = mapInstInfo
+			}
+		} else {
+			data[region] = i.data[region]
+		}
+		FilterData.data = data
+	}
+
+	return &FilterData
+}
+
 // TODO: implement aliyun
 type AliInstance struct {
 }
 
 func NewAWSInstance(key string) *AWSInstance {
 	aws := AWSInstance{
-		key:  key,
+		key: key,
 	}
 	/*aws.data = make(map[string]map[string]*InstInfo)
 
