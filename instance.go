@@ -8,10 +8,11 @@ import (
 // TODO: add more info item
 // TODO: make category const
 type InstInfo struct {
-	Name     string  `json:"name"`
-	Core     int8    `json:"core"`
-	Mem      float64 `json:"mem"`
-	Category string  `json:"category"`
+	Name    string  `json:"name"`
+	Core    int8    `json:"core"`
+	Mem     float64 `json:"mem"`
+	Storage string  `json:"storage"`
+	Family  string  `json:"family"`
 }
 
 type AWSInstanceData struct {
