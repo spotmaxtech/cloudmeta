@@ -8,18 +8,43 @@ import (
 	connections "github.com/spotmaxtech/cloudconnections"
 	"github.com/spotmaxtech/cloudmeta"
 	"github.com/spotmaxtech/gokit"
+	"regexp"
 	"strconv"
 	"strings"
 )
 
 const (
 	ConsulAddr  = "consul.spotmaxtech.com"
-	InstanceKey = "cloudmeta/aws/instance2.json"
+	InstanceKey = "cloudmeta/aws/instance.json"
 	RegionKey   = "cloudmeta/aws/region.json"
 )
 
 type InstUtil struct {
 	Conn *connections.Connections
+}
+
+type InstanceProduct struct {
+	ClockSpeed             string `json:"clockSpeed"`
+	CurrentGeneration      string `json:"currentGeneration"`
+	DedicatedEbsThroughput string `json:"dedicatedEbsThroughput"`
+	InstanceFamily         string `json:"instanceFamily"`
+	InstanceType           string `json:"instanceType"`
+	Memory                 string `json:"memory"`
+	NetworkPerformance     string `json:"networkPerformance"`
+	PhysicalProcessor      string `json:"physicalProcessor"`
+	ProcessorArchitecture  string `json:"processorArchitecture"`
+	Storage                string `json:"storage"`
+	Vcpu                   string `json:"vcpu"`
+}
+
+func validInstance(inst InstanceProduct) bool {
+	// regular filter
+	var valid = regexp.MustCompile(`^[cmrt][3-5][.].+$`)
+	if !valid.Match([]byte(inst.InstanceType)) {
+		return false
+	}
+
+	return true
 }
 
 func (o *InstUtil) FetchInstance(region string, family string) []*cloudmeta.InstInfo {
@@ -57,7 +82,7 @@ func (o *InstUtil) FetchInstance(region string, family string) []*cloudmeta.Inst
 				Value: aws.String(family),
 			},
 			{
-				Field: aws.String("storage"),
+				Field: aws.String("Storage"),
 				Type:  aws.String("TERM_MATCH"),
 				Value: aws.String("EBS only"),
 			},
@@ -101,29 +126,21 @@ func (o *InstUtil) FetchInstance(region string, family string) []*cloudmeta.Inst
 		}
 	*/
 
-	type InstanceProduct struct {
-		ClockSpeed             string `json:"clockSpeed"`
-		CurrentGeneration      string `json:"currentGeneration"`
-		DedicatedEbsThroughput string `json:"dedicatedEbsThroughput"`
-		InstanceFamily         string `json:"instanceFamily"`
-		InstanceType           string `json:"instanceType"`
-		Memory                 string `json:"memory"`
-		NetworkPerformance     string `json:"networkPerformance"`
-		PhysicalProcessor      string `json:"physicalProcessor"`
-		ProcessorArchitecture  string `json:"processorArchitecture"`
-		Storage                string `json:"storage"`
-		Vcpu                   string `json:"vcpu"`
-	}
-
 	var instances []*cloudmeta.InstInfo
+	logrus.Debugf("found %d instance for %s", len(result.PriceList), family)
 	for _, priceInfo := range result.PriceList {
 		productAttr := priceInfo["product"].(map[string]interface{})["attributes"]
 		bytes, _ := json.MarshalIndent(productAttr, "", "  ")
-		// log.Println(string(bytes))
 		var product InstanceProduct
 		if err := json.Unmarshal(bytes, &product); err != nil {
 			panic(err)
 		}
+
+		// filter as needed
+		if ! validInstance(product) {
+			continue
+		}
+
 		core, _ := strconv.ParseInt(product.Vcpu, 10, 8)
 		memStr := strings.TrimSpace(strings.Replace(product.Memory, "GiB", "", 1))
 		mem, err := strconv.ParseFloat(memStr, 32)
@@ -137,6 +154,7 @@ func (o *InstUtil) FetchInstance(region string, family string) []*cloudmeta.Inst
 			Storage: product.Storage,
 			Family:  product.InstanceFamily,
 		}
+
 		instances = append(instances, inst)
 	}
 
@@ -161,14 +179,21 @@ func main() {
 
 	instMap := make(map[string]map[string]*cloudmeta.InstInfo)
 
+	families := []string{
+		"Compute Optimized",
+		"Memory Optimized",
+		"General Purpose",
+	}
 	for _, region := range metaRegion.List() {
 		if _, OK := instMap[region.Name]; !OK {
 			instMap[region.Name] = make(map[string]*cloudmeta.InstInfo)
 		}
-		logrus.Debugf("fetch instance: %s", region.Text)
-		instances := util.FetchInstance(region.Text, "Compute optimized")
-		for _, i := range instances {
-			instMap[region.Name][i.Name] = i
+		logrus.Debugf("fetch region instance: %s", region.Text)
+		for _, family := range families {
+			instances := util.FetchInstance(region.Text, family)
+			for _, i := range instances {
+				instMap[region.Name][i.Name] = i
+			}
 		}
 	}
 

@@ -28,8 +28,14 @@ func main() {
 	data["us-west-2"] = &MsData{
 		Text: "US West (Oregon)",
 	}
+	data["ap-northeast-2"] = &MsData{
+		Text: "Asia Pacific (Seoul)",
+	}
 	data["ap-southeast-1"] = &MsData{
 		Text: "Asia Pacific (Singapore)",
+	}
+	data["eu-central-1"] = &MsData{
+		Text: "EU (Frankfurt)",
 	}
 
 	bytes, err := json.MarshalIndent(data, "", "    ")
