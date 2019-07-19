@@ -7,12 +7,12 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"regexp"
 )
 
 const (
 	AdvisorUrl   = "https://spot-bid-advisor.s3.amazonaws.com/spot-advisor-data.json"
 	ConsulAddr   = "consul.spotmaxtech.com"
+	InstanceKey  = "cloudmeta/aws/instance.json"
 	InterruptKey = "cloudmeta/aws/interruptrate.json"
 	RegionKey    = "cloudmeta/aws/region.json"
 )
@@ -27,6 +27,12 @@ func main() {
 		panic(err)
 	}
 	regions := metaRegion.Keys()
+
+	// instance
+	metaInst := cloudmeta.NewAWSInstance(InstanceKey)
+	if err := metaInst.Fetch(consul); err != nil {
+		panic(err)
+	}
 
 	resp, err := http.Get(AdvisorUrl)
 	if err != nil {
@@ -44,8 +50,8 @@ func main() {
 		panic(err)
 	}
 
-	// filter
-	var valid = regexp.MustCompile(`^[cmr][3-5][.].+$`)
+	// regular filter
+	// var valid = regexp.MustCompile(`^[cmr][3-5][.].+$`)
 
 	advisor := make(map[string]map[string]*cloudmeta.InterruptInfo)
 	for region, platform := range data["spot_advisor"].(map[string]interface{}) {
@@ -53,10 +59,12 @@ func main() {
 			continue
 		}
 
+		instTypes := metaInst.Keys(region)
+
 		regionData := make(map[string]*cloudmeta.InterruptInfo)
 		platformName := "Linux"
 		for instance, value := range platform.(map[string]interface{})[platformName].(map[string]interface{}) {
-			if !valid.Match([]byte(instance)) {
+			if !instTypes.Contains(instance) {
 				continue
 			}
 
