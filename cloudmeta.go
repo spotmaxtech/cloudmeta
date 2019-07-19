@@ -1,11 +1,11 @@
 package cloudmeta
 
 type MetaDb struct {
-	Region    *Region
-	Instance  *Instance
-	ODPrice   *ODPrice
-	SpotPrice *SpotPrice
-	Interrupt *InterruptAdvisor
+	Region    Region
+	Instance  Instance
+	ODPrice   ODPrice
+	SpotPrice SpotPrice
+	Interrupt InterruptAdvisor
 }
 
 // check the db corrupted or not
