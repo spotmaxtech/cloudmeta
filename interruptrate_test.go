@@ -18,7 +18,7 @@ func TestAWSInterrupt(t *testing.T) {
 			So(InterruptRate.key, ShouldEqual, TestConsulInterruptRateKey)
 			aaJson, _ := json.Marshal(InterruptRate.data)
 			t.Logf("%s\n", aaJson)
-			So(InterruptRate.data["ap-northeast-1"]["c3.2xlarge"].Name, ShouldEqual, "c3.2xlarge")
+			So(InterruptRate.data["ap-southeast-1"]["c4.xlarge"].Name, ShouldEqual, "c4.xlarge")
 		})
 		Convey("test use List", func() {
 			list := InterruptRate.List("us-east-1")
@@ -44,17 +44,17 @@ func TestAWSInterrupt(t *testing.T) {
 				},
 			}
 			// filterMap := []*FilterType{}
-			/*filterMap := []*FilterType{
-				{
-					region: "us-east-1",
-				},
-			}*/
-			/*filterMap := []*FilterType{
-				{
-					region: "us-east-1",
-					instanceType: []string{"m4.xlarge"},
-				},
-			}*/
+			//filterMap := []*FilterType{
+			//	{
+			//		region: "us-east-1",
+			//	},
+			//}
+			//filterMap := []*FilterType{
+			//	{
+			//		region: "us-east-1",
+			//		instanceType: []string{"m4.xlarge"},
+			//	},
+			//}
 			filter := InterruptRate.Filter(filterMap)
 			So(len(filter.data), ShouldNotBeZeroValue)
 			aaJson, _ := json.Marshal(filter.data)
