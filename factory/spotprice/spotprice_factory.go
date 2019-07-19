@@ -108,6 +108,7 @@ func main() {
 		}
 		input := &SpotPriceHistoryInput{
 			InstanceTypeList: instList,
+			Duration:         time.Duration(time.Minute * 60 * 24 * 7),
 		}
 		log.Println(gokit.Prettify(instList))
 
