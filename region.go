@@ -54,7 +54,7 @@ func (r *AWSRegion) List() []*RegionInfo {
 
 func (r *AWSRegion) Keys() gokit.Set {
 	keys := gokit.NewSet()
-	for k := range r.Data {
+	for k := range r.data {
 		keys.Add(k)
 	}
 	return keys
