@@ -77,7 +77,7 @@ func (i *AWSOdPrice) Filter(list []*FilterType) *AWSOdPriceData {
 	return &FilterData
 }
 
-func NewAWSOdPric(key string) *AWSOdPrice {
+func NewAWSOdPrice(key string) *AWSOdPrice {
 	aws := AWSOdPrice{
 		key: key,
 	}

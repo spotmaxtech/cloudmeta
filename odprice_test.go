@@ -11,7 +11,7 @@ import (
 func TestOnDemandPrice(t *testing.T) {
 	Convey("test use case", t, func() {
 		consul := gokit.NewConsul(TestConsulAddress)
-		odPriceMap := NewAWSOdPric(TestConsulOdPriceKey)
+		odPriceMap := NewAWSOdPrice(TestConsulOdPriceKey)
 		err := odPriceMap.Fetch(consul)
 		So(err, ShouldBeNil)
 		Convey("test consul fetch", func() {
