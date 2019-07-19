@@ -125,6 +125,10 @@ github.com/spotmaxtech/cloudconnections v0.0.0-20190717120752-4e46e82ce350 h1:xf
 github.com/spotmaxtech/cloudconnections v0.0.0-20190717120752-4e46e82ce350/go.mod h1:knAp1UGp4NvFoUvkM2bdBckV0f9UCeeyP1OipMSiIFg=
 github.com/spotmaxtech/cloudconnections v0.1.0 h1:EfaXH9X8YIWIM2FkyDs354gwT6QkV2lQPda6g/V6JU4=
 github.com/spotmaxtech/cloudconnections v0.1.0/go.mod h1:knAp1UGp4NvFoUvkM2bdBckV0f9UCeeyP1OipMSiIFg=
+github.com/spotmaxtech/cloudconnections v0.1.1 h1:ooguiSgsVzUg0LcKEVKYgka81VtDe6HERH2rXq5l6tA=
+github.com/spotmaxtech/cloudconnections v0.1.1/go.mod h1:RFPk4X/CbdQFEUvG/PP9VI7vXYfDlh9FYVIaaCk4NiQ=
+github.com/spotmaxtech/cloudconnections v0.1.2 h1:3yAtBwjOsLoICYPHqazYD7khlKmhoUXzzin/P8GDj9s=
+github.com/spotmaxtech/cloudconnections v0.1.2/go.mod h1:RFPk4X/CbdQFEUvG/PP9VI7vXYfDlh9FYVIaaCk4NiQ=
 github.com/spotmaxtech/gokit v0.1.0 h1:5mp7eA1TVIvPYMMFkWajocMahBR16r+HQ3m/PAALq/A=
 github.com/spotmaxtech/gokit v0.1.0/go.mod h1:1/3uTJEL+Jnbv6vgkC3xvSYxO0Z4q2FlfjIdKUB0MBQ=
 github.com/spotmaxtech/gokit v0.1.1 h1:ZX5OzuS87s6uWqG+EbHsZFZdxp3nA3kQVvWCy0fp6H8=
