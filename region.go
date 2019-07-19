@@ -2,6 +2,7 @@ package cloudmeta
 
 import (
 	"encoding/json"
+
 	"github.com/spotmaxtech/gokit"
 )
 
@@ -15,7 +16,7 @@ type AWSRegionData struct {
 }
 
 type AWSRegion struct {
-	key  string
+	key string
 	AWSRegionData
 }
 

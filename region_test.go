@@ -15,7 +15,7 @@ func TestAWSRegion(t *testing.T) {
 		region := NewAWSRegion(TestConsulRegionKey)
 		err := region.Fetch(consul)
 		So(err, ShouldBeNil)
-		/*Convey("test use Region", func() {
+		Convey("test use Region", func() {
 			So(region.key, ShouldEqual, TestConsulRegionKey)
 			aaJson, _ := json.Marshal(region.data)
 			t.Logf("%s\n", aaJson)
@@ -33,12 +33,18 @@ func TestAWSRegion(t *testing.T) {
 			aaJson, _ := json.Marshal(regionData)
 			t.Logf("%s\n", aaJson)
 			So(regionData.Name, ShouldEqual, "us-east-2")
-		})*/
+		})
 		Convey("test use Filter", func() {
 			filterList := []*string{aws.String("ap-southeast-1")}
 			filter := region.Filter(filterList)
 			So(len(filter.data), ShouldNotBeZeroValue)
 			aaJson, _ := json.Marshal(filter.data)
+			t.Logf("%s\n", aaJson)
+		})
+		Convey("test use Keys", func() {
+			key := region.Keys()
+			So(key.Cardinality(), ShouldNotBeZeroValue)
+			aaJson, _ := json.Marshal(key)
 			t.Logf("%s\n", aaJson)
 		})
 	})
