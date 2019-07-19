@@ -6,6 +6,7 @@ const (
 	TestConsulInstanceKey = "cloudmeta/aws/instance.json"
 	TestConsulInterruptRateKey = "cloudmeta/aws/interruptrate.json"
 	TestConsulSpotPriceKey = "cloudmeta/aws/spotprice.json"
+	TestConsulOdPriceKey = "cloudmeta/aws/odprice.json"
 )
 
 type FilterType struct {
