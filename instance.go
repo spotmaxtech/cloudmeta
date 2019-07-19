@@ -76,8 +76,8 @@ func (i *AWSInstance) Filter(list []*FilterType) *AWSInstanceData {
 		} else {
 			data[region] = i.data[region]
 		}
-		FilterData.data = data
 	}
+	FilterData.data = data
 
 	return &FilterData
 }

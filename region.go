@@ -10,9 +10,13 @@ type RegionInfo struct {
 	Text string `json:"text"`
 }
 
+type AWSRegionData struct {
+	data map[string]*RegionInfo
+}
+
 type AWSRegion struct {
 	key  string
-	data map[string]*RegionInfo
+	AWSRegionData
 }
 
 func (r *AWSRegion) Fetch(consul *gokit.Consul) error {
@@ -50,6 +54,22 @@ func (r *AWSRegion) List() []*RegionInfo {
 
 func (r *AWSRegion) GetRegionInfo(name string) *RegionInfo {
 	return r.data[name]
+}
+
+func (r *AWSRegion) Filter(list []*string) *AWSRegionData {
+	var FilterData AWSRegionData
+	if len(list) <= 0 {
+		FilterData.data = r.data
+		return &FilterData
+	}
+
+	data := make(map[string]*RegionInfo)
+	for _, v := range list {
+		data[*v] = r.data[*v]
+	}
+	FilterData.data = data
+
+	return &FilterData
 }
 
 // TODO: implement aliyun regions
