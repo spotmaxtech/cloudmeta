@@ -1,52 +1,52 @@
 package cloudmeta
 
 import (
-	. "github.com/smartystreets/goconvey/convey"
-	"github.com/spotmaxtech/cloudconnections"
+	"encoding/json"
 	"testing"
-	"time"
+
+	. "github.com/smartystreets/goconvey/convey"
+	"github.com/spotmaxtech/gokit"
 )
 
-func TestSpotPrice_FetchSpotPrice(t *testing.T) {
+func TestAWSSpotPrice(t *testing.T) {
 	Convey("Test spot price fetch", t, func() {
-		Convey("test data size", func() {
-			conn := connections.New("us-west-2")
-			price := SpotPrice{Conn: conn}
-
-			// no filter
-			input := &SpotPriceHistoryInput{
-				// InstanceTypeList: []*string{aws.String("t3.small"), aws.String("c3.4xlarge")},
+		consul := gokit.NewConsul(TestConsulAddress)
+		spotPriceMap := NewAWSSpotPrice(TestConsulSpotPriceKey)
+		err := spotPriceMap.Fetch(consul)
+		So(err, ShouldBeNil)
+		Convey("test consul fetch", func() {
+			So(spotPriceMap.key, ShouldEqual, TestConsulSpotPriceKey)
+			aaJson, _ := json.Marshal(spotPriceMap.data)
+			t.Logf("%s\n", aaJson)
+			So(spotPriceMap.data["us-east-1"]["c4.xlarge"].InstanceType, ShouldEqual, "c4.xlarge")
+		})
+		Convey("test use List", func() {
+			list := spotPriceMap.List("us-east-1")
+			So(len(list), ShouldNotBeZeroValue)
+			aaJson, _ := json.Marshal(list)
+			t.Logf("%s\n", aaJson)
+		})
+		Convey("test use GetInstInfo", func() {
+			data := spotPriceMap.GetInstInfo("us-east-1", "c4.xlarge")
+			So(data, ShouldNotBeNil)
+			aaJson, _ := json.Marshal(data)
+			t.Logf("%s\n", aaJson)
+		})
+		Convey("test use Filter", func() {
+			filterMap := []*FilterType{
+				{
+					region: "us-east-1",
+					instanceType: []string{"m4.xlarge", "c4.xlarge"},
+				},
+				{
+					region: "us-east-2",
+					instanceType: []string{"r4.xlarge"},
+				},
 			}
-			err := price.FetchSpotPrice(input)
-			So(err, ShouldBeNil)
-			t.Logf("data size %d of duration %s", len(price.Data), "not set")
-
-			// 60 min
-			dur := time.Duration(time.Minute * 60)
-			input = &SpotPriceHistoryInput{
-				Duration: dur,
-			}
-			err = price.FetchSpotPrice(input)
-			So(err, ShouldBeNil)
-			t.Logf("data size %d of duration %s", len(price.Data), dur)
-
-			// 60 min * 24
-			dur = time.Duration(time.Minute * 60 * 24)
-			input = &SpotPriceHistoryInput{
-				Duration: dur,
-			}
-			err = price.FetchSpotPrice(input)
-			So(err, ShouldBeNil)
-			t.Logf("data size %d of duration %s", len(price.Data), dur)
-
-			// 60 min * 24 * 7
-			dur = time.Duration(time.Minute * 60 * 24 * 7)
-			input = &SpotPriceHistoryInput{
-				Duration: dur,
-			}
-			err = price.FetchSpotPrice(input)
-			So(err, ShouldBeNil)
-			t.Logf("data size %d of duration %s", len(price.Data), dur)
+			filter := spotPriceMap.Filter(filterMap)
+			So(len(filter.data), ShouldNotBeZeroValue)
+			aaJson, _ := json.Marshal(filter.data)
+			t.Logf("%s\n", aaJson)
 		})
 	})
 }
