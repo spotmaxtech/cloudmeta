@@ -71,10 +71,7 @@ func (i *InterruptAdvisor) Filter(list []*FilterType) *InterruptAdvisorData {
 
 func NewAWSInterrupt(key string) *InterruptAdvisor {
 	aws := InterruptAdvisor{
-		key:  key,
+		key: key,
 	}
 	return &aws
 }
-
-
-

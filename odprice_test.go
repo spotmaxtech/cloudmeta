@@ -36,11 +36,11 @@ func TestOnDemandPrice(t *testing.T) {
 		Convey("test use Filter", func() {
 			filterMap := []*FilterType{
 				{
-					region: "us-east-1",
+					region:       "us-east-1",
 					instanceType: []string{"m4.xlarge", "c4.xlarge"},
 				},
 				{
-					region: "us-east-2",
+					region:       "us-east-2",
 					instanceType: []string{"r4.xlarge"},
 				},
 			}

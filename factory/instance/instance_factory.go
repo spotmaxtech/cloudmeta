@@ -137,7 +137,7 @@ func (o *InstUtil) FetchInstance(region string, family string) []*cloudmeta.Inst
 		}
 
 		// filter as needed
-		if ! validInstance(product) {
+		if !validInstance(product) {
 			continue
 		}
 
