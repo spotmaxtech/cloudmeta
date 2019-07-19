@@ -6,11 +6,6 @@ import (
 	"github.com/spotmaxtech/gokit"
 )
 
-type RegionInfo struct {
-	Name string `json:"name"`
-	Text string `json:"text"`
-}
-
 type AWSRegionData struct {
 	data map[string]*RegionInfo
 }

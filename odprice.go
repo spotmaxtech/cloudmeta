@@ -6,8 +6,8 @@ import (
 )
 
 type AWSOdPriceList struct {
-	InstanceType string `json:"instance_type"`
-	Price *float64 `json:"price"`
+	InstanceType string   `json:"instance_type"`
+	Price        *float64 `json:"price"`
 }
 
 type AWSOdPriceData struct {
@@ -39,7 +39,7 @@ func (i *AWSOdPrice) List(region string) []*AWSOdPriceList {
 	for key, v := range i.data[region] {
 		data := AWSOdPriceList{
 			InstanceType: key,
-			Price: v,
+			Price:        v,
 		}
 		values = append(values, &data)
 	}

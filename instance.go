@@ -5,16 +5,6 @@ import (
 	"github.com/spotmaxtech/gokit"
 )
 
-// TODO: add more info item
-// TODO: make category const
-type InstInfo struct {
-	Name    string  `json:"name"`
-	Core    int8    `json:"core"`
-	Mem     float64 `json:"mem"`
-	Storage string  `json:"storage"`
-	Family  string  `json:"family"`
-}
-
 type AWSInstanceData struct {
 	data map[string]map[string]*InstInfo
 }

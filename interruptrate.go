@@ -5,12 +5,6 @@ import (
 	"github.com/spotmaxtech/gokit"
 )
 
-type InterruptInfo struct {
-	Name     string `json:"name"`
-	Rate     int    `json:"rate"`
-	RateDesc string `json:"rate_desc"`
-}
-
 type InterruptAdvisorData struct {
 	data map[string]map[string]*InterruptInfo
 }
