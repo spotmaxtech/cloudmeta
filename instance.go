@@ -25,7 +25,7 @@ type AWSInstance struct {
 
 type FilterType struct {
 	region      string
-	machineType []string
+	instanceType []string
 }
 
 func (i *AWSInstance) Fetch(consul *gokit.Consul) error {
@@ -65,11 +65,11 @@ func (i *AWSInstance) Filter(list []*FilterType) *AWSInstanceData {
 	data := make(map[string]map[string]*InstInfo)
 	for _, v := range list {
 		region := v.region
-		machineType := v.machineType
+		instanceType := v.instanceType
 
-		if len(machineType) > 0 {
+		if len(instanceType) > 0 {
 			mapInstInfo := make(map[string]*InstInfo)
-			for _, l := range machineType {
+			for _, l := range instanceType {
 				mapInstInfo[l] = i.data[region][l]
 				data[region] = mapInstInfo
 			}
