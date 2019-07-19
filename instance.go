@@ -23,11 +23,6 @@ type AWSInstance struct {
 	AWSInstanceData
 }
 
-type FilterType struct {
-	region      string
-	instanceType []string
-}
-
 func (i *AWSInstance) Fetch(consul *gokit.Consul) error {
 	value, err := consul.GetKey(i.key)
 	if err != nil {

@@ -6,3 +6,8 @@ const (
 	TestConsulInstanceKey = "cloudmeta/aws/instance.json"
 	TestConsulInterruptRateKey = "cloudmeta/aws/interruptrate.json"
 )
+
+type FilterType struct {
+	region      string
+	instanceType []string
+}
