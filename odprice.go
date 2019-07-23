@@ -6,12 +6,12 @@ import (
 )
 
 type AWSOdPriceList struct {
-	InstanceType string   `json:"instance_type"`
-	Price        *float64 `json:"price"`
+	InstanceType string  `json:"instance_type"`
+	Price        float64 `json:"price"`
 }
 
 type AWSOdPriceData struct {
-	data map[string]map[string]*float64
+	data map[string]map[string]float64
 }
 
 type AWSOdPrice struct {
@@ -25,7 +25,7 @@ func (i *AWSOdPrice) Fetch(consul *gokit.Consul) error {
 		return err
 	}
 
-	var tempData map[string]map[string]*float64
+	var tempData map[string]map[string]float64
 	if err = json.Unmarshal(value, &tempData); err != nil {
 		return err
 	}
@@ -46,8 +46,8 @@ func (i *AWSOdPrice) List(region string) []*AWSOdPriceList {
 	return values
 }
 
-func (i *AWSOdPrice) GetInstInfo(region string, name string) *float64 {
-	return i.data[region][name]
+func (i *AWSOdPrice) GetPrice(region string, instance string) float64 {
+	return i.data[region][instance]
 }
 
 func (i *AWSOdPrice) Filter(list []*FilterType) *AWSOdPriceData {
@@ -57,13 +57,13 @@ func (i *AWSOdPrice) Filter(list []*FilterType) *AWSOdPriceData {
 		return &FilterData
 	}
 
-	data := make(map[string]map[string]*float64)
+	data := make(map[string]map[string]float64)
 	for _, v := range list {
 		region := v.region
 		instanceType := v.instanceType
 
 		if len(instanceType) > 0 {
-			mapInstInfo := make(map[string]*float64)
+			mapInstInfo := make(map[string]float64)
 			for _, l := range instanceType {
 				mapInstInfo[l] = i.data[region][l]
 				data[region] = mapInstInfo

@@ -5,7 +5,7 @@ import "github.com/spotmaxtech/gokit"
 type DbSet struct {
 	Region    Region
 	Instance  Instance
-	Interrupt InterruptAdvisor
+	Interrupt Interrupt
 	ODPrice   ODPrice
 	SpotPrice SpotPrice
 }
@@ -38,7 +38,12 @@ func newAWSDbSet(consulAddr string) (*DbSet, error) {
 		return nil, err
 	}
 
-	set := &DbSet{}
+	set := &DbSet{
+		Region:    region,
+		Instance:  instance,
+		Interrupt: interrupt,
+		ODPrice:   odPrice,
+	}
 	return set, nil
 }
 

@@ -26,17 +26,17 @@ type InstInfo struct {
 type Instance interface {
 	Fetch(consul *gokit.Consul) error
 	List(region string) []*InstInfo
-	GetInstInfo(region string, name string) *InstInfo
+	GetInstInfo(region string, instance string) *InstInfo
 }
 
 type ODPrice interface {
 	Fetch(consul *gokit.Consul) error
-	GetPrice(region string, instance string) float32
+	GetPrice(region string, instance string) float64
 }
 
 type SpotPrice interface {
 	Fetch(consul *gokit.Consul) error
-	GetPrice(region string, instance string) float32
+	GetPrice(region string, instance string) *SpotPriceInfo
 }
 
 type InterruptInfo struct {

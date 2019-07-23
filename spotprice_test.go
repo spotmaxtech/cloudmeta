@@ -27,7 +27,7 @@ func TestAWSSpotPrice(t *testing.T) {
 			t.Logf("%s\n", aaJson)
 		})
 		Convey("test use GetInstInfo", func() {
-			data := spotPriceMap.GetInstInfo("us-east-1", "c4.xlarge")
+			data := spotPriceMap.GetPrice("us-east-1", "c4.xlarge")
 			So(data, ShouldNotBeNil)
 			aaJson, _ := json.Marshal(data)
 			t.Logf("%s\n", aaJson)

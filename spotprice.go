@@ -5,14 +5,14 @@ import (
 	"github.com/spotmaxtech/gokit"
 )
 
-type InstanceInfo struct {
+type SpotPriceInfo struct {
 	InstanceType string             `json:"instance_type"`
-	Avg          int8               `json:"avg"`
+	Avg          float64            `json:"avg"`
 	AzMap        map[string]float64 `json:"az_map"`
 }
 
 type AWSSpotPriceData struct {
-	data map[string]map[string]*InstanceInfo
+	data map[string]map[string]*SpotPriceInfo
 }
 
 type AWSSpotPrice struct {
@@ -26,7 +26,7 @@ func (i *AWSSpotPrice) Fetch(consul *gokit.Consul) error {
 		return err
 	}
 
-	var tempData map[string]map[string]*InstanceInfo
+	var tempData map[string]map[string]*SpotPriceInfo
 	if err = json.Unmarshal(value, &tempData); err != nil {
 		return err
 	}
@@ -35,16 +35,16 @@ func (i *AWSSpotPrice) Fetch(consul *gokit.Consul) error {
 	return nil
 }
 
-func (i *AWSSpotPrice) List(region string) []*InstanceInfo {
-	var values []*InstanceInfo
+func (i *AWSSpotPrice) List(region string) []*SpotPriceInfo {
+	var values []*SpotPriceInfo
 	for _, v := range i.data[region] {
 		values = append(values, v)
 	}
 	return values
 }
 
-func (i *AWSSpotPrice) GetInstInfo(region string, name string) *InstanceInfo {
-	return i.data[region][name]
+func (i *AWSSpotPrice) GetPrice(region string, instance string) *SpotPriceInfo {
+	return i.data[region][instance]
 }
 
 func (i *AWSSpotPrice) Filter(list []*FilterType) *AWSSpotPriceData {
@@ -54,13 +54,13 @@ func (i *AWSSpotPrice) Filter(list []*FilterType) *AWSSpotPriceData {
 		return &FilterData
 	}
 
-	data := make(map[string]map[string]*InstanceInfo)
+	data := make(map[string]map[string]*SpotPriceInfo)
 	for _, v := range list {
 		region := v.region
 		instanceType := v.instanceType
 
 		if len(instanceType) > 0 {
-			mapInstInfo := make(map[string]*InstanceInfo)
+			mapInstInfo := make(map[string]*SpotPriceInfo)
 			for _, l := range instanceType {
 				mapInstInfo[l] = i.data[region][l]
 				data[region] = mapInstInfo

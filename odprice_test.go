@@ -19,7 +19,7 @@ func TestOnDemandPrice(t *testing.T) {
 			aaJson, _ := json.Marshal(odPriceMap.data)
 			t.Logf("%s\n", aaJson)
 			price := odPriceMap.data["us-east-1"]["c4.xlarge"]
-			So(*price, ShouldEqual, 0.199)
+			So(price, ShouldEqual, 0.199)
 		})
 		Convey("test use List", func() {
 			list := odPriceMap.List("us-east-1")
@@ -28,7 +28,7 @@ func TestOnDemandPrice(t *testing.T) {
 			t.Logf("%s\n", aaJson)
 		})
 		Convey("test use GetInstInfo", func() {
-			data := odPriceMap.GetInstInfo("us-east-1", "c4.xlarge")
+			data := odPriceMap.GetPrice("us-east-1", "c4.xlarge")
 			So(data, ShouldNotBeNil)
 			aaJson, _ := json.Marshal(data)
 			t.Logf("%s\n", aaJson)

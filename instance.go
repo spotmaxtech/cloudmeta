@@ -46,8 +46,8 @@ func (i *AWSInstance) List(region string) []*InstInfo {
 	return values
 }
 
-func (i *AWSInstance) GetInstInfo(region string, name string) *InstInfo {
-	return i.data[region][name]
+func (i *AWSInstance) GetInstInfo(region string, instance string) *InstInfo {
+	return i.data[region][instance]
 }
 
 func (i *AWSInstance) Filter(list []*FilterType) *AWSInstanceData {
