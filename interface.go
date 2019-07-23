@@ -49,3 +49,8 @@ type Interrupt interface {
 	Fetch(consul *gokit.Consul) error
 	GetInterruptInfo(region string, instance string) *InterruptInfo
 }
+
+type FilterType struct {
+	region       string
+	instanceType []string
+}

@@ -9,7 +9,9 @@ const (
 	ConsulOdPriceKey       = "cloudmeta/aws/odprice.json"
 )
 
-type FilterType struct {
-	region       string
-	instanceType []string
-}
+type CloudIdentifier int
+
+const (
+	AWS CloudIdentifier = iota
+	Ali
+)

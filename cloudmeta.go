@@ -1,7 +1,5 @@
 package cloudmeta
 
-import "github.com/spotmaxtech/gokit"
-
 type DbSet struct {
 	Region    Region
 	Instance  Instance
@@ -10,45 +8,47 @@ type DbSet struct {
 	SpotPrice SpotPrice
 }
 
-func newAWSDbSet(consulAddr string) (*DbSet, error) {
-	consul := gokit.NewConsul(consulAddr)
-
+func newAWSDbSet() *DbSet {
 	region := NewAWSRegion(ConsulRegionKey)
-	if err := region.Fetch(consul); err != nil {
-		return nil, err
-	}
-
 	instance := NewAWSInstance(ConsulInstanceKey)
-	if err := instance.Fetch(consul); err != nil {
-		return nil, err
-	}
-
 	interrupt := NewAWSInterrupt(ConsulInterruptRateKey)
-	if err := interrupt.Fetch(consul); err != nil {
-		return nil, err
-	}
-
 	odPrice := NewAWSOdPrice(ConsulOdPriceKey)
-	if err := odPrice.Fetch(consul); err != nil {
-		return nil, err
-	}
-
 	spotPrice := NewAWSSpotPrice(ConsulSpotPriceKey)
-	if err := spotPrice.Fetch(consul); err != nil {
-		return nil, err
-	}
 
 	set := &DbSet{
 		Region:    region,
 		Instance:  instance,
 		Interrupt: interrupt,
 		ODPrice:   odPrice,
+		SpotPrice: spotPrice,
 	}
-	return set, nil
+	return set
+}
+
+// TODO: implement ali db set
+func newAliDbSet() *DbSet {
+	set := &DbSet{}
+	return set
 }
 
 type MetaDb struct {
-	set *DbSet
+	addr string
+	set  *DbSet
+}
+
+func NewMetaDb(identifier CloudIdentifier, addr string) *MetaDb {
+	db := &MetaDb{
+		addr: addr,
+	}
+	switch identifier {
+	case AWS:
+		db.set = newAWSDbSet()
+	case Ali:
+		db.set = newAliDbSet()
+	default:
+		db.set = newAWSDbSet()
+	}
+	return db
 }
 
 // check the db corrupted or not
