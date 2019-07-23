@@ -2,6 +2,17 @@ package cloudmeta
 
 import "github.com/spotmaxtech/gokit"
 
+type RegionInfo struct {
+	Name string `json:"name"`
+	Text string `json:"text"`
+}
+
+type Region interface {
+	Fetch(consul *gokit.Consul) error
+	List() []*RegionInfo
+	GetRegionInfo(name string) *RegionInfo
+}
+
 // TODO: more info item?
 // TODO: make category const?
 type InstInfo struct {
@@ -14,19 +25,8 @@ type InstInfo struct {
 
 type Instance interface {
 	Fetch(consul *gokit.Consul) error
-	List() []*InstInfo
-	GetInstInfo(name string) *InstInfo
-}
-
-type RegionInfo struct {
-	Name string `json:"name"`
-	Text string `json:"text"`
-}
-
-type Region interface {
-	Fetch(consul *gokit.Consul) error
-	List() []*RegionInfo
-	GetRegionInfo(name string) *RegionInfo
+	List(region string) []*InstInfo
+	GetInstInfo(region string, name string) *InstInfo
 }
 
 type ODPrice interface {
