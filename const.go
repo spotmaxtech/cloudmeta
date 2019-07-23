@@ -1,12 +1,12 @@
 package cloudmeta
 
 const (
-	TestConsulAddress          = "consul.spotmaxtech.com"
-	TestConsulRegionKey        = "cloudmeta/aws/region.json"
-	TestConsulInstanceKey      = "cloudmeta/aws/instance.json"
-	TestConsulInterruptRateKey = "cloudmeta/aws/interruptrate.json"
-	TestConsulSpotPriceKey     = "cloudmeta/aws/spotprice.json"
-	TestConsulOdPriceKey       = "cloudmeta/aws/odprice.json"
+	TestConsulAddress      = "consul.spotmaxtech.com"
+	ConsulRegionKey        = "cloudmeta/aws/region.json"
+	ConsulInstanceKey      = "cloudmeta/aws/instance.json"
+	ConsulInterruptRateKey = "cloudmeta/aws/interruptrate.json"
+	ConsulSpotPriceKey     = "cloudmeta/aws/spotprice.json"
+	ConsulOdPriceKey       = "cloudmeta/aws/odprice.json"
 )
 
 type FilterType struct {

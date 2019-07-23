@@ -11,11 +11,11 @@ import (
 func TestAWSInstance(t *testing.T) {
 	Convey("test use case", t, func() {
 		consul := gokit.NewConsul(TestConsulAddress)
-		instance := NewAWSInstance(TestConsulInstanceKey)
+		instance := NewAWSInstance(ConsulInstanceKey)
 		err := instance.Fetch(consul)
 		So(err, ShouldBeNil)
 		Convey("test consul fetch", func() {
-			So(instance.key, ShouldEqual, TestConsulInstanceKey)
+			So(instance.key, ShouldEqual, ConsulInstanceKey)
 			aaJson, _ := json.Marshal(instance.data)
 			t.Logf("%s\n", aaJson)
 			So(instance.data["us-east-1"]["c4.xlarge"].Name, ShouldEqual, "c4.xlarge")

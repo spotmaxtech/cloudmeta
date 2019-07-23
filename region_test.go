@@ -12,11 +12,11 @@ import (
 func TestAWSRegion(t *testing.T) {
 	Convey("test use case", t, func() {
 		consul := gokit.NewConsul(TestConsulAddress)
-		region := NewAWSRegion(TestConsulRegionKey)
+		region := NewAWSRegion(ConsulRegionKey)
 		err := region.Fetch(consul)
 		So(err, ShouldBeNil)
 		Convey("test use Region", func() {
-			So(region.key, ShouldEqual, TestConsulRegionKey)
+			So(region.key, ShouldEqual, ConsulRegionKey)
 			aaJson, _ := json.Marshal(region.data)
 			t.Logf("%s\n", aaJson)
 			So(region.data["us-east-1"].Name, ShouldEqual, "us-east-1")

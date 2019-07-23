@@ -11,11 +11,11 @@ import (
 func TestAWSInterrupt(t *testing.T) {
 	Convey("test use case", t, func() {
 		consul := gokit.NewConsul(TestConsulAddress)
-		InterruptRate := NewAWSInterrupt(TestConsulInterruptRateKey)
+		InterruptRate := NewAWSInterrupt(ConsulInterruptRateKey)
 		err := InterruptRate.Fetch(consul)
 		So(err, ShouldBeNil)
 		Convey("test consul fetch", func() {
-			So(InterruptRate.key, ShouldEqual, TestConsulInterruptRateKey)
+			So(InterruptRate.key, ShouldEqual, ConsulInterruptRateKey)
 			aaJson, _ := json.Marshal(InterruptRate.data)
 			t.Logf("%s\n", aaJson)
 			So(InterruptRate.data["ap-southeast-1"]["c4.xlarge"].Name, ShouldEqual, "c4.xlarge")

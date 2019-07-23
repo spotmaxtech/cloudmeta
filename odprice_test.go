@@ -11,11 +11,11 @@ import (
 func TestOnDemandPrice(t *testing.T) {
 	Convey("test use case", t, func() {
 		consul := gokit.NewConsul(TestConsulAddress)
-		odPriceMap := NewAWSOdPrice(TestConsulOdPriceKey)
+		odPriceMap := NewAWSOdPrice(ConsulOdPriceKey)
 		err := odPriceMap.Fetch(consul)
 		So(err, ShouldBeNil)
 		Convey("test consul fetch", func() {
-			So(odPriceMap.key, ShouldEqual, TestConsulOdPriceKey)
+			So(odPriceMap.key, ShouldEqual, ConsulOdPriceKey)
 			aaJson, _ := json.Marshal(odPriceMap.data)
 			t.Logf("%s\n", aaJson)
 			price := odPriceMap.data["us-east-1"]["c4.xlarge"]

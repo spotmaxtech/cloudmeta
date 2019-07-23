@@ -11,11 +11,11 @@ import (
 func TestAWSSpotPrice(t *testing.T) {
 	Convey("Test spot price fetch", t, func() {
 		consul := gokit.NewConsul(TestConsulAddress)
-		spotPriceMap := NewAWSSpotPrice(TestConsulSpotPriceKey)
+		spotPriceMap := NewAWSSpotPrice(ConsulSpotPriceKey)
 		err := spotPriceMap.Fetch(consul)
 		So(err, ShouldBeNil)
 		Convey("test consul fetch", func() {
-			So(spotPriceMap.key, ShouldEqual, TestConsulSpotPriceKey)
+			So(spotPriceMap.key, ShouldEqual, ConsulSpotPriceKey)
 			aaJson, _ := json.Marshal(spotPriceMap.data)
 			t.Logf("%s\n", aaJson)
 			So(spotPriceMap.data["us-east-1"]["c4.xlarge"].InstanceType, ShouldEqual, "c4.xlarge")
