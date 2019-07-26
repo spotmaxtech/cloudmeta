@@ -47,6 +47,9 @@ func (i *AWSOdPrice) List(region string) []*AWSOdPriceList {
 }
 
 func (i *AWSOdPrice) GetPrice(region string, instance string) float64 {
+	if _, OK := i.data[region]; !OK {
+		return 0
+	}
 	return i.data[region][instance]
 }
 

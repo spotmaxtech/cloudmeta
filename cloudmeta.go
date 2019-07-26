@@ -36,38 +36,46 @@ func (s *DbSet) fetch(consul *gokit.Consul) error {
 }
 
 // check the db corrupted or not
-func (s *DbSet) consistent() bool {
-	if !s.instanceConsistent() {
-		return false
-	}
-	if !s.interruptConsistent() {
-		return false
-	}
-	if !s.spotPriceConsistent() {
-		return false
-	}
-	if !s.odPriceConsistent() {
-		return false
+func (s *DbSet) consistent() error {
+	if err := s.instanceConsistent(); err != nil {
+		return err
 	}
 
-	return true
+	if err := s.basicConsistent(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (s *DbSet) instanceConsistent() bool {
-	return true
+func (s *DbSet) instanceConsistent() error {
+	for _, region := range s.Region.List() {
+		instances := s.Instance.List(region.Name)
+		if len(instances) == 0 {
+			return fmt.Errorf("no instance in %s", region.Name)
+		}
+	}
+
+	return nil
 }
 
-func (s *DbSet) interruptConsistent() bool {
-	return true
-}
+func (s *DbSet) basicConsistent() error {
+	for _, region := range s.Region.List() {
+		instances := s.Instance.List(region.Name)
+		for _, inst := range instances {
+			if info := s.Interrupt.GetInterruptInfo(region.Name, inst.Name); info == nil {
+				return fmt.Errorf("interrupt info empty for %s - %s", region.Name, inst.Name)
+			}
+			if odPrice := s.ODPrice.GetPrice(region.Name, inst.Name); odPrice < 0.0001 {
+				return fmt.Errorf("od price info empty for %s - %s", region.Name, inst.Name)
+			}
+			if spotPrice := s.SpotPrice.GetPrice(region.Name, inst.Name); spotPrice == nil {
+				return fmt.Errorf("spot price info empty for %s - %s", region.Name, inst.Name)
+			}
 
-func (s *DbSet) spotPriceConsistent() bool {
-	return true
-}
-
-func (s *DbSet) odPriceConsistent() bool {
-	return true
-
+		}
+	}
+	return nil
 }
 
 func newAWSDbSet() *DbSet {
@@ -167,8 +175,8 @@ func (m *MetaDb) Update() error {
 	if err := set.fetch(m.consul); err != nil {
 		return err
 	}
-	if !set.consistent() {
-		return fmt.Errorf("not consistent db set")
+	if err := set.consistent(); err != nil {
+		return fmt.Errorf("not consistent db set, %s", err.Error())
 	}
 
 	m.set = set

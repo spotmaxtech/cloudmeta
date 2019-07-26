@@ -44,6 +44,10 @@ func (i *AWSSpotPrice) List(region string) []*SpotPriceInfo {
 }
 
 func (i *AWSSpotPrice) GetPrice(region string, instance string) *SpotPriceInfo {
+	if _, OK := i.data[region]; !OK {
+		return nil
+	}
+
 	return i.data[region][instance]
 }
 

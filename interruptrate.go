@@ -38,6 +38,9 @@ func (i *InterruptAdvisor) List(region string) []*InterruptInfo {
 }
 
 func (i *InterruptAdvisor) GetInterruptInfo(region string, name string) *InterruptInfo {
+	if _, OK := i.data[region]; !OK {
+		return nil
+	}
 	return i.data[region][name]
 }
 

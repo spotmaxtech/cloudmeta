@@ -31,7 +31,6 @@ func (i *AWSInstance) Fetch(consul *gokit.Consul) error {
 
 func (i *AWSInstance) Keys(region string) gokit.Set {
 	keys := gokit.NewSet()
-	// TODO: check region
 	for k := range i.data[region] {
 		keys.Add(k)
 	}
@@ -47,6 +46,10 @@ func (i *AWSInstance) List(region string) []*InstInfo {
 }
 
 func (i *AWSInstance) GetInstInfo(region string, instance string) *InstInfo {
+	if _, OK := i.data[region]; !OK {
+		return nil
+	}
+
 	return i.data[region][instance]
 }
 
