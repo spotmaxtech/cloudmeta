@@ -3,6 +3,7 @@ package cloudmeta
 import (
 	"fmt"
 	"github.com/spotmaxtech/gokit"
+	"sync"
 )
 
 type DbSet struct {
@@ -95,13 +96,15 @@ func newAliDbSet() *DbSet {
 type MetaDb struct {
 	consul     *gokit.Consul
 	identifier CloudIdentifier
-	// TODO: add lock for db set
-	set *DbSet
+	mutex      *sync.RWMutex
+	set        *DbSet
 }
 
 func NewMetaDb(identifier CloudIdentifier, addr string) (*MetaDb, error) {
 	db := &MetaDb{
-		consul: gokit.NewConsul(addr),
+		consul:     gokit.NewConsul(addr),
+		identifier: identifier,
+		mutex:      new(sync.RWMutex),
 	}
 	switch identifier {
 	case AWS:
@@ -117,29 +120,41 @@ func NewMetaDb(identifier CloudIdentifier, addr string) (*MetaDb, error) {
 	return db, nil
 }
 
-// TODO: here will take much copy??
 func (m *MetaDb) Region() Region {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
 	return m.set.Region
 }
 
 func (m *MetaDb) Instance() Instance {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
 	return m.set.Instance
 }
 
 func (m *MetaDb) Interrupt() Interrupt {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
 	return m.set.Interrupt
 }
 
 func (m *MetaDb) ODPrice() ODPrice {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
 	return m.set.ODPrice
 }
 
 func (m *MetaDb) SpotPrice() SpotPrice {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
 	return m.set.SpotPrice
 }
 
 // update new meta version
 func (m *MetaDb) Update() error {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
 	var set *DbSet
 	switch m.identifier {
 	case AWS:

@@ -30,5 +30,8 @@ func TestMetaDb_Update(t *testing.T) {
 		meta, err := NewMetaDb(AWS, TestConsulAddress)
 		So(err, ShouldBeNil)
 		So(meta.Update(), ShouldBeNil)
+		So(meta.Update(), ShouldBeNil)
+		So(meta.Update(), ShouldBeNil)
+		So(meta.Region().GetRegionInfo("us-east-1").Name, ShouldEqual, "us-east-1")
 	})
 }
