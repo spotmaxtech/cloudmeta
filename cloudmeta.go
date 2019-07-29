@@ -72,7 +72,6 @@ func (s *DbSet) basicConsistent() error {
 			if spotPrice := s.SpotPrice.GetPrice(region.Name, inst.Name); spotPrice == nil {
 				return fmt.Errorf("spot price info empty for %s - %s", region.Name, inst.Name)
 			}
-
 		}
 	}
 	return nil

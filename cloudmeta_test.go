@@ -12,7 +12,7 @@ func TestDbSet_Consistent(t *testing.T) {
 		set := newAWSDbSet()
 		err := set.fetch(consul)
 		So(err, ShouldBeNil)
-		So(set.consistent(), ShouldBeTrue)
+		So(set.consistent(), ShouldBeNil)
 	})
 }
 
