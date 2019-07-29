@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	log "github.com/sirupsen/logrus"
 	"github.com/spotmaxtech/cloudmeta"
 	"github.com/spotmaxtech/gokit"
 )
@@ -42,12 +44,38 @@ func main() {
 		panic(err)
 	}
 
-	// initial spot inst
-	spotInst := cloudmeta.NewAWSInstance(InstanceKey)
-	if err := spotInst.Fetch(consul); err != nil {
+	// initial spot inst map
+	spotInstMap := make(map[string]map[string]*cloudmeta.InstInfo)
+	for region := range metaRegion.Keys().Iter() {
+		r := region.(string)
+		if _, OK := spotInstMap[r]; !OK {
+			spotInstMap[r] = make(map[string]*cloudmeta.InstInfo)
+		}
+		for inst := range metaInst.Keys(r).Iter() {
+			i := inst.(string)
+			price := metaSpot.GetPrice(r, i);
+			if price == nil {
+				log.Warnf("no spot price found, %s - %s", r, i)
+			}
+			inter := metaInter.GetInterruptInfo(r, i);
+			if inter == nil {
+				log.Warnf("no interrupt info found, %s - %s", r, i)
+			}
+
+			if price == nil || inter == nil {
+				continue
+			}
+
+			spotInstMap[r][i] = metaInst.GetInstInfo(r, i)
+		}
+	}
+
+	bytes, err := json.MarshalIndent(spotInstMap, "", "    ")
+	if err != nil {
 		panic(err)
 	}
 
-
-
+	if err := consul.PutKey(SpotInstanceKey, bytes); err != nil {
+		panic(err)
+	}
 }
