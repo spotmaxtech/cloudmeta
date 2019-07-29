@@ -7,11 +7,12 @@ import (
 )
 
 type DbSet struct {
-	Region    Region
-	Instance  Instance
-	Interrupt Interrupt
-	ODPrice   ODPrice
-	SpotPrice SpotPrice
+	Region       Region
+	Instance     Instance
+	SpotInstance Instance
+	Interrupt    Interrupt
+	ODPrice      ODPrice
+	SpotPrice    SpotPrice
 }
 
 // fetch all the meta data
@@ -20,6 +21,9 @@ func (s *DbSet) fetch(consul *gokit.Consul) error {
 		return err
 	}
 	if err := s.Instance.Fetch(consul); err != nil {
+		return err
+	}
+	if err := s.SpotInstance.Fetch(consul); err != nil {
 		return err
 	}
 	if err := s.Interrupt.Fetch(consul); err != nil {
@@ -63,12 +67,19 @@ func (s *DbSet) basicConsistent() error {
 	for _, region := range s.Region.List() {
 		instances := s.Instance.List(region.Name)
 		for _, inst := range instances {
-			if info := s.Interrupt.GetInterruptInfo(region.Name, inst.Name); info == nil {
-				return fmt.Errorf("interrupt info empty for %s - %s", region.Name, inst.Name)
-			}
 			if odPrice := s.ODPrice.GetPrice(region.Name, inst.Name); odPrice < 0.0001 {
 				return fmt.Errorf("od price info empty for %s - %s", region.Name, inst.Name)
 			}
+
+			// TODO: logging here?
+			if spot := s.SpotInstance.GetInstInfo(region.Name, inst.Name); spot == nil {
+				continue
+			}
+
+			if info := s.Interrupt.GetInterruptInfo(region.Name, inst.Name); info == nil {
+				return fmt.Errorf("interrupt info empty for %s - %s", region.Name, inst.Name)
+			}
+
 			if spotPrice := s.SpotPrice.GetPrice(region.Name, inst.Name); spotPrice == nil {
 				return fmt.Errorf("spot price info empty for %s - %s", region.Name, inst.Name)
 			}
@@ -80,16 +91,18 @@ func (s *DbSet) basicConsistent() error {
 func newAWSDbSet() *DbSet {
 	region := NewAWSRegion(ConsulRegionKey)
 	instance := NewAWSInstance(ConsulInstanceKey)
+	spotInstance := NewAWSInstance(ConsulSpotInstanceKey)
 	interrupt := NewAWSInterrupt(ConsulInterruptRateKey)
 	odPrice := NewAWSOdPrice(ConsulOdPriceKey)
 	spotPrice := NewAWSSpotPrice(ConsulSpotPriceKey)
 
 	set := &DbSet{
-		Region:    region,
-		Instance:  instance,
-		Interrupt: interrupt,
-		ODPrice:   odPrice,
-		SpotPrice: spotPrice,
+		Region:       region,
+		Instance:     instance,
+		SpotInstance: spotInstance,
+		Interrupt:    interrupt,
+		ODPrice:      odPrice,
+		SpotPrice:    spotPrice,
 	}
 	return set
 }
@@ -137,6 +150,12 @@ func (m *MetaDb) Instance() Instance {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	return m.set.Instance
+}
+
+func (m *MetaDb) SpotInstance() Instance {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+	return m.set.SpotInstance
 }
 
 func (m *MetaDb) Interrupt() Interrupt {
