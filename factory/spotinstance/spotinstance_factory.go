@@ -53,11 +53,11 @@ func main() {
 		}
 		for inst := range metaInst.Keys(r).Iter() {
 			i := inst.(string)
-			price := metaSpot.GetPrice(r, i);
+			price := metaSpot.GetPrice(r, i)
 			if price == nil {
 				log.Warnf("no spot price found, %s - %s", r, i)
 			}
-			inter := metaInter.GetInterruptInfo(r, i);
+			inter := metaInter.GetInterruptInfo(r, i)
 			if inter == nil {
 				log.Warnf("no interrupt info found, %s - %s", r, i)
 			}

@@ -200,3 +200,11 @@ func (m *MetaDb) Update() error {
 	m.set = set
 	return nil
 }
+
+// test ok or not
+func (m *MetaDb) OK() bool {
+	if err := m.set.consistent(); err != nil {
+		return false
+	}
+	return true
+}
