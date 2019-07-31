@@ -9,5 +9,9 @@ func TestDefaultAWSMetaDb(t *testing.T) {
 	Convey("test", t, func() {
 		meta := DefaultAWSMetaDb()
 		So(meta.OK(), ShouldBeTrue)
+		meta = DefaultAWSMetaDb()
+		meta = DefaultAWSMetaDb()
+		meta = DefaultAWSMetaDb()
+		meta = DefaultAWSMetaDb()
 	})
 }
