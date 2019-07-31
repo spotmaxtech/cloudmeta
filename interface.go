@@ -17,7 +17,7 @@ type Region interface {
 // TODO: make category const?
 type InstInfo struct {
 	Name    string  `json:"name"`
-	Core    int8    `json:"core"`
+	Core    int16   `json:"core"`
 	Mem     float64 `json:"mem"`
 	Storage string  `json:"storage"`
 	Family  string  `json:"family"`
