@@ -120,6 +120,7 @@ func main() {
 			if _, OK := infoMap[*p.InstanceType]; !OK {
 				infoMap[*p.InstanceType] = &SpotPriceInfo{
 					InstType: *p.InstanceType,
+					Avg:      0,
 					AzMap:    make(map[string]float32),
 				}
 			}
@@ -128,6 +129,18 @@ func main() {
 				panic(err)
 			}
 			infoMap[*p.InstanceType].AzMap[*p.AvailabilityZone] = float32(price)
+		}
+
+		// calculate avg
+		for k, v := range infoMap {
+			var sum float32
+			var count int
+			for _, p := range v.AzMap {
+				sum += p
+				count++
+			}
+			avg := sum / float32(count)
+			infoMap[k].Avg = avg
 		}
 		spotPrice.data[region.(string)] = infoMap
 	}
