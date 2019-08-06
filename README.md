@@ -11,15 +11,6 @@ If you are writing some automation code with aws/aliyun, I think you can get som
 1. aws
 2. aliyun
 
-# Meta data coverage
-1. instance types
-2. pricing, on-demand, spot price
-3. spot interrupt advisor
-4. regions
-
-# factory
-create and update meta data factory tools
-
 # Usage 
 
 ```bash
