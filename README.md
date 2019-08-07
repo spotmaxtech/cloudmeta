@@ -1,6 +1,8 @@
 # Cloudmeta
 A cloud meta data utility.
-![](assets/cloudmeta_logo.png?width=200)
+<p align="center">
+<img width="400" src="https://raw.githubusercontent.com/spotmaxtech/cloudmeta/master/assets/cloudmeta_logo.png">
+</p>
 
 # Why cloudmeta?
 With it, you can get popular cloud meta data, such as aws instance info,
