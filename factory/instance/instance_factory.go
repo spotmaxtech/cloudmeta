@@ -154,7 +154,7 @@ func (o *InstUtil) FetchInstance(region string, family string) []*cloudmeta.Inst
 		}
 		inst := &cloudmeta.InstInfo{
 			Name:    product.InstanceType,
-			Core:    int8(core),
+			Core:    int16(core),
 			Mem:     float64(mem),
 			Storage: product.Storage,
 			Family:  product.InstanceFamily,
