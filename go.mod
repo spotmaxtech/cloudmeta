@@ -7,5 +7,5 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/smartystreets/goconvey v0.0.0-20190710185942-9d28bd7c0945
 	github.com/spotmaxtech/cloudconnections v0.1.2
-	github.com/spotmaxtech/gokit v0.1.2
+	github.com/spotmaxtech/gokit v1.0.0
 )
