@@ -37,6 +37,9 @@ func main() {
 	data["eu-central-1"] = &MsData{
 		Text: "EU (Frankfurt)",
 	}
+	data["eu-west-3"] = &MsData{
+		Text: "EU (Paris)",
+	}
 
 	bytes, err := json.MarshalIndent(data, "", "    ")
 	if err != nil {
