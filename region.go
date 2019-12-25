@@ -24,6 +24,7 @@ func (r *AWSRegion) Fetch(consul *gokit.Consul) error {
 
 	type MsData struct {
 		Text string `json:"text"`
+		Zones []string `json:"zones"`
 	}
 	var tempData map[string]*MsData
 	if err = json.Unmarshal(value, &tempData); err != nil {
@@ -34,6 +35,7 @@ func (r *AWSRegion) Fetch(consul *gokit.Consul) error {
 		data[k] = &RegionInfo{
 			Name: k,
 			Text: v.Text,
+			Zones:v.Zones,
 		}
 	}
 	r.data = data
