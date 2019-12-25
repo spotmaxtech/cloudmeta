@@ -1,23 +1,33 @@
 package main
 
-import "testing"
+import (
+	. "github.com/smartystreets/goconvey/convey"
+	connections "github.com/spotmaxtech/cloudconnections"
+	"testing"
+)
 
 func Test_validInstance(t *testing.T) {
-	type args struct {
-		inst InstanceProduct
-	}
-	tests := []struct {
-		name string
-		args args
-		want bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := validInstance(tt.args.inst); got != tt.want {
-				t.Errorf("validInstance() = %v, want %v", got, tt.want)
+	Convey("test", t, func() {
+		var instances []string
+		var inst1, inst2, inst3, inst4, inst5 string
+		inst1 = "g5se.xlarge"
+		inst2 = "sn2ne.large"
+		inst3 = "c6.large"
+		inst4 = "re4e.40xlarge"
+		inst5 = "d1ne.2xlarge"
+		instances = append(instances, inst1, inst2, inst3, inst4, inst5)
+		for i, v := range instances {
+			if i !=4 {
+				So(validInstance(v), ShouldBeTrue)
+			} else {
+				So(validInstance(v), ShouldBeFalse)
 			}
-		})
-	}
+		}
+	})
+}
+
+func TestInstUtil_FetchInstance(t *testing.T) {
+	conn := *connections.NewAli("cn-hangzhou","","")
+	util := InstUtil{Conn:&conn}
+	util.FetchInstance("cn-hongkong","cn-hongkong-b")
 }
