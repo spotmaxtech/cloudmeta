@@ -6,16 +6,16 @@ import (
 	"github.com/spotmaxtech/gokit"
 )
 
-type AWSRegionData struct {
+type CommonRegionData struct {
 	data map[string]*RegionInfo
 }
 
-type AWSRegion struct {
+type CommonRegion struct {
 	key string
-	AWSRegionData
+	CommonRegionData
 }
 
-func (r *AWSRegion) Fetch(consul *gokit.Consul) error {
+func (r *CommonRegion) Fetch(consul *gokit.Consul) error {
 	data := make(map[string]*RegionInfo)
 	value, err := consul.GetKey(r.key)
 	if err != nil {
@@ -42,7 +42,7 @@ func (r *AWSRegion) Fetch(consul *gokit.Consul) error {
 	return nil
 }
 
-func (r *AWSRegion) List() []*RegionInfo {
+func (r *CommonRegion) List() []*RegionInfo {
 	var values []*RegionInfo
 	for _, v := range r.data {
 		values = append(values, v)
@@ -50,7 +50,7 @@ func (r *AWSRegion) List() []*RegionInfo {
 	return values
 }
 
-func (r *AWSRegion) Keys() gokit.Set {
+func (r *CommonRegion) Keys() gokit.Set {
 	keys := gokit.NewSet()
 	for k := range r.data {
 		keys.Add(k)
@@ -58,12 +58,12 @@ func (r *AWSRegion) Keys() gokit.Set {
 	return keys
 }
 
-func (r *AWSRegion) GetRegionInfo(name string) *RegionInfo {
+func (r *CommonRegion) GetRegionInfo(name string) *RegionInfo {
 	return r.data[name]
 }
 
-func (r *AWSRegion) Filter(list []*string) *AWSRegionData {
-	var FilterData AWSRegionData
+func (r *CommonRegion) Filter(list []*string) *CommonRegionData {
+	var FilterData CommonRegionData
 	if len(list) <= 0 {
 		FilterData.data = r.data
 		return &FilterData
@@ -82,9 +82,9 @@ func (r *AWSRegion) Filter(list []*string) *AWSRegionData {
 type AliRegion struct {
 }
 
-func NewAWSRegion(key string) *AWSRegion {
-	aws := AWSRegion{
+func NewCommonRegion(key string) *CommonRegion {
+	region := CommonRegion{
 		key: key,
 	}
-	return &aws
+	return &region
 }

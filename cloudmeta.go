@@ -89,7 +89,7 @@ func (s *DbSet) basicConsistent() error {
 }
 
 func newAWSDbSet() *DbSet {
-	region := NewAWSRegion(ConsulRegionKey)
+	region := NewCommonRegion(ConsulRegionKey)
 	instance := NewAWSInstance(ConsulInstanceKey)
 	spotInstance := NewAWSInstance(ConsulSpotInstanceKey)
 	interrupt := NewAWSInterrupt(ConsulInterruptRateKey)

@@ -172,7 +172,7 @@ func main() {
 	consul := gokit.NewConsul(ConsulAddr)
 
 	// region
-	metaRegion := cloudmeta.NewAWSRegion(RegionKey)
+	metaRegion := cloudmeta.NewCommonRegion(RegionKey)
 	if err := metaRegion.Fetch(consul); err != nil {
 		panic(err)
 	}
