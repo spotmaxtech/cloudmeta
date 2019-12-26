@@ -51,10 +51,10 @@ func main() {
 	data := make(map[string]*MsData)
 	conn := *connections.NewAli("cn-hangzhou","","")
 	r := Region{Conn:&conn}
-	//data["cn-beijing"] = &MsData{
-	//	Text: "China (Beijing)",
-	//	Zones: r.getAvailableZones("cn-beijing"),
-	//}
+	data["cn-beijing"] = &MsData{
+		Text: "China (Beijing)",
+		Zones: r.getAvailableZones("cn-beijing"),
+	}
 	data["cn-hangzhou"] = &MsData{
 		Text: "China (Hangzhou)",
 		Zones: r.getAvailableZones("cn-hangzhou"),
