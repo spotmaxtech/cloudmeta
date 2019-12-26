@@ -11,16 +11,16 @@ type SpotPriceInfo struct {
 	AzMap        map[string]float64 `json:"az_map"`
 }
 
-type AWSSpotPriceData struct {
+type CommonSpotPriceData struct {
 	data map[string]map[string]*SpotPriceInfo
 }
 
-type AWSSpotPrice struct {
+type CommonSpotPrice struct {
 	key string
-	AWSSpotPriceData
+	CommonSpotPriceData
 }
 
-func (i *AWSSpotPrice) Fetch(consul *gokit.Consul) error {
+func (i *CommonSpotPrice) Fetch(consul *gokit.Consul) error {
 	value, err := consul.GetKey(i.key)
 	if err != nil {
 		return err
@@ -35,7 +35,7 @@ func (i *AWSSpotPrice) Fetch(consul *gokit.Consul) error {
 	return nil
 }
 
-func (i *AWSSpotPrice) List(region string) []*SpotPriceInfo {
+func (i *CommonSpotPrice) List(region string) []*SpotPriceInfo {
 	var values []*SpotPriceInfo
 	for _, v := range i.data[region] {
 		values = append(values, v)
@@ -43,7 +43,7 @@ func (i *AWSSpotPrice) List(region string) []*SpotPriceInfo {
 	return values
 }
 
-func (i *AWSSpotPrice) GetPrice(region string, instance string) *SpotPriceInfo {
+func (i *CommonSpotPrice) GetPrice(region string, instance string) *SpotPriceInfo {
 	if _, OK := i.data[region]; !OK {
 		return nil
 	}
@@ -51,8 +51,8 @@ func (i *AWSSpotPrice) GetPrice(region string, instance string) *SpotPriceInfo {
 	return i.data[region][instance]
 }
 
-func (i *AWSSpotPrice) Filter(list []*FilterType) *AWSSpotPriceData {
-	var FilterData AWSSpotPriceData
+func (i *CommonSpotPrice) Filter(list []*FilterType) *CommonSpotPriceData {
+	var FilterData CommonSpotPriceData
 	if len(list) <= 0 {
 		FilterData.data = i.data
 		return &FilterData
@@ -78,9 +78,9 @@ func (i *AWSSpotPrice) Filter(list []*FilterType) *AWSSpotPriceData {
 	return &FilterData
 }
 
-func NewAWSSpotPrice(key string) *AWSSpotPrice {
-	aws := AWSSpotPrice{
+func NewCommonSpotPrice(key string) *CommonSpotPrice {
+	price := CommonSpotPrice{
 		key: key,
 	}
-	return &aws
+	return &price
 }

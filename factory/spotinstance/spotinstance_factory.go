@@ -39,7 +39,7 @@ func main() {
 	}
 
 	// spot price
-	metaSpot := cloudmeta.NewAWSSpotPrice(SpotPriceKey)
+	metaSpot := cloudmeta.NewCommonSpotPrice(SpotPriceKey)
 	if err := metaSpot.Fetch(consul); err != nil {
 		panic(err)
 	}
