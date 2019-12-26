@@ -80,10 +80,6 @@ func (i *AWSInstance) Filter(list []*FilterType) *AWSInstanceData {
 	return &FilterData
 }
 
-// TODO: implement aliyun
-type AliInstance struct {
-}
-
 func NewAWSInstance(key string) *AWSInstance {
 	aws := AWSInstance{
 		key: key,
@@ -103,4 +99,45 @@ func NewAWSInstance(key string) *AWSInstance {
 		aws.data["us-east-1"][v.Name] = v
 	}*/
 	return &aws
+}
+
+
+type AliInstanceData struct {
+	//region:zone:instancetype
+	data map[string]map[string]map[string]*InstInfo
+}
+
+type AliInstance struct {
+	key string
+	AliInstanceData
+}
+
+func NewAliInstance(key string) *AliInstance {
+	aliinst := AliInstance{
+		key: key,
+	}
+	return &aliinst
+}
+
+func (i *AliInstance) FetchAli(consul *gokit.Consul) error {
+	value, err := consul.GetKey(i.key)
+	if err != nil {
+		return err
+	}
+	var tempData map[string]map[string]map[string]*InstInfo
+	if err = json.Unmarshal(value, &tempData); err != nil {
+		return err
+	}
+	i.data = tempData
+	return nil
+}
+
+func (i *AliInstance) List(region string) []*InstInfo {
+	var values []*InstInfo
+	for _, zones := range i.data[region] {
+		for _, inst := range zones {
+			values = append(values, inst)
+		}
+	}
+	return values
 }
