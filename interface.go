@@ -35,6 +35,14 @@ type ODPrice interface {
 	GetPrice(region string, instance string) float64
 }
 
+type ODPriceAli struct {
+	InstType string             `json:"instance_type"`
+	OriginalPrice float64       `json:"original_price"`
+	TradePrice float64          `json:"trade_price"`
+	DiscountPrice float64       `json:"discount_price"`
+	Description string          `json:"description"`
+}
+
 type SpotPrice interface {
 	Fetch(consul *gokit.Consul) error
 	GetPrice(region string, instance string) *SpotPriceInfo

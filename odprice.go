@@ -86,3 +86,34 @@ func NewAWSOdPrice(key string) *AWSOdPrice {
 	}
 	return &aws
 }
+
+func NewAliOdPrice(key string) *AliOdPrice {
+	aliodp := AliOdPrice{
+		key: key,
+	}
+	return &aliodp
+}
+
+type AliOdPriceData struct {
+	data map[string]map[string]*ODPriceAli
+}
+
+type AliOdPrice struct {
+	key string
+	AliOdPriceData
+}
+
+func (i *AliOdPrice) FetchAli(consul *gokit.Consul) error {
+	value, err := consul.GetKey(i.key)
+	if err != nil {
+		return err
+	}
+
+	var tempData map[string]map[string]*ODPriceAli
+	if err = json.Unmarshal(value, &tempData); err != nil {
+		return err
+	}
+
+	i.data = tempData
+	return nil
+}

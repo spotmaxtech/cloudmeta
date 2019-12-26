@@ -94,7 +94,7 @@ func newAWSDbSet() *DbSet {
 	spotInstance := NewAWSInstance(ConsulSpotInstanceKey)
 	interrupt := NewAWSInterrupt(ConsulInterruptRateKey)
 	odPrice := NewAWSOdPrice(ConsulOdPriceKey)
-	spotPrice := NewAWSSpotPrice(ConsulSpotPriceKey)
+	spotPrice := NewCommonSpotPrice(ConsulSpotPriceKey)
 
 	set := &DbSet{
 		Region:       region,
