@@ -87,39 +87,33 @@ func validInstance(insttype string) bool {
 func main() {
 	logrus.SetLevel(logrus.DebugLevel)
 	consul := gokit.NewConsul(ConsulAddr)
-	metaRegion := cloudmeta.NewAWSRegion(RegionKey)
+	metaRegion := cloudmeta.NewCommonRegion(RegionKey)
 	if err := metaRegion.Fetch(consul); err != nil {
 		panic(err)
 	}
-
 	conn := *connections.NewAli("cn-hangzhou","","")
 	util := InstUtil{
 		Conn: &conn,
 	}
-	instMap := make(map[string]map[string][]map[string]*cloudmeta.InstInfo)
+	instMap := make(map[string]map[string]map[string]*cloudmeta.InstInfo)
 
 	for _, region := range metaRegion.List() {
 		if _, OK := instMap[region.Name]; !OK {
-			instMap[region.Name] = make(map[string][]map[string]*cloudmeta.InstInfo)
-			var instmap = make(map[string][]map[string]*cloudmeta.InstInfo)
+			instMap[region.Name] = make(map[string]map[string]*cloudmeta.InstInfo)
 			for _, z := range region.Zones {
-				logrus.Debugf("fetch region %s : zone %s instances", region.Text, z)
 				instances := util.FetchInstance(region.Name, z)
+				instMap[region.Name][z] = make(map[string]*cloudmeta.InstInfo)
+				logrus.Debugf("fetch region %s : zone %s %d instances", region.Text, z, len(instances))
 				for _, ins := range instances {
-					inst := make(map[string]*cloudmeta.InstInfo)
-					inst[ins.Name] = ins
-					instmap[z] = append(instmap[z], inst)
-					instMap[region.Name] = instmap
+					instMap[region.Name][z][ins.Name] = ins
 				}
 			}
 		}
 	}
-
 	bytes, err := json.MarshalIndent(instMap, "", "    ")
 	if err != nil {
 		panic(err)
 	}
-
 	if err := consul.PutKey(InstanceKey, bytes); err != nil {
 		panic(err)
 	}
