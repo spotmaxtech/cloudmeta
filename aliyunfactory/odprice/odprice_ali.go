@@ -21,19 +21,11 @@ type ODPriceUtil struct {
 	Conn *connections.ConnectionsAli
 }
 
-type ODPriceInfo struct {
-	InstType string             `json:"instance_type"`
-	OriginalPrice float64       `json:"original_price"`
-	TradePrice float64          `json:"trade_price"`
-	DiscountPrice float64       `json:"discount_price"`
-	Description string          `json:"description"`
-}
-
 type ODPrice struct {
-	data map[string]map[string]*ODPriceInfo
+	data map[string]map[string]*cloudmeta.ODPriceAli
 }
 
-func (odp *ODPriceUtil) FetchODPrice (regionId string, inst string) *ODPriceInfo {
+func (odp *ODPriceUtil) FetchODPrice (regionId string, inst string) *cloudmeta.ODPriceAli {
 	request := ecs.CreateDescribePriceRequest()
 	request.Scheme = "https"
 	request.ResourceType = "instance"
@@ -50,7 +42,7 @@ func (odp *ODPriceUtil) FetchODPrice (regionId string, inst string) *ODPriceInfo
 		} else {
 			desc = "The specified instanceType exceeds the maximum limit for the POSTPaid instances."
 		}
-		opi := ODPriceInfo{
+		opi := cloudmeta.ODPriceAli{
 			InstType:      inst,
 			OriginalPrice: response.PriceInfo.Price.OriginalPrice,
 			TradePrice:    response.PriceInfo.Price.TradePrice,
@@ -76,10 +68,10 @@ func main()  {
 	conn := *connections.NewAli("cn-hangzhou","","")
 	odpu := ODPriceUtil{Conn:&conn}
 	odPrice := ODPrice{
-		data: make(map[string]map[string]*ODPriceInfo),
+		data: make(map[string]map[string]*cloudmeta.ODPriceAli),
 	}
 	for _, region := range metaRegion.List() {
-		odPrice.data[region.Name] = make(map[string]*ODPriceInfo)
+		odPrice.data[region.Name] = make(map[string]*cloudmeta.ODPriceAli)
 		for _, inst := range metaInstances.List(region.Name) {
 			odPriceInfo := odpu.FetchODPrice(region.Name, inst.Name)
 			if odPriceInfo != nil {
