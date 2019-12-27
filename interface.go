@@ -63,3 +63,14 @@ type FilterType struct {
 	region       string
 	instanceType []string
 }
+
+type SpotInstanceInfoAli struct {
+	InstType string             `json:"instance_type"`
+	Cores int16                `json:"core"`
+	Mem float64                  `json:"memory"`
+	OriginalPrice float64       `json:"original_price"`
+	TradePrice float64          `json:"trade_price"`
+	DiscountPrice float64       `json:"discount_price"`
+	Family string               `json:"family"`
+	Desc string                 `json:"desc"`
+}
