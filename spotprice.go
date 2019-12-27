@@ -11,13 +11,28 @@ type SpotPriceInfo struct {
 	AzMap        map[string]float64 `json:"az_map"`
 }
 
+type SpotPriceInfoAli struct {
+	InstType string             `json:"instance_type"`
+	Avg      float64            `json:"spot_price(avg)"`
+	OriginPrice float64         `json:"origin_price(avg)"`
+}
+
 type CommonSpotPriceData struct {
 	data map[string]map[string]*SpotPriceInfo
+}
+
+type AliSpotPriceData struct {
+	data map[string]map[string]*SpotPriceInfoAli
 }
 
 type CommonSpotPrice struct {
 	key string
 	CommonSpotPriceData
+}
+
+type AliSpotPrice struct {
+	key string
+	AliSpotPriceData
 }
 
 func (i *CommonSpotPrice) Fetch(consul *gokit.Consul) error {
@@ -35,10 +50,33 @@ func (i *CommonSpotPrice) Fetch(consul *gokit.Consul) error {
 	return nil
 }
 
+func (i *AliSpotPrice) FetchAli(consul *gokit.Consul) error {
+	value, err := consul.GetKey(i.key)
+	if err != nil {
+		return err
+	}
+
+	var tempData map[string]map[string]*SpotPriceInfoAli
+	if err = json.Unmarshal(value, &tempData); err != nil {
+		return err
+	}
+
+	i.data = tempData
+	return nil
+}
+
 func (i *CommonSpotPrice) List(region string) []*SpotPriceInfo {
 	var values []*SpotPriceInfo
 	for _, v := range i.data[region] {
 		values = append(values, v)
+	}
+	return values
+}
+
+func (i *AliSpotPrice) ListAli(region string) map[string]*SpotPriceInfoAli {
+	var values = make(map[string]*SpotPriceInfoAli)
+	for key, v := range i.data[region]{
+		values[key] = v
 	}
 	return values
 }
@@ -80,6 +118,13 @@ func (i *CommonSpotPrice) Filter(list []*FilterType) *CommonSpotPriceData {
 
 func NewCommonSpotPrice(key string) *CommonSpotPrice {
 	price := CommonSpotPrice{
+		key: key,
+	}
+	return &price
+}
+
+func NewAliSpotPrice(key string) *AliSpotPrice {
+	price := AliSpotPrice{
 		key: key,
 	}
 	return &price

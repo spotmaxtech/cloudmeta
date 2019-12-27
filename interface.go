@@ -71,6 +71,7 @@ type SpotInstanceInfoAli struct {
 	OriginalPrice float64       `json:"original_price"`
 	TradePrice float64          `json:"trade_price"`
 	DiscountPrice float64       `json:"discount_price"`
+	SpotPrice float64           `json:"spot_price"`
 	Family string               `json:"family"`
 	Desc string                 `json:"desc"`
 }

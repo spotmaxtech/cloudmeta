@@ -23,16 +23,11 @@ type SpotPriceUtil struct {
 	Conn *connections.ConnectionsAli
 }
 
-type SpotPriceInfo struct {
-	InstType string             `json:"instance_type"`
-	Avg      float64            `json:"avg"`
-}
-
 type SpotPrice struct {
-	data map[string]map[string]*SpotPriceInfo
+	data map[string]map[string]*cloudmeta.SpotPriceInfoAli
 }
 
-func (spu *SpotPriceUtil) FetchSpotPrice (regionId string, inst string) *SpotPriceInfo{
+func (spu *SpotPriceUtil) FetchSpotPrice (regionId string, inst string) *cloudmeta.SpotPriceInfoAli{
 	request := ecs.CreateDescribeSpotPriceHistoryRequest()
 	request.Scheme = "https"
 	request.RegionId = regionId
@@ -45,17 +40,21 @@ func (spu *SpotPriceUtil) FetchSpotPrice (regionId string, inst string) *SpotPri
 	}
 	if response != nil {
 		spotPriceType := response.SpotPrices.SpotPriceType
-		sum := float64(0)
+		sumSpotPrice, sumOriginPrice := float64(0),float64(0)
 		for _, v := range spotPriceType {
-			sum = sum + v.SpotPrice
+			sumSpotPrice = sumSpotPrice + v.SpotPrice
+			sumOriginPrice = sumOriginPrice + v.OriginPrice
 		}
 		if len(spotPriceType) != 0 {
-			avg := sum/float64(len(spotPriceType))
+			avgspot := sumSpotPrice/float64(len(spotPriceType))
+			avgorigin := sumOriginPrice/float64(len(spotPriceType))
 			n := math.Pow10(4)
-			spotavg := math.Trunc((avg+0.5/n)*n) / n
-			spotInfo := SpotPriceInfo{
-				InstType: inst,
-				Avg:      spotavg,
+			spotprice := math.Trunc((avgspot+0.5/n)*n) / n
+			originprice := math.Trunc((avgorigin+0.5/n)*n) / n
+			spotInfo := cloudmeta.SpotPriceInfoAli{
+				InstType: 		inst,
+				Avg:      		spotprice,
+				OriginPrice:	originprice,
 			}
 			return &spotInfo
 		}
@@ -77,10 +76,10 @@ func main()  {
 	conn := *connections.NewAli("cn-hangzhou","","")
 	spu := SpotPriceUtil{Conn:&conn}
 	spotPrice := SpotPrice{
-		data: make(map[string]map[string]*SpotPriceInfo),
+		data: make(map[string]map[string]*cloudmeta.SpotPriceInfoAli),
 	}
 	for _, region := range metaRegion.List() {
-		spotPrice.data[region.Name] = make(map[string]*SpotPriceInfo)
+		spotPrice.data[region.Name] = make(map[string]*cloudmeta.SpotPriceInfoAli)
 		for _, inst := range metaInstances.List(region.Name) {
 			spotInfo := spu.FetchSpotPrice(region.Name, inst.Name)
 			if spotInfo != nil {

@@ -14,6 +14,7 @@ const (
 	ConsulAddr  = "consul.spotmaxtech.com"
 	InstanceKey = "cloudmeta/aliyun/instance.json"
 	RegionKey  = "cloudmeta/aliyun/region.json"
+	SpotPriceKey  = "cloudmeta/aliyun/spotprice.json"
 	ODPriceKey  = "cloudmeta/aliyun/odprice.json"
 )
 
@@ -37,14 +38,23 @@ func (odp *ODPriceUtil) FetchODPrice (regionId string, inst string) *cloudmeta.O
 	}
 	if response != nil {
 		var desc string
+		var origin_price float64
 		if response.IsSuccess() {
 			desc = response.PriceInfo.Rules.Rule[0].Description
+			origin_price = response.PriceInfo.Price.DiscountPrice
 		} else {
 			desc = "The specified instanceType exceeds the maximum limit for the POSTPaid instances."
+			metaData := cloudmeta.NewAliSpotPrice(SpotPriceKey)
+			if err := metaData.FetchAli(gokit.NewConsul(ConsulAddr)); err != nil {
+				panic(err)
+			}
+			if _, ok := metaData.ListAli(regionId)[inst]; ok {
+				origin_price = metaData.ListAli(regionId)[inst].OriginPrice
+			}
 		}
 		opi := cloudmeta.ODPriceAli{
 			InstType:      inst,
-			OriginalPrice: response.PriceInfo.Price.OriginalPrice,
+			OriginalPrice: origin_price,
 			TradePrice:    response.PriceInfo.Price.TradePrice,
 			DiscountPrice: response.PriceInfo.Price.DiscountPrice,
 			Description:   desc,

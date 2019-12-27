@@ -31,8 +31,8 @@ func FetchSpotInstance(regionId string) *SpotInstance {
 	if err := metaInstances.FetchAli(consul); err != nil {
 		panic(err)
 	}
-	metaSpotPrice := cloudmeta.NewCommonSpotPrice(SpotPriceKey)
-	if err := metaSpotPrice.Fetch(consul); err != nil {
+	metaSpotPrice := cloudmeta.NewAliSpotPrice(SpotPriceKey)
+	if err := metaSpotPrice.FetchAli(consul); err != nil {
 		panic(err)
 	}
 	metaODPrice := cloudmeta.NewAliOdPrice(ODPriceKey)
@@ -49,13 +49,23 @@ func FetchSpotInstance(regionId string) *SpotInstance {
 				spot.data[region.Name][zone] = make(map[string]*cloudmeta.SpotInstanceInfoAli)
 				for _,ins := range metaInstances.List(region.Name) {
 					logrus.Debugf("spot instance %s", ins.Name)
+					var op,tp,dp,sp float64
+					if _, ok := metaODPrice.ListAli(region.Name)[ins.Name]; ok {
+						op = metaODPrice.ListAli(region.Name)[ins.Name].OriginalPrice
+						tp = metaODPrice.ListAli(region.Name)[ins.Name].TradePrice
+						dp = metaODPrice.ListAli(region.Name)[ins.Name].DiscountPrice
+					}
+					if _, ok := metaSpotPrice.ListAli(region.Name)[ins.Name]; ok {
+						sp = metaSpotPrice.ListAli(region.Name)[ins.Name].Avg
+					}
 					spotali := &cloudmeta.SpotInstanceInfoAli{
 						InstType:      ins.Name,
 						Cores:         ins.Core,
 						Mem:           ins.Mem,
-						OriginalPrice: metaODPrice.ListAli(region.Name)[ins.Name].OriginalPrice,
-						TradePrice:    metaODPrice.ListAli(region.Name)[ins.Name].TradePrice,
-						DiscountPrice: metaODPrice.ListAli(region.Name)[ins.Name].DiscountPrice,
+						OriginalPrice: op,
+						TradePrice:    tp,
+						DiscountPrice: dp,
+						SpotPrice:     sp,
 						Family:        ins.Family,
 						Desc:          metaODPrice.ListAli(region.Name)[ins.Name].Description,
 					}
