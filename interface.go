@@ -75,3 +75,10 @@ type SpotInstanceInfoAli struct {
 	Family string               `json:"family"`
 	Desc string                 `json:"desc"`
 }
+
+type ImageInfoAWS struct {
+	Architecture string             `json:"architecture"`
+	Name string						`json:"name"`
+	ImageId string					`json:"imageId"`
+	CreationDate string				`json:"creationDate"`
+}
