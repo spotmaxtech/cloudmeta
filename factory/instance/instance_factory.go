@@ -39,7 +39,7 @@ type InstanceProduct struct {
 
 func validInstance(inst InstanceProduct) bool {
 	// white filter
-	var valid = regexp.MustCompile(`^[cmrt][3-5][.].+$`)
+	var valid = regexp.MustCompile(`^[cmrt][2-5][.].+$`)
 	if !valid.Match([]byte(inst.InstanceType)) {
 		return false
 	}
