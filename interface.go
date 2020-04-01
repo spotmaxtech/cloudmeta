@@ -1,6 +1,9 @@
 package cloudmeta
 
-import "github.com/spotmaxtech/gokit"
+import (
+	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/spotmaxtech/gokit"
+)
 
 type RegionInfo struct {
 	Name string `json:"name"`
@@ -76,9 +79,10 @@ type SpotInstanceInfoAli struct {
 	Desc string                 `json:"desc"`
 }
 
-type ImageInfoAWS struct {
-	Architecture string             `json:"architecture"`
-	Name string						`json:"name"`
-	ImageId string					`json:"imageId"`
-	CreationDate string				`json:"creationDate"`
+
+//aws Image
+type Image interface {
+	FetchAWSImage(consul *gokit.Consul) error
+	ListImagesByRegion (region string) *map[string]map[string]*ec2.Image
+	ListImagesByRegionAndType (region string, imagetype string) *map[string]*ec2.Image
 }

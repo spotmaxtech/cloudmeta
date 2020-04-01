@@ -12,7 +12,7 @@ import (
 func TestAWSRegion(t *testing.T) {
 	Convey("test use case", t, func() {
 		consul := gokit.NewConsul(TestConsulAddress)
-		region := NewAWSRegion(ConsulRegionKey)
+		region := NewCommonRegion(ConsulRegionKey)
 		err := region.Fetch(consul)
 		So(err, ShouldBeNil)
 		Convey("test use Region", func() {

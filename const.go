@@ -8,6 +8,7 @@ const (
 	ConsulInterruptRateKey = "cloudmeta/aws/interruptrate.json"
 	ConsulSpotPriceKey     = "cloudmeta/aws/spotprice.json"
 	ConsulOdPriceKey       = "cloudmeta/aws/odprice.json"
+	ConsulImageKey         = "cloudmeta/aws/image.json"
 )
 
 type CloudIdentifier int

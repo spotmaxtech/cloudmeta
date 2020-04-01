@@ -99,6 +99,8 @@ func getImageMap(accountId []*string, ownerId []*string) *ImageMap {
 					imageMap.data[region.Name]["SUSE"][*image.Name] = image
 				case strings.Contains(*image.Name, "RHEL"):
 					imageMap.data[region.Name]["Red Hat"][*image.Name] = image
+				default:
+					imageMap.data[region.Name]["Linux"][*image.Name] = image
 				}
 			}
 		}

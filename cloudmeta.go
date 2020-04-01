@@ -13,6 +13,7 @@ type DbSet struct {
 	Interrupt    Interrupt
 	ODPrice      ODPrice
 	SpotPrice    SpotPrice
+	Image        Image
 }
 
 // fetch all the meta data
@@ -34,6 +35,9 @@ func (s *DbSet) fetch(consul *gokit.Consul) error {
 	}
 	if err := s.SpotPrice.Fetch(consul); err != nil {
 		return err
+	}
+	if err := s.Image.FetchAWSImage(consul); err !=nil {
+		panic(err)
 	}
 
 	return nil
@@ -95,6 +99,7 @@ func newAWSDbSet() *DbSet {
 	interrupt := NewAWSInterrupt(ConsulInterruptRateKey)
 	odPrice := NewAWSOdPrice(ConsulOdPriceKey)
 	spotPrice := NewCommonSpotPrice(ConsulSpotPriceKey)
+	image := NewAWSImage(ConsulImageKey)
 
 	set := &DbSet{
 		Region:       region,
@@ -103,6 +108,7 @@ func newAWSDbSet() *DbSet {
 		Interrupt:    interrupt,
 		ODPrice:      odPrice,
 		SpotPrice:    spotPrice,
+		Image:        image,
 	}
 	return set
 }
@@ -174,6 +180,12 @@ func (m *MetaDb) SpotPrice() SpotPrice {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	return m.set.SpotPrice
+}
+
+func (m *MetaDb) Image() Image {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+	return m.set.Image
 }
 
 // update new meta version

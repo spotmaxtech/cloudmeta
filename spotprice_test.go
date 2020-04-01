@@ -11,7 +11,7 @@ import (
 func TestAWSSpotPrice(t *testing.T) {
 	Convey("Test spot price fetch", t, func() {
 		consul := gokit.NewConsul(TestConsulAddress)
-		spotPriceMap := NewAWSSpotPrice(ConsulSpotPriceKey)
+		spotPriceMap := NewCommonSpotPrice(ConsulSpotPriceKey)
 		err := spotPriceMap.Fetch(consul)
 		So(err, ShouldBeNil)
 		Convey("test consul fetch", func() {
