@@ -141,3 +141,16 @@ func (i *AliInstance) List(region string) []*InstInfo {
 	}
 	return values
 }
+
+func (i *AliInstance) ListByZone(region string, zone string) []*InstInfo {
+	var values []*InstInfo
+	for k, insts := range i.data[region] {
+		if k == zone {
+			for _, inst := range insts {
+				values = append(values, inst)
+			}
+		}
+	}
+
+	return values
+}

@@ -79,6 +79,10 @@ type SpotInstanceInfoAli struct {
 	Desc string                 `json:"desc"`
 }
 
+type InterruptInfoAli struct {
+	Interrupt float64 `json:"interrupt_rate"`
+}
+
 
 //aws Image
 type Image interface {

@@ -15,6 +15,7 @@ type SpotPriceInfoAli struct {
 	InstType string             `json:"instance_type"`
 	Avg      float64            `json:"spot_price(avg)"`
 	OriginPrice float64         `json:"origin_price(avg)"`
+	Interrupt float64           `json:"interrupt_rate"`
 }
 
 type CommonSpotPriceData struct {
