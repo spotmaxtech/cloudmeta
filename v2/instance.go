@@ -46,9 +46,11 @@ func (i *AWSInstance) Keys(region string) gokit.Set {
 
 func (i *AWSInstance) List(region string) []*cloudmeta.InstInfo {
 	var values []*cloudmeta.InstInfo
-	// for _, v := range i.data[region] {
-	// 	values = append(values, v)
-	// }
+	for _, fv := range i.data[region] {
+		for _, iv := range fv {
+			values = append(values, iv)
+		}
+	}
 	return values
 }
 

@@ -65,16 +65,16 @@ func regionFactory() error {
 		Text: "EU (Frankfurt)",
 	}
 	data["eu-west-1"] = &MsData{
-		Text: "Europe (Ireland)",
+		Text: "EU (Ireland)",
 	}
 	data["eu-west-2"] = &MsData{
-		Text: "Europe (London)",
+		Text: "EU (London)",
 	}
 	data["eu-west-3"] = &MsData{
 		Text: "EU (Paris)",
 	}
 	data["eu-north-1"] = &MsData{
-		Text: "Europe (Stockholm)",
+		Text: "EU (Stockholm)",
 	}
 
 	// Middle East

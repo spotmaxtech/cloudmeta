@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spotmaxtech/cloudmeta"
 	"github.com/spotmaxtech/gokit"
+	"sync"
 )
 
 type DbSet struct {
@@ -59,4 +60,72 @@ func newAWSDbSet() *DbSet {
 		Instance: instance,
 	}
 	return set
+}
+
+type MetaDb struct {
+	consul     *gokit.Consul
+	identifier CloudIdentifier
+	mutex      *sync.RWMutex
+	set        *DbSet
+}
+
+func NewMetaDb(identifier CloudIdentifier, addr string) (*MetaDb, error) {
+	db := &MetaDb{
+		consul:     gokit.NewConsul(addr),
+		identifier: identifier,
+		mutex:      new(sync.RWMutex),
+	}
+	switch identifier {
+	case AWS:
+		db.set = newAWSDbSet()
+	default:
+		db.set = newAWSDbSet()
+	}
+	if err := db.set.fetch(db.consul); err != nil {
+		return nil, err
+	}
+	return db, nil
+}
+
+func (m *MetaDb) Region() cloudmeta.Region {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+	return m.set.Region
+}
+
+func (m *MetaDb) Instance() *AWSInstance {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+	return m.set.Instance
+}
+
+// update new meta version
+func (m *MetaDb) Update() error {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	var set *DbSet
+	switch m.identifier {
+	case AWS:
+		set = newAWSDbSet()
+	default:
+		set = newAWSDbSet()
+	}
+	if err := set.fetch(m.consul); err != nil {
+		return err
+	}
+	if err := set.consistent(); err != nil {
+		return fmt.Errorf("not consistent db set, %s", err.Error())
+	}
+
+	m.set = set
+	return nil
+}
+
+// test ok or not
+func (m *MetaDb) OK() bool {
+	if err := m.set.consistent(); err != nil {
+		return false
+	}
+	return true
 }

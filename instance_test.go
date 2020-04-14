@@ -2,11 +2,6 @@ package cloudmeta
 
 import (
 	"encoding/json"
-	"fmt"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/pricing"
-	connections "github.com/spotmaxtech/cloudconnections"
-	"log"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -65,60 +60,5 @@ func TestAWSInstance(t *testing.T) {
 			aaJson, _ := json.Marshal(filter.data)
 			t.Logf("%s\n", aaJson)
 		})
-	})
-}
-
-func TestAWS_GetProduct(t *testing.T) {
-	Convey("test use case", t, func() {
-		conn := connections.New("us-east-1")
-		input := &pricing.GetProductsInput{
-			ServiceCode: aws.String("AmazonEC2"),
-			Filters: []*pricing.Filter{
-				{
-					Field: aws.String("Location"),
-					Type:  aws.String("TERM_MATCH"),
-					Value: aws.String("Asia Pacific (Mumbai)"),
-				},
-				{
-					Field: aws.String("OperatingSystem"),
-					Type:  aws.String("TERM_MATCH"),
-					Value: aws.String("Linux"),
-				},
-				{
-					Field: aws.String("InstanceFamily"),
-					Type:  aws.String("TERM_MATCH"),
-					Value: aws.String("GPU instance"),
-				},
-				{
-					Field: aws.String("CapacityStatus"),
-					Type:  aws.String("TERM_MATCH"),
-					Value: aws.String("Used"),
-				},
-				// {
-				// 	Field: aws.String("Operation"),
-				// 	Type:  aws.String("TERM_MATCH"),
-				// 	Value: aws.String("RunInstances"),
-				// },
-				// {
-				// 	Field: aws.String("Tenancy"),
-				// 	Type:  aws.String("TERM_MATCH"),
-				// 	Value: aws.String("Shared"),
-				// },
-				// {
-				// 	Field: aws.String("Storage"),
-				// 	Type:  aws.String("TERM_MATCH"),
-				// 	Value: aws.String("EBS only"),
-				// },
-			},
-			FormatVersion: aws.String("aws_v1"),
-			MaxResults:    aws.Int64(100),
-		}
-
-		result, err := conn.Pricing.GetProducts(input)
-		if err != nil {
-			fmt.Println(err)
-			panic(err)
-		}
-		log.Println(gokit.PrettifyJson(result, true))
 	})
 }
