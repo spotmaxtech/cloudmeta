@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestAWSInstance2(t *testing.T) {
+func TestAWSInstance(t *testing.T) {
 	Convey("test use case", t, func() {
 		consul := gokit.NewConsul(TestConsulAddress)
 		region := cloudmeta.NewCommonRegion(ConsulRegionKey)
@@ -24,5 +24,20 @@ func TestAWSInstance2(t *testing.T) {
 			t.Logf("%s\n", aaJson)
 			// So(instance.data["us-east-1"]["c4.xlarge"].Name, ShouldEqual, "c4.xlarge")
 		})
+	})
+}
+
+func TestAWSInstance_GetRegionInstInfo(t *testing.T) {
+	Convey("test use case", t, func() {
+		consul := gokit.NewConsul(TestConsulAddress)
+		region := cloudmeta.NewCommonRegion(ConsulRegionKey)
+		err := region.Fetch(consul)
+		So(err, ShouldBeNil)
+
+		instance := NewAWSInstance(ConsulInstanceKey, region)
+		err = instance.Fetch(consul)
+		So(err, ShouldBeNil)
+
+		t.Log(gokit.Prettify(instance.GetRegionInstInfo("us-east-1")))
 	})
 }

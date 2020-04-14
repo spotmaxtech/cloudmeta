@@ -8,7 +8,7 @@ import (
 
 type DbSet struct {
 	Region   cloudmeta.Region
-	Instance cloudmeta.Instance
+	Instance *AWSInstance
 }
 
 // fetch all the meta data

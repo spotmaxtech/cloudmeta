@@ -66,6 +66,14 @@ func (i *AWSInstance) GetInstInfo(region string, instance string) *cloudmeta.Ins
 	return nil
 }
 
+func (i *AWSInstance) GetRegionInstInfo(region string) map[string]map[string]*cloudmeta.InstInfo {
+	if _, OK := i.data[region]; !OK {
+		return nil
+	}
+
+	return i.data[region]
+}
+
 // func (i *AWSInstance2) Filter(list []*FilterType) *AWSInstanceData {
 // 	var FilterData AWSInstanceData
 // 	if len(list) <= 0 {
