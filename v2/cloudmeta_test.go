@@ -40,9 +40,9 @@ func TestMetaDb_DefaultDb(t *testing.T) {
 	Convey("test instance", t, func() {
 		meta := DefaultAWSMetaDb()
 		So(meta.Region().GetRegionInfo("us-east-1").Name, ShouldEqual, "us-east-1")
-		t.Log(gokit.Prettify(meta.Region().GetRegionInfo("us-east-1")))
-
-		t.Log(gokit.Prettify(meta.Region().List()))
+		// t.Log(gokit.Prettify(meta.Region().GetRegionInfo("us-east-1")))
+		// t.Log(gokit.Prettify(meta.Region().List()))
 		// t.Log(gokit.Prettify(meta.Instance().List("us-west-2")))
+		t.Log(gokit.PrettifyJson(meta.Instance().GetRegionInstInfo("us-east-1"), true))
 	})
 }
