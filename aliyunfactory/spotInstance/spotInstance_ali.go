@@ -9,11 +9,11 @@ import (
 )
 
 const (
-	ConsulAddr  = "consul.spotmaxtech.com"
-	InstanceKey = "cloudmeta/aliyun/instance.json"
-	RegionKey  = "cloudmeta/aliyun/region.json"
-	SpotPriceKey  = "cloudmeta/aliyun/spotprice.json"
-	ODPriceKey  = "cloudmeta/aliyun/odprice.json"
+	ConsulAddr   = "consul.spotmaxtech.com"
+	InstanceKey  = "cloudmeta/aliyun/instance.json"
+	RegionKey    = "cloudmeta/aliyun/region.json"
+	SpotPriceKey = "cloudmeta/aliyun/spotprice.json"
+	ODPriceKey   = "cloudmeta/aliyun/odprice.json"
 )
 
 type SpotInstance struct {
@@ -47,9 +47,9 @@ func FetchSpotInstance(regionId string) *SpotInstance {
 			spot.data[region.Name] = make(map[string]map[string]*cloudmeta.SpotInstanceInfoAli)
 			for _, zone := range region.Zones {
 				spot.data[region.Name][zone] = make(map[string]*cloudmeta.SpotInstanceInfoAli)
-				for _,ins := range metaInstances.List(region.Name) {
+				for _, ins := range metaInstances.List(region.Name) {
 					logrus.Debugf("spot instance %s", ins.Name)
-					var op,tp,dp,sp float64
+					var op, tp, dp, sp float64
 					if _, ok := metaODPrice.ListAli(region.Name)[ins.Name]; ok {
 						op = metaODPrice.ListAli(region.Name)[ins.Name].OriginalPrice
 						tp = metaODPrice.ListAli(region.Name)[ins.Name].TradePrice
@@ -77,7 +77,7 @@ func FetchSpotInstance(regionId string) *SpotInstance {
 	return &spot
 }
 
-func main(){
+func main() {
 	consul := gokit.NewConsul(ConsulAddr)
 	metaRegion := cloudmeta.NewCommonRegion(RegionKey)
 	if err := metaRegion.Fetch(consul); err != nil {
@@ -89,7 +89,7 @@ func main(){
 		if err != nil {
 			panic(err)
 		}
-		k := fmt.Sprintf("cloudmeta/aliyun/spotInstances/%s/spotinstance.json",region.Name)
+		k := fmt.Sprintf("cloudmeta/aliyun/spotInstances/%s/spotinstance.json", region.Name)
 		if err := consul.PutKey(k, bytes); err != nil {
 			panic(err)
 		}

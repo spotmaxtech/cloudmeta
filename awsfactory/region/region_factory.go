@@ -108,5 +108,3 @@ var FactoryCmd = &cobra.Command{
 		return regionFactory()
 	},
 }
-
-

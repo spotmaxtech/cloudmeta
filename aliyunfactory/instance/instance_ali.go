@@ -16,7 +16,7 @@ import (
 const (
 	ConsulAddr  = "consul.spotmaxtech.com"
 	InstanceKey = "cloudmeta/aliyun/instance.json"
-	RegionKey  = "cloudmeta/aliyun/region.json"
+	RegionKey   = "cloudmeta/aliyun/region.json"
 )
 
 type InstUtil struct {
@@ -42,7 +42,7 @@ func (util *InstUtil) FetchInstance(regionId string, zoneId string) []*cloudmeta
 	}
 
 	var instances []*cloudmeta.InstInfo
-	if response != nil{
+	if response != nil {
 		if len(response.AvailableZones.AvailableZone) != 0 {
 			resources := response.
 				AvailableZones.
@@ -52,8 +52,8 @@ func (util *InstUtil) FetchInstance(regionId string, zoneId string) []*cloudmeta
 				SupportedResources.
 				SupportedResource
 			for _, v := range resources {
-				insttype := strings.ReplaceAll(v.Value,"ecs.","")
-				if v.Status == "Available" && v.StatusCategory == "WithStock" && validInstance(insttype){
+				insttype := strings.ReplaceAll(v.Value, "ecs.", "")
+				if v.Status == "Available" && v.StatusCategory == "WithStock" && validInstance(insttype) {
 					if responseInst != nil {
 						instancetype := responseInst.InstanceTypes.InstanceType
 						for _, val := range instancetype {
@@ -91,7 +91,7 @@ func main() {
 	if err := metaRegion.Fetch(consul); err != nil {
 		panic(err)
 	}
-	conn := *connections.NewAli("cn-hangzhou","","")
+	conn := *connections.NewAli("cn-hangzhou", "", "")
 	util := InstUtil{
 		Conn: &conn,
 	}

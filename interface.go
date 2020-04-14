@@ -84,10 +84,9 @@ type InterruptInfoAli struct {
 	Interrupt float64 `json:"interrupt_rate"`
 }
 
-
-//aws Image
+// aws Image
 type Image interface {
 	FetchAWSImage(consul *gokit.Consul) error
-	ListImagesByRegion (region string) *map[string]map[string]*ec2.Image
-	ListImagesByRegionAndType (region string, imagetype string) *map[string]*ec2.Image
+	ListImagesByRegion(region string) *map[string]map[string]*ec2.Image
+	ListImagesByRegionAndType(region string, imagetype string) *map[string]*ec2.Image
 }

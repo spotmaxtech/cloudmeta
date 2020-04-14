@@ -119,6 +119,6 @@ func TestAWS_GetProduct(t *testing.T) {
 			fmt.Println(err)
 			panic(err)
 		}
-		log.Println(gokit.PrettifyJson(result,true))
+		log.Println(gokit.PrettifyJson(result, true))
 	})
 }

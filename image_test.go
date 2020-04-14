@@ -8,9 +8,9 @@ import (
 )
 
 const (
-	ConsulAddr  = "consul.spotmaxtech.com"
-	RegionKey   = "cloudmeta/aws/region.json"
-	ImageKey 	= "cloudmeta/aws/image.json"
+	ConsulAddr = "consul.spotmaxtech.com"
+	RegionKey  = "cloudmeta/aws/region.json"
+	ImageKey   = "cloudmeta/aws/image.json"
 )
 
 func TestAWSImage_FetchAWSImage(t *testing.T) {
@@ -35,7 +35,7 @@ func TestAWSImage_ListImagesByRegionAndType(t *testing.T) {
 			panic(err)
 		}
 
-		values := metaImage.ListImagesByRegionAndType("us-east-1","Linux")
+		values := metaImage.ListImagesByRegionAndType("us-east-1", "Linux")
 		fmt.Println(*values)
 		So(*values, ShouldNotBeNil)
 	})

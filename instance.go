@@ -101,7 +101,6 @@ func NewAWSInstance(key string) *AWSInstance {
 	return &aws
 }
 
-
 type AliInstanceData struct {
 	//region:zone:instancetype
 	data map[string]map[string]map[string]*InstInfo

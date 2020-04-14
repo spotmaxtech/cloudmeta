@@ -17,12 +17,12 @@ type AWSImage struct {
 
 func NewAWSImage(key string) *AWSImage {
 	awsImage := AWSImage{
-		key:          key,
+		key: key,
 	}
 	return &awsImage
 }
 
-func (image *AWSImage) ListImagesByRegion (region string) *map[string]map[string]*ec2.Image {
+func (image *AWSImage) ListImagesByRegion(region string) *map[string]map[string]*ec2.Image {
 	var values = make(map[string]map[string]*ec2.Image)
 	for k, v := range image.data {
 		if k == region {
@@ -33,9 +33,9 @@ func (image *AWSImage) ListImagesByRegion (region string) *map[string]map[string
 	return &values
 }
 
-func (image *AWSImage) ListImagesByRegionAndType (region string, imagetype string) *map[string]*ec2.Image {
+func (image *AWSImage) ListImagesByRegionAndType(region string, imagetype string) *map[string]*ec2.Image {
 	var values = make(map[string]*ec2.Image)
-	for k, _ :=range image.data {
+	for k, _ := range image.data {
 		if k == region {
 			for kt, vt := range image.data[k] {
 				if kt == imagetype {

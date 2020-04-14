@@ -23,7 +23,7 @@ func (r *CommonRegion) Fetch(consul *gokit.Consul) error {
 	}
 
 	type MsData struct {
-		Text string `json:"text"`
+		Text  string   `json:"text"`
 		Zones []string `json:"zones"`
 	}
 	var tempData map[string]*MsData
@@ -33,9 +33,9 @@ func (r *CommonRegion) Fetch(consul *gokit.Consul) error {
 
 	for k, v := range tempData {
 		data[k] = &RegionInfo{
-			Name: k,
-			Text: v.Text,
-			Zones:v.Zones,
+			Name:  k,
+			Text:  v.Text,
+			Zones: v.Zones,
 		}
 	}
 	r.data = data

@@ -23,7 +23,7 @@ func main() {
 	rootCmd := &cobra.Command{
 		Use:   "awsfactory",
 		Short: "AWS meta data factory",
-		Long: `Run different factory to update different data`,
+		Long:  `Run different factory to update different data`,
 	}
 
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/luban.yaml)")

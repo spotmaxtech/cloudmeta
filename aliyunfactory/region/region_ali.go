@@ -23,7 +23,7 @@ func NewRegion(connections *connections.ConnectionsAli) *Region {
 	}
 }
 
-func (r *Region) getAvailableZones(regionId string) ([]string) {
+func (r *Region) getAvailableZones(regionId string) []string {
 	request := ecs.CreateDescribeZonesRequest()
 	request.Scheme = "https"
 	request.RegionId = regionId
@@ -32,7 +32,7 @@ func (r *Region) getAvailableZones(regionId string) ([]string) {
 		fmt.Print(err.Error())
 	}
 	var zones []string
-	if response !=nil {
+	if response != nil {
 		for _, z := range response.Zones.Zone {
 			zones = append(zones, z.ZoneId)
 		}
@@ -45,26 +45,26 @@ func main() {
 	consul := gokit.NewConsul(ConsulAddr)
 
 	type MsData struct {
-		Text string `json:"text"`
+		Text  string   `json:"text"`
 		Zones []string `json:"zones"`
 	}
 	data := make(map[string]*MsData)
-	conn := *connections.NewAli("cn-hangzhou","","")
-	r := Region{Conn:&conn}
+	conn := *connections.NewAli("cn-hangzhou", "", "")
+	r := Region{Conn: &conn}
 	data["cn-beijing"] = &MsData{
-		Text: "China (Beijing)",
+		Text:  "China (Beijing)",
 		Zones: r.getAvailableZones("cn-beijing"),
 	}
 	data["cn-hangzhou"] = &MsData{
-		Text: "China (Hangzhou)",
+		Text:  "China (Hangzhou)",
 		Zones: r.getAvailableZones("cn-hangzhou"),
 	}
 	data["cn-hongkong"] = &MsData{
-		Text: "China (Hong Kong)",
+		Text:  "China (Hong Kong)",
 		Zones: r.getAvailableZones("cn-hongkong"),
 	}
 	data["ap-southeast-1"] = &MsData{
-		Text: "Singapore",
+		Text:  "Singapore",
 		Zones: r.getAvailableZones("ap-southeast-1"),
 	}
 	//data["ap-southeast-2"] = &MsData{
@@ -76,11 +76,11 @@ func main() {
 	//	Zones: r.getAvailableZones("us-west-1"),
 	//}
 	data["us-east-1"] = &MsData{
-		Text: "US (Virginia)",
+		Text:  "US (Virginia)",
 		Zones: r.getAvailableZones("us-east-1"),
 	}
 	data["eu-central-1"] = &MsData{
-		Text: "Germany (Frankfurt)",
+		Text:  "Germany (Frankfurt)",
 		Zones: r.getAvailableZones("eu-central-1"),
 	}
 
