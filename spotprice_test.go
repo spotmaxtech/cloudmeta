@@ -2,10 +2,10 @@ package cloudmeta
 
 import (
 	"encoding/json"
+	"github.com/spotmaxtech/gokit"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/spotmaxtech/gokit"
 )
 
 func TestAWSSpotPrice(t *testing.T) {

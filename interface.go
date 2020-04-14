@@ -6,8 +6,8 @@ import (
 )
 
 type RegionInfo struct {
-	Name string `json:"name"`
-	Text string `json:"text"`
+	Name  string   `json:"name"`
+	Text  string   `json:"text"`
 	Zones []string `json:"zones"`
 }
 
@@ -25,6 +25,7 @@ type InstInfo struct {
 	Mem     float64 `json:"mem"`
 	Storage string  `json:"storage"`
 	Family  string  `json:"family"`
+	ODPrice float64 `json:"odprice"`
 }
 
 type Instance interface {
@@ -39,11 +40,11 @@ type ODPrice interface {
 }
 
 type ODPriceAli struct {
-	InstType string             `json:"instance_type"`
-	OriginalPrice float64       `json:"original_price"`
-	TradePrice float64          `json:"trade_price"`
-	DiscountPrice float64       `json:"discount_price"`
-	Description string          `json:"description"`
+	InstType      string  `json:"instance_type"`
+	OriginalPrice float64 `json:"original_price"`
+	TradePrice    float64 `json:"trade_price"`
+	DiscountPrice float64 `json:"discount_price"`
+	Description   string  `json:"description"`
 }
 
 type SpotPrice interface {
@@ -68,15 +69,15 @@ type FilterType struct {
 }
 
 type SpotInstanceInfoAli struct {
-	InstType string             `json:"instance_type"`
-	Cores int16                `json:"core"`
-	Mem float64                  `json:"memory"`
-	OriginalPrice float64       `json:"original_price"`
-	TradePrice float64          `json:"trade_price"`
-	DiscountPrice float64       `json:"discount_price"`
-	SpotPrice float64           `json:"spot_price"`
-	Family string               `json:"family"`
-	Desc string                 `json:"desc"`
+	InstType      string  `json:"instance_type"`
+	Cores         int16   `json:"core"`
+	Mem           float64 `json:"memory"`
+	OriginalPrice float64 `json:"original_price"`
+	TradePrice    float64 `json:"trade_price"`
+	DiscountPrice float64 `json:"discount_price"`
+	SpotPrice     float64 `json:"spot_price"`
+	Family        string  `json:"family"`
+	Desc          string  `json:"desc"`
 }
 
 type InterruptInfoAli struct {
