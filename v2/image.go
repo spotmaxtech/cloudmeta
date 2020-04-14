@@ -1,4 +1,4 @@
-package cloudmeta
+package v2
 
 import (
 	"encoding/json"

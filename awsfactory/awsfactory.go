@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/spotmaxtech/cloudmeta/awsfactory/image"
 	"github.com/spotmaxtech/cloudmeta/awsfactory/instance"
 	"github.com/spotmaxtech/cloudmeta/awsfactory/region"
 )
@@ -37,6 +38,7 @@ func main() {
 
 	rootCmd.AddCommand(region.FactoryCmd)
 	rootCmd.AddCommand(instance.FactoryCmd)
+	rootCmd.AddCommand(image.FactoryCmd)
 	rootCmd.AddCommand(versionCmd)
 
 	if err := rootCmd.Execute(); err != nil {

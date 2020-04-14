@@ -1,4 +1,4 @@
-package cloudmeta
+package v2
 
 import (
 	"fmt"
@@ -9,8 +9,8 @@ import (
 
 const (
 	ConsulAddr = "consul.spotmaxtech.com"
-	RegionKey  = "cloudmeta/aws/region.json"
-	ImageKey   = "cloudmeta/aws/image.json"
+	RegionKey  = "cloudmeta2/aws/region.json"
+	ImageKey   = "cloudmeta2/aws/image.json"
 )
 
 func TestAWSImage_FetchImage(t *testing.T) {

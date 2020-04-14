@@ -36,7 +36,7 @@ func (s *DbSet) fetch(consul *gokit.Consul) error {
 	if err := s.SpotPrice.Fetch(consul); err != nil {
 		return err
 	}
-	if err := s.Image.FetchAWSImage(consul); err != nil {
+	if err := s.Image.FetchImage(consul); err != nil {
 		panic(err)
 	}
 

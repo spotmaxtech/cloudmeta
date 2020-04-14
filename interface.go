@@ -86,7 +86,7 @@ type InterruptInfoAli struct {
 
 // aws Image
 type Image interface {
-	FetchAWSImage(consul *gokit.Consul) error
+	FetchImage(consul *gokit.Consul) error
 	ListImagesByRegion(region string) *map[string]map[string]*ec2.Image
 	ListImagesByRegionAndType(region string, imagetype string) *map[string]*ec2.Image
 }

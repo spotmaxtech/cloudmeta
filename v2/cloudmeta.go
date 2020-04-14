@@ -10,6 +10,7 @@ import (
 type DbSet struct {
 	Region   cloudmeta.Region
 	Instance *AWSInstance
+	Image    cloudmeta.Image
 }
 
 // fetch all the meta data
@@ -18,6 +19,9 @@ func (s *DbSet) fetch(consul *gokit.Consul) error {
 		return err
 	}
 	if err := s.Instance.Fetch(consul); err != nil {
+		return err
+	}
+	if err := s.Image.FetchImage(consul); err != nil {
 		return err
 	}
 	return nil
@@ -54,10 +58,12 @@ func (s *DbSet) basicConsistent() error {
 func newAWSDbSet() *DbSet {
 	region := cloudmeta.NewCommonRegion(ConsulRegionKey)
 	instance := NewAWSInstance(ConsulInstanceKey, region)
+	image := NewAWSImage(ConsulImageKey)
 
 	set := &DbSet{
 		Region:   region,
 		Instance: instance,
+		Image:    image,
 	}
 	return set
 }
@@ -97,6 +103,12 @@ func (m *MetaDb) Instance() *AWSInstance {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	return m.set.Instance
+}
+
+func (m *MetaDb) Image() cloudmeta.Image {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+	return m.set.Image
 }
 
 // update new meta version
