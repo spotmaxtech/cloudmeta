@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/pricing"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	connections "github.com/spotmaxtech/cloudconnections"
 	"github.com/spotmaxtech/cloudmeta"
 	"github.com/spotmaxtech/gokit"
@@ -18,7 +19,6 @@ import (
 )
 
 const (
-	ConsulAddr  = "consul.spotmaxtech.com"
 	InstanceKey = "cloudmeta2/aws/instance" // us-east-1/linux/general/instance.json
 	RegionKey   = "cloudmeta2/aws/region.json"
 )
@@ -212,7 +212,7 @@ func (o *InstUtil) FetchInstance(region string, os string, family string) []*clo
 
 func instanceFactory() error {
 	// consul
-	consul := gokit.NewConsul(ConsulAddr)
+	consul := gokit.NewConsul(viper.GetString("consulAddr"))
 
 	// region
 	metaRegion := cloudmeta.NewCommonRegion(RegionKey)

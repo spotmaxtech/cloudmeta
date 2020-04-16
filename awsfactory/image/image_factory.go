@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	connections "github.com/spotmaxtech/cloudconnections"
 	"github.com/spotmaxtech/cloudmeta"
 	"github.com/spotmaxtech/gokit"
@@ -16,7 +17,6 @@ import (
 )
 
 const (
-	ConsulAddr = "consul.spotmaxtech.com"
 	RegionKey  = "cloudmeta2/aws/region.json"
 	ImageKey   = "cloudmeta2/aws/image.json"
 )
@@ -75,7 +75,7 @@ func getImageMap(accountId []*string, ownerId []*string) *ImageMap {
 	imageMap := ImageMap{
 		data: make(map[string]map[string]map[string]*ec2.Image),
 	}
-	consul := gokit.NewConsul(ConsulAddr)
+	consul := gokit.NewConsul(viper.GetString("consulAddr"))
 	metaRegion := cloudmeta.NewCommonRegion(RegionKey)
 	if err := metaRegion.Fetch(consul); err != nil {
 		panic(err)
@@ -112,7 +112,7 @@ func getImageMap(accountId []*string, ownerId []*string) *ImageMap {
 
 func imageFactory() error {
 	logrus.SetLevel(logrus.DebugLevel)
-	consul := gokit.NewConsul(ConsulAddr)
+	consul := gokit.NewConsul(viper.GetString("consulAddr"))
 	// id := "self"
 	// awsid := "amazon"
 	// var accountId, ownerId []*string

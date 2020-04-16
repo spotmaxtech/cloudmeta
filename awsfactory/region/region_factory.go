@@ -4,17 +4,17 @@ import (
 	"encoding/json"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/spotmaxtech/gokit"
 )
 
 const (
-	ConsulAddr = "consul.spotmaxtech.com"
 	RegionKey  = "cloudmeta2/aws/region.json"
 )
 
 func regionFactory() error {
 	// consul
-	consul := gokit.NewConsul(ConsulAddr)
+	consul := gokit.NewConsul(viper.GetString("consulAddr"))
 
 	type MsData struct {
 		Text string `json:"text"`

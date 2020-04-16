@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cloudmeta
+spec:
+  template:
+    metadata:
+      labels:
+        app: cloudmeta
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: main
+          image: liuzoxan/cloudmeta:v0.1.6-0-ge053d51
+          imagePullPolicy: Always
+          command: ["./awsfactory"]
+          args: ["image"]
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-key
+                  key: key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-key
+                  key: secret
