@@ -19,6 +19,9 @@ docker:
 	GOOS=linux GOARCH=amd64 go build -o build/awsfactory awsfactory/awsfactory.go
 	cd build && docker build -t liuzoxan/cloudmeta:${version} .
 
+docker-push:
+	docker push liuzoxan/cloudmeta:${version}
+
 clean:
 	rm -f awsfactory/awsfactory build/awsfactory
 
