@@ -1,17 +1,17 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: cloudmeta
+  name: cloudmeta-awsfactory-image
 spec:
   template:
     metadata:
       labels:
-        app: cloudmeta
+        app: cloudmeta-awsfactory-image
     spec:
       restartPolicy: OnFailure
       containers:
         - name: main
-          image: liuzoxan/cloudmeta:v0.1.6-0-ge053d51
+          image: liuzoxan/cloudmeta:v0.1.7-1-g7c63ca2
           imagePullPolicy: Always
           command: ["./awsfactory"]
           args: ["image"]

@@ -1,0 +1,31 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cloudmeta-awsfactory-region
+spec:
+  schedule: "25 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: cloudmeta-awsfactory-region
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: main
+              image: liuzoxan/cloudmeta:v0.1.7-1-g7c63ca2
+              imagePullPolicy: Always
+              command: ["./awsfactory"]
+              args: ["region"]
+              env:
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-key
+                      key: key
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-key
+                      key: secret
