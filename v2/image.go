@@ -35,7 +35,7 @@ func (image *AWSImage) ListImagesByRegion(region string) *map[string]map[string]
 
 func (image *AWSImage) ListImagesByRegionAndType(region string, imagetype string) *map[string]*ec2.Image {
 	var values = make(map[string]*ec2.Image)
-	for k, _ := range image.data {
+	for k := range image.data {
 		if k == region {
 			for kt, vt := range image.data[k] {
 				if kt == imagetype {

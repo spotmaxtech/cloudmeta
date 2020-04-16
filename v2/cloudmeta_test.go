@@ -47,4 +47,3 @@ func TestMetaDb_DefaultDb(t *testing.T) {
 		t.Log(gokit.PrettifyJson(meta.Image().ListImagesByRegion("us-east-1"), true))
 	})
 }
-

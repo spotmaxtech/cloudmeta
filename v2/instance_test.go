@@ -62,7 +62,6 @@ func TestAWSInstance_List(t *testing.T) {
 	})
 }
 
-
 func TestAWS_GetProduct(t *testing.T) {
 	Convey("test use case", t, func() {
 		conn := connections.New("eu-north-1")
