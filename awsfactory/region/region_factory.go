@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	RegionKey  = "cloudmeta2/aws/region.json"
+	RegionKey = "cloudmeta2/aws/region.json"
 )
 
 func regionFactory() error {

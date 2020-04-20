@@ -17,8 +17,8 @@ import (
 )
 
 const (
-	RegionKey  = "cloudmeta2/aws/region.json"
-	ImageKey   = "cloudmeta2/aws/image.json"
+	RegionKey = "cloudmeta2/aws/region.json"
+	ImageKey  = "cloudmeta2/aws/image.json"
 )
 
 type ImageUtil struct {

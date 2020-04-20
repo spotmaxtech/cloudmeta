@@ -13,3 +13,14 @@ func DefaultAWSMetaDb() *MetaDb {
 	})
 	return awsMeta
 }
+
+func InitializeAWSMetaDb(consulAddr string) error {
+	var err error
+	once.Do(func() {
+		awsMeta, err = NewMetaDb(AWS, consulAddr)
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
