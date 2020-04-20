@@ -15,3 +15,7 @@ func TestDefaultAWSMetaDb(t *testing.T) {
 		meta = DefaultAWSMetaDb()
 	})
 }
+
+func TestInitialize(t *testing.T) {
+	Initialize("abc")
+}
