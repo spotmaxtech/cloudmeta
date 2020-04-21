@@ -58,7 +58,7 @@ func validInstance(inst InstanceProduct) bool {
 	return true
 }
 
-func (o *InstUtil) FetchInstance(region *cloudmeta.RegionInfo, os string, family string) []*cloudmeta.InstInfo {
+func (o *InstUtil) FetchInstance(region *cloudmeta.RegionInfo, os string, family string) ([]*cloudmeta.InstInfo, error) {
 	// region conn for spot price
 	regionConn := connections.New(region.Name)
 
@@ -112,7 +112,7 @@ func (o *InstUtil) FetchInstance(region *cloudmeta.RegionInfo, os string, family
 	result, err := o.Conn.Pricing.GetProducts(input)
 	if err != nil {
 		log.Error("get products error: %s", err.Error())
-		panic(err)
+		return nil, err
 	}
 	/*
 		"attributes": {
@@ -215,7 +215,7 @@ func (o *InstUtil) FetchInstance(region *cloudmeta.RegionInfo, os string, family
 			prices, err := FetchSpotPrice(regionConn, input)
 			if err != nil {
 				log.Errorf("fetch spot price error %s", inst.Name)
-				panic(err) // TODO
+				return nil, err
 			}
 			if len(prices) == 0 {
 				log.Warnf("no spot price for %s %s, drop this instance", region.Name, inst.Name)
@@ -240,15 +240,15 @@ func (o *InstUtil) FetchInstance(region *cloudmeta.RegionInfo, os string, family
 			input.NextToken = result.NextToken
 			result, err = o.Conn.Pricing.GetProducts(input)
 			if err != nil {
-				log.Error("get products error: %s", err.Error())
-				panic(err)
+				log.Errorf("get products error: %s", err.Error())
+				return nil, err
 			}
 		} else {
 			break
 		}
 	}
 
-	return instances
+	return instances, nil
 }
 
 func instanceFactory() error {
@@ -282,7 +282,18 @@ func instanceFactory() error {
 		for _, os := range oss {
 			for family, short := range families {
 				instMap := make(map[string]*cloudmeta.InstInfo)
-				instances := util.FetchInstance(region, os, family)
+				var instances []*cloudmeta.InstInfo
+				var err error
+				for {
+					// 这里有可能会失败，不停的重做
+					instances, err = util.FetchInstance(region, os, family)
+					if err != nil {
+						log.Errorf("fetch instance %s %s %s error %s, do again", region.Name, os, family, err.Error())
+						time.Sleep(time.Second * 3)
+						continue
+					}
+					break
+				}
 				log.Infof("[%s %s %s] fetch instance: %d", region.Text, os, family, len(instances))
 				for _, i := range instances {
 					instMap[i.Name] = i
