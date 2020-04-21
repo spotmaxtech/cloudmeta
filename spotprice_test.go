@@ -2,8 +2,13 @@ package cloudmeta
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/ec2"
+	connections "github.com/spotmaxtech/cloudconnections"
 	"github.com/spotmaxtech/gokit"
 	"testing"
+	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -49,4 +54,26 @@ func TestAWSSpotPrice(t *testing.T) {
 			t.Logf("%s\n", aaJson)
 		})
 	})
+}
+
+func TestSpot(t *testing.T) {
+	// var filters []*ec2.Filter
+	// filters = append(filters, &ec2.Filter{
+	// 	Name:   aws.String("instance-type"),
+	// 	Values: []*string{aws.String("x1.32xlarge")},
+	// })
+
+	apiInput := &ec2.DescribeSpotPriceHistoryInput{
+		ProductDescriptions: []*string{
+			aws.String("Linux/UNIX (Amazon VPC)"),
+		},
+		StartTime:     aws.Time(time.Now().Add(-1 * time.Duration(time.Minute*60*24))),
+		EndTime:       aws.Time(time.Now()),
+		InstanceTypes: []*string{aws.String("x1.32xlarge")},
+		// Filters:   filters,
+	}
+
+	conn := connections.New("us-east-1")
+	output, err := conn.EC2.DescribeSpotPriceHistory(apiInput)
+	fmt.Println(output.SpotPriceHistory, err)
 }

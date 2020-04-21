@@ -13,6 +13,7 @@ import (
 	"github.com/spotmaxtech/gokit"
 	"regexp"
 	"strconv"
+	"time"
 
 	// "strconv"
 	"strings"
@@ -57,14 +58,20 @@ func validInstance(inst InstanceProduct) bool {
 	return true
 }
 
-func (o *InstUtil) FetchInstance(region string, os string, family string) []*cloudmeta.InstInfo {
+func (o *InstUtil) FetchInstance(region *cloudmeta.RegionInfo, os string, family string) []*cloudmeta.InstInfo {
+	// region conn for spot price
+	regionConn := connections.New(region.Name)
+
+	// 去重
+	duplicated := gokit.NewSet()
+
 	input := &pricing.GetProductsInput{
 		ServiceCode: aws.String("AmazonEC2"),
 		Filters: []*pricing.Filter{
 			{
 				Field: aws.String("Location"),
 				Type:  aws.String("TERM_MATCH"),
-				Value: aws.String(region),
+				Value: aws.String(region.Text),
 			},
 			{
 				Field: aws.String("OperatingSystem"),
@@ -158,7 +165,7 @@ func (o *InstUtil) FetchInstance(region string, os string, family string) []*clo
 			memStr := strings.TrimSpace(strings.Replace(product.Memory, "GiB", "", 1))
 			mem, err := strconv.ParseFloat(memStr, 32)
 			if err != nil {
-				panic(err)
+				panic(err) // TODO
 			}
 
 			odPrice := 0.0
@@ -188,9 +195,43 @@ func (o *InstUtil) FetchInstance(region string, os string, family string) []*clo
 				ODPrice: odPrice,
 			}
 
+			// 有一些数据是价格无效数据
 			if inst.ODPrice == 0.0 {
 				continue
 			}
+
+			// 去重减少计算量
+			if duplicated.Contains(product.InstanceType) {
+				continue
+			} else {
+				duplicated.Add(product.InstanceType)
+			}
+
+			// 获取竞价实例价格，一般情况都有价格，剔除不能使用竞价实例的机器
+			input := &SpotPriceHistoryInput{
+				InstanceTypeList: []*string{aws.String(inst.Name)},
+				Duration:         time.Duration(time.Minute * 60 * 24 * 90),
+			}
+			prices, err := FetchSpotPrice(regionConn, input)
+			if err != nil {
+				log.Errorf("fetch spot price error %s", inst.Name)
+				panic(err) // TODO
+			}
+			if len(prices) == 0 {
+				log.Warnf("no spot price for %s %s, drop this instance", region.Name, inst.Name)
+				continue
+			}
+			maxSpotPrice := 0.0
+			for _, p := range prices {
+				price, err := strconv.ParseFloat(*p.SpotPrice, 32)
+				if err != nil {
+					panic(err)
+				}
+				if price > maxSpotPrice {
+					maxSpotPrice = price
+				}
+			}
+			inst.SpotPrice = maxSpotPrice // TODO 当前我们只取最大的价格
 
 			instances = append(instances, inst)
 		}
@@ -241,7 +282,7 @@ func instanceFactory() error {
 		for _, os := range oss {
 			for family, short := range families {
 				instMap := make(map[string]*cloudmeta.InstInfo)
-				instances := util.FetchInstance(region.Text, os, family)
+				instances := util.FetchInstance(region, os, family)
 				log.Infof("[%s %s %s] fetch instance: %d", region.Text, os, family, len(instances))
 				for _, i := range instances {
 					instMap[i.Name] = i

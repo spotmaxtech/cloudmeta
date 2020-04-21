@@ -20,12 +20,13 @@ type Region interface {
 // TODO: more info item?
 // TODO: make category const?
 type InstInfo struct {
-	Name    string  `json:"name"`
-	Core    int16   `json:"core"`
-	Mem     float64 `json:"mem"`
-	Storage string  `json:"storage"`
-	Family  string  `json:"family"`
-	ODPrice float64 `json:"odprice"`
+	Name      string  `json:"name"`
+	Core      int16   `json:"core"`
+	Mem       float64 `json:"mem"`
+	Storage   string  `json:"storage"`
+	Family    string  `json:"family"`
+	ODPrice   float64 `json:"odprice"`
+	SpotPrice float64 `json:"spotprice"`
 }
 
 type Instance interface {
