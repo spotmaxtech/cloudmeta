@@ -17,7 +17,7 @@ func Test_validInstance(t *testing.T) {
 		inst5 = "d1ne.2xlarge"
 		instances = append(instances, inst1, inst2, inst3, inst4, inst5)
 		for i, v := range instances {
-			if i !=4 {
+			if i != 4 {
 				So(validInstance(v), ShouldBeTrue)
 			} else {
 				So(validInstance(v), ShouldBeFalse)
@@ -27,7 +27,7 @@ func Test_validInstance(t *testing.T) {
 }
 
 func TestInstUtil_FetchInstance(t *testing.T) {
-	conn := *connections.NewAli("cn-hangzhou","","")
-	util := InstUtil{Conn:&conn}
-	util.FetchInstance("cn-hongkong","cn-hongkong-b")
+	conn := *connections.NewAli("cn-hangzhou", "", "")
+	util := InstUtil{Conn: &conn}
+	util.FetchInstance("cn-hongkong", "cn-hongkong-b")
 }

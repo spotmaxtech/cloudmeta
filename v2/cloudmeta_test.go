@@ -1,4 +1,4 @@
-package cloudmeta
+package v2
 
 import (
 	. "github.com/smartystreets/goconvey/convey"
@@ -20,7 +20,7 @@ func TestMetaDb(t *testing.T) {
 	Convey("test meta db", t, func() {
 		meta, err := NewMetaDb(AWS, TestConsulAddress)
 		So(err, ShouldBeNil)
-		meta.Interrupt()
+		meta.Instance()
 		So(meta.Region().GetRegionInfo("us-east-1").Name, ShouldEqual, "us-east-1")
 	})
 }
@@ -40,13 +40,10 @@ func TestMetaDb_DefaultDb(t *testing.T) {
 	Convey("test instance", t, func() {
 		meta := DefaultAWSMetaDb()
 		So(meta.Region().GetRegionInfo("us-east-1").Name, ShouldEqual, "us-east-1")
-		t.Log(gokit.Prettify(meta.Region().GetRegionInfo("us-east-1")))
-		t.Log(gokit.Prettify(meta.Interrupt().GetInterruptInfo("us-east-1", "c4.2xlarge")))
-		t.Log(gokit.Prettify(meta.ODPrice().GetPrice("us-east-1", "c4.2xlarge")))
-		t.Log(gokit.Prettify(meta.SpotPrice().GetPrice("us-east-1", "c4.2xlarge")))
-
-		t.Log(gokit.Prettify(meta.Region().List()))
+		// t.Log(gokit.Prettify(meta.Region().GetRegionInfo("us-east-1")))
+		// t.Log(gokit.Prettify(meta.Region().List()))
 		// t.Log(gokit.Prettify(meta.Instance().List("us-west-2")))
+		// t.Log(gokit.PrettifyJson(meta.Instance().GetRegionInstInfo("us-east-1"), true))
+		t.Log(gokit.PrettifyJson(meta.Image().ListImagesByRegion("us-east-1"), true))
 	})
-
 }

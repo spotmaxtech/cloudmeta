@@ -12,10 +12,10 @@ type SpotPriceInfo struct {
 }
 
 type SpotPriceInfoAli struct {
-	InstType string             `json:"instance_type"`
-	Avg      float64            `json:"spot_price(avg)"`
-	OriginPrice float64         `json:"origin_price(avg)"`
-	Interrupt float64           `json:"interrupt_rate"`
+	InstType    string  `json:"instance_type"`
+	Avg         float64 `json:"spot_price(avg)"`
+	OriginPrice float64 `json:"origin_price(avg)"`
+	Interrupt   float64 `json:"interrupt_rate"`
 }
 
 type CommonSpotPriceData struct {
@@ -76,7 +76,7 @@ func (i *CommonSpotPrice) List(region string) []*SpotPriceInfo {
 
 func (i *AliSpotPrice) ListAli(region string) map[string]*SpotPriceInfoAli {
 	var values = make(map[string]*SpotPriceInfoAli)
-	for key, v := range i.data[region]{
+	for key, v := range i.data[region] {
 		values[key] = v
 	}
 	return values

@@ -3,10 +3,10 @@ package cloudmeta
 import (
 	"encoding/json"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/spotmaxtech/gokit"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/spotmaxtech/gokit"
 )
 
 func TestAWSRegion(t *testing.T) {

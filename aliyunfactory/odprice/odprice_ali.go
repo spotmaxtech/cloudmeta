@@ -11,11 +11,11 @@ import (
 )
 
 const (
-	ConsulAddr  = "consul.spotmaxtech.com"
-	InstanceKey = "cloudmeta/aliyun/instance.json"
-	RegionKey  = "cloudmeta/aliyun/region.json"
-	SpotPriceKey  = "cloudmeta/aliyun/spotprice.json"
-	ODPriceKey  = "cloudmeta/aliyun/odprice.json"
+	ConsulAddr   = "consul.spotmaxtech.com"
+	InstanceKey  = "cloudmeta/aliyun/instance.json"
+	RegionKey    = "cloudmeta/aliyun/region.json"
+	SpotPriceKey = "cloudmeta/aliyun/spotprice.json"
+	ODPriceKey   = "cloudmeta/aliyun/odprice.json"
 )
 
 type ODPriceUtil struct {
@@ -26,7 +26,7 @@ type ODPrice struct {
 	data map[string]map[string]*cloudmeta.ODPriceAli
 }
 
-func (odp *ODPriceUtil) FetchODPrice (regionId string, inst string) *cloudmeta.ODPriceAli {
+func (odp *ODPriceUtil) FetchODPrice(regionId string, inst string) *cloudmeta.ODPriceAli {
 	request := ecs.CreateDescribePriceRequest()
 	request.Scheme = "https"
 	request.ResourceType = "instance"
@@ -64,7 +64,7 @@ func (odp *ODPriceUtil) FetchODPrice (regionId string, inst string) *cloudmeta.O
 	return nil
 }
 
-func main()  {
+func main() {
 	logrus.SetLevel(logrus.DebugLevel)
 	consul := gokit.NewConsul(ConsulAddr)
 	metaRegion := cloudmeta.NewCommonRegion(RegionKey)
@@ -75,8 +75,8 @@ func main()  {
 	if err := metaInstances.FetchAli(consul); err != nil {
 		panic(err)
 	}
-	conn := *connections.NewAli("cn-hangzhou","","")
-	odpu := ODPriceUtil{Conn:&conn}
+	conn := *connections.NewAli("cn-hangzhou", "", "")
+	odpu := ODPriceUtil{Conn: &conn}
 	odPrice := ODPrice{
 		data: make(map[string]map[string]*cloudmeta.ODPriceAli),
 	}

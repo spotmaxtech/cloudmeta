@@ -120,7 +120,7 @@ func (i *AliOdPrice) FetchAli(consul *gokit.Consul) error {
 
 func (i *AliOdPrice) ListAli(region string) map[string]*ODPriceAli {
 	var values = make(map[string]*ODPriceAli)
-	for key, v := range i.data[region]{
+	for key, v := range i.data[region] {
 		values[key] = v
 	}
 	return values
