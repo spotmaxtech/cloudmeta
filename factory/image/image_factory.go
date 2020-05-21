@@ -28,8 +28,31 @@ type ImageMap struct {
 	data map[string]map[string]map[string]*ec2.Image
 }
 
-func (iu *ImageUtil) FetchImageList (accountId []*string, owner []*string, name string, num int) *[]*ec2.Image{
-	var imageList []*ec2.Image
+type SpotmaxImage struct {
+	Name           string   `json:"name"`
+	ImageId        string   `json:"imageId"`
+	Architecture   string   `json:"architecture"`
+	BlockDeviceMappings  []*SpotmaxImageDeviceMapping   `json:"blockDeviceMappings"`
+	CreationDate   string   `json:"creationDate"`
+}
+
+type SpotmaxImageDeviceMapping struct {
+	DeviceName      string            `json:"deviceName"`
+	Ebs             *SpotmaxImageEbs   `json:"ebs"`
+}
+
+type SpotmaxImageEbs struct {
+	SnapshotId   string   `json:"snapshotId"`
+	VolumeSize   int64    `json:"volumeSize"`
+	VolumeType   string   `json:"volumeType"`
+}
+
+type ImageSpotmaxMap struct {
+	data map[string]map[string]map[string]*SpotmaxImage
+}
+
+func (iu *ImageUtil) FetchImageList (accountId []*string, owner []*string, name string, num int) *[]*SpotmaxImage{
+	var imageList []*SpotmaxImage
 	input := &ec2.DescribeImagesInput{
 		ExecutableUsers: accountId,
 		Filters:         []*ec2.Filter{
@@ -56,7 +79,48 @@ func (iu *ImageUtil) FetchImageList (accountId []*string, owner []*string, name 
 				timestamp_j, _ := time.Parse(timeFormat, *result.Images[j].CreationDate)
 				return timestamp_i.Unix() > timestamp_j.Unix()
 			})
-			imageList = result.Images[0:num]
+			var list = result.Images[0:num]
+			for _, image := range list {
+				fmt.Println(*image)
+				var blockdevices []*SpotmaxImageDeviceMapping
+				if image.BlockDeviceMappings != nil {
+					var ms []*SpotmaxImageDeviceMapping
+					for _,v := range image.BlockDeviceMappings {
+						if v.Ebs != nil{
+							var snapshotId =""
+							if v.Ebs.SnapshotId != nil {
+								snapshotId = *v.Ebs.SnapshotId
+
+								ebs := SpotmaxImageEbs{
+									SnapshotId:  snapshotId,
+									VolumeSize:  *v.Ebs.VolumeSize,
+									VolumeType:  *v.Ebs.VolumeType,
+								}
+								mapping := SpotmaxImageDeviceMapping{
+									DeviceName: *v.DeviceName,
+									Ebs:        &ebs,
+								}
+								ms = append(ms, &mapping)
+							}
+						} else {
+							mapping := SpotmaxImageDeviceMapping{
+								DeviceName: *v.DeviceName,
+							}
+
+							ms = append(ms, &mapping)
+						}
+					}
+					blockdevices = ms
+				}
+				spotmaxami := SpotmaxImage{
+					Name:         *image.Name,
+					ImageId:      *image.ImageId,
+					Architecture: *image.Architecture,
+					CreationDate: *image.CreationDate,
+					BlockDeviceMappings:  blockdevices,
+				}
+				imageList = append(imageList, &spotmaxami)
+			}
 			return &imageList
 		}
 	}
@@ -104,10 +168,10 @@ func (iu *ImageUtil) FetchImage (accountId []*string, ownerId []*string, name st
 	return nil
 }
 
-func getImageMapList(accountId []*string, ownerId []*string, len int) *ImageMap{
+func getImageMapList(accountId []*string, ownerId []*string, len int) *ImageSpotmaxMap{
 	imageName := []string{"amzn2-ami*","amzn-ami*","ubuntu*","RHEL*","suse*"}
-	imageMap := ImageMap{
-		data: make(map[string]map[string]map[string]*ec2.Image),
+	imageMap := ImageSpotmaxMap{
+		data: make(map[string]map[string]map[string]*SpotmaxImage),
 	}
 	consul := gokit.NewConsul(ConsulAddr)
 	metaRegion := cloudmeta.NewCommonRegion(RegionKey)
@@ -118,10 +182,10 @@ func getImageMapList(accountId []*string, ownerId []*string, len int) *ImageMap{
 	for _, region := range metaRegion.List() {
 		fmt.Println(region.Name)
 		util := ImageUtil{Conn:connections.New(region.Name)}
-		imageMap.data[region.Name] = make(map[string]map[string]*ec2.Image)
+		imageMap.data[region.Name] = make(map[string]map[string]*SpotmaxImage)
 		var imageType = []string{"Linux","SUSE","Red Hat","Windows"}
 		for _, v := range imageType {
-			imageMap.data[region.Name][v] = make(map[string]*ec2.Image)
+			imageMap.data[region.Name][v] = make(map[string]*SpotmaxImage)
 		}
 
 		for _, v := range imageName {
@@ -129,14 +193,14 @@ func getImageMapList(accountId []*string, ownerId []*string, len int) *ImageMap{
 			if imageList != nil {
 				for _, image := range *imageList {
 					switch  {
-					case strings.Contains(*image.Name, "amzn") || strings.Contains(*image.Name, "ubuntu"):
-						imageMap.data[region.Name]["Linux"][*image.Name] = image
-					case strings.Contains(*image.Name, "suse"):
-						imageMap.data[region.Name]["SUSE"][*image.Name] = image
-					case strings.Contains(*image.Name, "RHEL"):
-						imageMap.data[region.Name]["Red Hat"][*image.Name] = image
+					case strings.Contains(image.Name, "amzn") || strings.Contains(image.Name, "ubuntu"):
+						imageMap.data[region.Name]["Linux"][image.Name] = image
+					case strings.Contains(image.Name, "suse"):
+						imageMap.data[region.Name]["SUSE"][image.Name] = image
+					case strings.Contains(image.Name, "RHEL"):
+						imageMap.data[region.Name]["Red Hat"][image.Name] = image
 					default:
-						imageMap.data[region.Name]["Linux"][*image.Name] = image
+						imageMap.data[region.Name]["Linux"][image.Name] = image
 					}
 				}
 			}
