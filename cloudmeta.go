@@ -166,25 +166,6 @@ type ALiMetaDB struct {
 	set        *DbSetALi
 }
 
-//func NewMetaDb(identifier CloudIdentifier, addr string) (*MetaDb, error) {
-//	db := &MetaDb{
-//		consul:     gokit.NewConsul(addr),
-//		identifier: identifier,
-//		mutex:      new(sync.RWMutex),
-//	}
-//	switch identifier {
-//	case AWS:
-//		db.set = newAWSDbSet()
-//	case Ali:
-//		db.set = newAliDbSet()
-//	default:
-//		db.set = newAWSDbSet()
-//	}
-//	if err := db.set.fetch(db.consul); err != nil {
-//		return nil, err
-//	}
-//	return db, nil
-//}
 
 func NewMetaDBAWS(addr string) (*MetaDb, error) {
 	db := &MetaDb{
@@ -218,10 +199,22 @@ func (m *MetaDb) Region() Region {
 	return m.set.Region
 }
 
+func (m *ALiMetaDB) Region() Region {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+	return m.set.Region
+}
+
 func (m *MetaDb) Instance() Instance {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	return m.set.Instance
+}
+
+func (m *ALiMetaDB) SpotInstance() SpotInstanceAli {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+	return m.set.SpotInstance
 }
 
 func (m *MetaDb) SpotInstance() Instance {
@@ -242,7 +235,19 @@ func (m *MetaDb) ODPrice() ODPrice {
 	return m.set.ODPrice
 }
 
+func (m *ALiMetaDB) ODPrice() ODPriceALi {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+	return m.set.ODPrice
+}
+
 func (m *MetaDb) SpotPrice() SpotPrice {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+	return m.set.SpotPrice
+}
+
+func (m *ALiMetaDB) SpotPrice() SpotPriceALi {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	return m.set.SpotPrice
