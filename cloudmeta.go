@@ -166,25 +166,25 @@ type ALiMetaDB struct {
 	set        *DbSetALi
 }
 
-func NewMetaDb(identifier CloudIdentifier, addr string) (*MetaDb, error) {
-	db := &MetaDb{
-		consul:     gokit.NewConsul(addr),
-		identifier: identifier,
-		mutex:      new(sync.RWMutex),
-	}
-	switch identifier {
-	case AWS:
-		db.set = newAWSDbSet()
-	case Ali:
-		db.set = newAliDbSet()
-	default:
-		db.set = newAWSDbSet()
-	}
-	if err := db.set.fetch(db.consul); err != nil {
-		return nil, err
-	}
-	return db, nil
-}
+//func NewMetaDb(identifier CloudIdentifier, addr string) (*MetaDb, error) {
+//	db := &MetaDb{
+//		consul:     gokit.NewConsul(addr),
+//		identifier: identifier,
+//		mutex:      new(sync.RWMutex),
+//	}
+//	switch identifier {
+//	case AWS:
+//		db.set = newAWSDbSet()
+//	case Ali:
+//		db.set = newAliDbSet()
+//	default:
+//		db.set = newAWSDbSet()
+//	}
+//	if err := db.set.fetch(db.consul); err != nil {
+//		return nil, err
+//	}
+//	return db, nil
+//}
 
 func NewMetaDBAWS(addr string) (*MetaDb, error) {
 	db := &MetaDb{
@@ -263,8 +263,6 @@ func (m *MetaDb) Update() error {
 	switch m.identifier {
 	case AWS:
 		set = newAWSDbSet()
-	case Ali:
-		set = newAliDbSet()
 	default:
 		set = newAWSDbSet()
 	}
@@ -275,6 +273,24 @@ func (m *MetaDb) Update() error {
 		return fmt.Errorf("not consistent db set, %s", err.Error())
 	}
 
+	m.set = set
+	return nil
+}
+
+func (m *ALiMetaDB) UpdateALi() error {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	var set *DbSetALi
+	switch m.identifier {
+	case Ali:
+		set = newAliDbSet()
+	default:
+		set = newAliDbSet()
+	}
+	if err := set.fetch(m.consul); err != nil {
+		return err
+	}
 	m.set = set
 	return nil
 }
