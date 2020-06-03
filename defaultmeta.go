@@ -4,19 +4,18 @@ import "sync"
 
 var once sync.Once
 var awsMeta *MetaDb
-var aliMeta *MetaDb
+var aliMeta *ALiMetaDB
 
 func DefaultAWSMetaDb() *MetaDb {
 	once.Do(func() {
-		awsMeta, _ = NewMetaDb(AWS, TestConsulAddress)
+		awsMeta, _ = NewMetaDBAWS(TestConsulAddress)
 	})
 	return awsMeta
 }
 
-// TODO: implement ali meta db
-func DefaultAliMetaDb() *MetaDb {
+func DefaultAliMetaDb() *ALiMetaDB {
 	once.Do(func() {
-		aliMeta, _ = NewMetaDb(Ali, TestConsulAddress)
+		aliMeta, _ = NewMetaDBALi(TestConsulAddress)
 	})
 	return aliMeta
 }

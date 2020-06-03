@@ -16,6 +16,13 @@ type DbSet struct {
 	Image        Image
 }
 
+type DbSetALi struct {
+	Region       Region
+	SpotPrice    SpotPriceALi
+	ODPrice      ODPriceALi
+	SpotInstance SpotInstanceAli
+}
+
 // fetch all the meta data
 func (s *DbSet) fetch(consul *gokit.Consul) error {
 	if err := s.Region.Fetch(consul); err != nil {
@@ -40,6 +47,23 @@ func (s *DbSet) fetch(consul *gokit.Consul) error {
 		panic(err)
 	}
 
+	return nil
+}
+
+// Fetch ALi
+func (s *DbSetALi) fetch(consul *gokit.Consul) error {
+	if err := s.Region.Fetch(consul); err != nil {
+		return err
+	}
+	if err := s.SpotPrice.FetchAli(consul); err != nil {
+		return err
+	}
+	if err := s.ODPrice.FetchAli(consul); err != nil {
+		return err
+	}
+	if err := s.SpotInstance.FetchAli(consul); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -113,9 +137,18 @@ func newAWSDbSet() *DbSet {
 	return set
 }
 
-// TODO: implement ali db set
-func newAliDbSet() *DbSet {
-	set := &DbSet{}
+func newAliDbSet() *DbSetALi {
+	region := NewCommonRegion(ALiConsulRegionKey)
+	spotprice := NewAliSpotPrice(ALiConsulSpotPriceKey)
+	odprice := NewAliOdPrice(ALiConsulOdPriceKey)
+	spotinstance := NewAliInstance(ALiConsulSpotInstanceKey)
+
+	set := &DbSetALi{
+		Region:       region,
+		SpotPrice:    spotprice,
+		ODPrice:      odprice,
+		SpotInstance: spotinstance,
+	}
 	return set
 }
 
@@ -124,6 +157,13 @@ type MetaDb struct {
 	identifier CloudIdentifier
 	mutex      *sync.RWMutex
 	set        *DbSet
+}
+
+type ALiMetaDB struct {
+	consul     *gokit.Consul
+	identifier CloudIdentifier
+	mutex      *sync.RWMutex
+	set        *DbSetALi
 }
 
 func NewMetaDb(identifier CloudIdentifier, addr string) (*MetaDb, error) {
@@ -139,6 +179,32 @@ func NewMetaDb(identifier CloudIdentifier, addr string) (*MetaDb, error) {
 		db.set = newAliDbSet()
 	default:
 		db.set = newAWSDbSet()
+	}
+	if err := db.set.fetch(db.consul); err != nil {
+		return nil, err
+	}
+	return db, nil
+}
+
+func NewMetaDBAWS(addr string) (*MetaDb, error) {
+	db := &MetaDb{
+		consul:     gokit.NewConsul(addr),
+		identifier: AWS,
+		mutex:      new(sync.RWMutex),
+		set:        newAWSDbSet(),
+	}
+	if err := db.set.fetch(db.consul); err != nil {
+		return nil, err
+	}
+	return db, nil
+}
+
+func NewMetaDBALi(addr string) (*ALiMetaDB, error) {
+	db := &ALiMetaDB{
+		consul:     gokit.NewConsul(addr),
+		identifier: Ali,
+		mutex:      new(sync.RWMutex),
+		set:        newAliDbSet(),
 	}
 	if err := db.set.fetch(db.consul); err != nil {
 		return nil, err

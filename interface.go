@@ -48,9 +48,19 @@ type ODPriceAli struct {
 	Description   string  `json:"description"`
 }
 
+type ODPriceALi interface {
+	FetchAli(consul *gokit.Consul) error
+	ListAli(region string) map[string]*ODPriceAli
+}
+
 type SpotPrice interface {
 	Fetch(consul *gokit.Consul) error
 	GetPrice(region string, instance string) *SpotPriceInfo
+}
+
+type SpotPriceALi interface {
+	FetchAli(consul *gokit.Consul) error
+	ListAli(region string) map[string]*SpotPriceInfoAli
 }
 
 type InterruptInfo struct {
@@ -81,6 +91,12 @@ type SpotInstanceInfoAli struct {
 	Desc          string  `json:"desc"`
 }
 
+type SpotInstanceAli interface {
+	FetchAli(consul *gokit.Consul) error
+	List(region string) []*InstInfo
+	ListByZone(region string, zone string) []*InstInfo
+}
+
 type InterruptInfoAli struct {
 	Interrupt float64 `json:"interrupt_rate"`
 }
@@ -91,3 +107,4 @@ type Image interface {
 	ListImagesByRegion(region string) *map[string]map[string]*ec2.Image
 	ListImagesByRegionAndType(region string, imagetype string) *map[string]*ec2.Image
 }
+
