@@ -30,22 +30,22 @@ type ImageMap struct {
 }
 
 type SpotmaxImage struct {
-	Name           string   `json:"name"`
-	ImageId        string   `json:"imageId"`
-	Architecture   string   `json:"architecture"`
-	BlockDeviceMappings  []*SpotmaxImageDeviceMapping   `json:"blockDeviceMappings"`
-	CreationDate   string   `json:"creationDate"`
+	Name                string                       `json:"name"`
+	ImageId             string                       `json:"imageId"`
+	Architecture        string                       `json:"architecture"`
+	BlockDeviceMappings []*SpotmaxImageDeviceMapping `json:"blockDeviceMappings"`
+	CreationDate        string                       `json:"creationDate"`
 }
 
 type SpotmaxImageDeviceMapping struct {
-	DeviceName      string            `json:"deviceName"`
-	Ebs             *SpotmaxImageEbs   `json:"ebs"`
+	DeviceName string           `json:"deviceName"`
+	Ebs        *SpotmaxImageEbs `json:"ebs"`
 }
 
 type SpotmaxImageEbs struct {
-	SnapshotId   string   `json:"snapshotId"`
-	VolumeSize   int64    `json:"volumeSize"`
-	VolumeType   string   `json:"volumeType"`
+	SnapshotId string `json:"snapshotId"`
+	VolumeSize int64  `json:"volumeSize"`
+	VolumeType string `json:"volumeType"`
 }
 
 type ImageSpotmaxMap struct {
@@ -93,28 +93,28 @@ func (iu *ImageUtil) FetchImage(accountId []*string, ownerId []*string, name str
 	return nil
 }
 
-func (iu *ImageUtil) FetchImageList (accountId []*string, owner []*string, name string, num int) *[]*SpotmaxImage{
+func (iu *ImageUtil) FetchImageList(accountId []*string, owner []*string, name string, num int) *[]*SpotmaxImage {
 	var imageList []*SpotmaxImage
 	input := &ec2.DescribeImagesInput{
 		ExecutableUsers: accountId,
-		Filters:         []*ec2.Filter{
+		Filters: []*ec2.Filter{
 			{
 				Name:   aws.String("name"),
 				Values: aws.StringSlice([]string{name}),
 			},
 			{
-				Name:	aws.String("state"),
+				Name:   aws.String("state"),
 				Values: aws.StringSlice([]string{"available"}),
 			},
 		},
-		Owners:          owner,
+		Owners: owner,
 	}
 	result, err := iu.Conn.EC2.DescribeImages(input)
 	if err != nil {
 		return nil
 	}
 	if result != nil {
-		if len(result.Images) > 0{
+		if len(result.Images) > 0 {
 			sort.Slice(result.Images, func(i, j int) bool {
 				var timeFormat = "2006-01-02T15:04:05.000Z"
 				timestamp_i, _ := time.Parse(timeFormat, *result.Images[i].CreationDate)
@@ -128,16 +128,16 @@ func (iu *ImageUtil) FetchImageList (accountId []*string, owner []*string, name 
 				var blockdevices []*SpotmaxImageDeviceMapping
 				if image.BlockDeviceMappings != nil {
 					var ms []*SpotmaxImageDeviceMapping
-					for _,v := range image.BlockDeviceMappings {
-						if v.Ebs != nil{
-							var snapshotId =""
+					for _, v := range image.BlockDeviceMappings {
+						if v.Ebs != nil {
+							var snapshotId = ""
 							if v.Ebs.SnapshotId != nil {
 								snapshotId = *v.Ebs.SnapshotId
 
 								ebs := SpotmaxImageEbs{
-									SnapshotId:  snapshotId,
-									VolumeSize:  *v.Ebs.VolumeSize,
-									VolumeType:  *v.Ebs.VolumeType,
+									SnapshotId: snapshotId,
+									VolumeSize: *v.Ebs.VolumeSize,
+									VolumeType: *v.Ebs.VolumeType,
 								}
 								mapping := SpotmaxImageDeviceMapping{
 									DeviceName: *v.DeviceName,
@@ -156,11 +156,11 @@ func (iu *ImageUtil) FetchImageList (accountId []*string, owner []*string, name 
 					blockdevices = ms
 				}
 				spotmaxami := SpotmaxImage{
-					Name:         *image.Name,
-					ImageId:      *image.ImageId,
-					Architecture: *image.Architecture,
-					CreationDate: *image.CreationDate,
-					BlockDeviceMappings:  blockdevices,
+					Name:                *image.Name,
+					ImageId:             *image.ImageId,
+					Architecture:        *image.Architecture,
+					CreationDate:        *image.CreationDate,
+					BlockDeviceMappings: blockdevices,
 				}
 				imageList = append(imageList, &spotmaxami)
 			}
@@ -173,7 +173,7 @@ func (iu *ImageUtil) FetchImageList (accountId []*string, owner []*string, name 
 
 func getImageMap(accountId []*string, ownerId []*string, len int) *ImageSpotmaxMap {
 	//imageName := []string{"amzn2-ami-hvm*-x86_64-gp2", "amzn-ami-hvm-????.??.?.????????-x86_64-gp2", "ubuntu/images/hvm-ssd/ubuntu-trusty*", "RHEL-8.0_HVM*", "suse-sles-*-hvm-ssd-x86_64"}
-	imageName := []string{"amzn2-ami*","amzn-ami*","ubuntu*","RHEL*","suse*"}
+	imageName := []string{"amzn2-ami*", "amzn-ami*", "ubuntu*", "RHEL*", "suse*"}
 	imageMap := ImageSpotmaxMap{
 		data: make(map[string]map[string]map[string]*SpotmaxImage),
 	}
@@ -212,7 +212,7 @@ func getImageMap(accountId []*string, ownerId []*string, len int) *ImageSpotmaxM
 			imageList := util.FetchImageList(accountId, ownerId, v, len)
 			if imageList != nil {
 				for _, image := range *imageList {
-					switch  {
+					switch {
 					case strings.Contains(image.Name, "amzn") || strings.Contains(image.Name, "ubuntu"):
 						imageMap.data[region.Name]["Linux"][image.Name] = image
 					case strings.Contains(image.Name, "suse"):
@@ -229,8 +229,6 @@ func getImageMap(accountId []*string, ownerId []*string, len int) *ImageSpotmaxM
 
 	return &imageMap
 }
-
-
 
 func imageFactory() error {
 	logrus.SetLevel(logrus.DebugLevel)

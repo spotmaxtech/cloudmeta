@@ -6,9 +6,9 @@ const (
 	ConsulInstanceKey = "cloudmeta2/aws/instance"
 	ConsulImageKey    = "cloudmeta2/aws/image.json"
 
-	ALiConsulRegionKey     = "cloudmeta/aliyun/region.json"
-	ALiConsulSpotPriceKey  = "cloudmeta/aliyun/spotprice.json"
-	ALiConsulOdPriceKey    = "cloudmeta/aliyun/odprice.json"
+	ALiConsulRegionKey       = "cloudmeta/aliyun/region.json"
+	ALiConsulSpotPriceKey    = "cloudmeta/aliyun/spotprice.json"
+	ALiConsulOdPriceKey      = "cloudmeta/aliyun/odprice.json"
 	ALiConsulSpotInstanceKey = "cloudmeta/aliyun/spotInstances"
 )
 

@@ -97,7 +97,6 @@ type SpotInstanceAli interface {
 	ListByZone(region string, zone string) []*InstInfo
 }
 
-
 type InterruptInfoAli struct {
 	Interrupt float64 `json:"interrupt_rate"`
 }
@@ -108,4 +107,3 @@ type Image interface {
 	ListImagesByRegion(region string) *map[string]map[string]*ec2.Image
 	ListImagesByRegionAndType(region string, imagetype string) *map[string]*ec2.Image
 }
-

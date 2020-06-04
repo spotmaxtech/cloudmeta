@@ -141,7 +141,7 @@ func newAliDbSet() *DbSetALi {
 	region := NewCommonRegion(ALiConsulRegionKey)
 	spotprice := NewAliSpotPrice(ALiConsulSpotPriceKey)
 	odprice := NewAliOdPrice(ALiConsulOdPriceKey)
-	spotinstance := NewAliInstance(ALiConsulSpotInstanceKey,region)
+	spotinstance := NewAliInstance(ALiConsulSpotInstanceKey, region)
 
 	set := &DbSetALi{
 		Region:       region,
@@ -165,7 +165,6 @@ type ALiMetaDB struct {
 	mutex      *sync.RWMutex
 	set        *DbSetALi
 }
-
 
 func NewMetaDBAWS(addr string) (*MetaDb, error) {
 	db := &MetaDb{

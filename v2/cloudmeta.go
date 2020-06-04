@@ -34,20 +34,20 @@ func (s *DbSet) fetch(consul *gokit.Consul) error {
 	return nil
 }
 
-func (s *DbSetALi)fetch (consul *gokit.Consul) error {
+func (s *DbSetALi) fetch(consul *gokit.Consul) error {
 	if err := s.Region.Fetch(consul); err != nil {
 		return err
 	}
 	if err := s.Instance.FetchAli(consul); err != nil {
-		fmt.Print("instance",err.Error())
+		fmt.Print("instance", err.Error())
 		return err
 	}
 	if err := s.SpotPrice.FetchAli(consul); err != nil {
-		fmt.Print("spot",err.Error())
+		fmt.Print("spot", err.Error())
 		return err
 	}
 	if err := s.OdPrice.FetchAli(consul); err != nil {
-		fmt.Print("od",err.Error())
+		fmt.Print("od", err.Error())
 		return err
 	}
 	return nil
@@ -223,7 +223,6 @@ func (m *MetaDb) Image() cloudmeta.Image {
 	defer m.mutex.RUnlock()
 	return m.set.Image
 }
-
 
 // update new meta version
 func (m *MetaDb) Update() error {

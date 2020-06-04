@@ -108,14 +108,14 @@ type AliInstanceData struct {
 }
 
 type AliInstance struct {
-	key string
+	key    string
 	Region Region
 	AliInstanceData
 }
 
 func NewAliInstance(key string, region Region) *AliInstance {
 	aliinst := AliInstance{
-		key: key,
+		key:    key,
 		Region: region,
 	}
 	return &aliinst
@@ -133,7 +133,6 @@ func (i *AliInstance) FetchAli(consul *gokit.Consul) error {
 	//}
 	//i.data = tempData
 	//return nil
-
 
 	i.data = make(map[string]map[string]map[string]*InstInfo)
 	for _, r := range i.Region.List() {

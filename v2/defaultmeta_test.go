@@ -17,8 +17,6 @@ func TestDefaultAWSMetaDb(t *testing.T) {
 	})
 }
 
-
-
 func TestInitialize(t *testing.T) {
 	Initialize("abc")
 }
