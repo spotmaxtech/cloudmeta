@@ -141,7 +141,7 @@ func newAliDbSet() *DbSetALi {
 	region := NewCommonRegion(ALiConsulRegionKey)
 	spotprice := NewAliSpotPrice(ALiConsulSpotPriceKey)
 	odprice := NewAliOdPrice(ALiConsulOdPriceKey)
-	spotinstance := NewAliInstance(ALiConsulSpotInstanceKey)
+	spotinstance := NewAliInstance(ALiConsulSpotInstanceKey,region)
 
 	set := &DbSetALi{
 		Region:       region,

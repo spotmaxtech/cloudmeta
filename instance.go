@@ -2,6 +2,7 @@ package cloudmeta
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/spotmaxtech/gokit"
 )
 
@@ -108,26 +109,46 @@ type AliInstanceData struct {
 
 type AliInstance struct {
 	key string
+	Region Region
 	AliInstanceData
 }
 
-func NewAliInstance(key string) *AliInstance {
+func NewAliInstance(key string, region Region) *AliInstance {
 	aliinst := AliInstance{
 		key: key,
+		Region: region,
 	}
 	return &aliinst
 }
 
 func (i *AliInstance) FetchAli(consul *gokit.Consul) error {
-	value, err := consul.GetKey(i.key)
-	if err != nil {
-		return err
+	//fmt.Print(i.key)
+	//value, err := consul.GetKey(i.key)
+	//if err != nil {
+	//	return err
+	//}
+	//var tempData map[string]map[string]map[string]*InstInfo
+	//if err = json.Unmarshal(value, &tempData); err != nil {
+	//	return err
+	//}
+	//i.data = tempData
+	//return nil
+
+
+	i.data = make(map[string]map[string]map[string]*InstInfo)
+	for _, r := range i.Region.List() {
+		//i.data[r.Name] = make(map[string]map[string]*InstInfo)
+		value, err := consul.GetKey(fmt.Sprintf("%s/%s/spotinstance.json", i.key, r.Name))
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		var tempData map[string]map[string]map[string]*InstInfo
+		if err = json.Unmarshal(value, &tempData); err != nil {
+			return err
+		}
+		i.data = tempData
 	}
-	var tempData map[string]map[string]map[string]*InstInfo
-	if err = json.Unmarshal(value, &tempData); err != nil {
-		return err
-	}
-	i.data = tempData
 	return nil
 }
 

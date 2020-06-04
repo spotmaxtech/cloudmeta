@@ -3,6 +3,7 @@ package v2
 import (
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/spotmaxtech/gokit"
+	"sync"
 	"testing"
 )
 
@@ -46,4 +47,33 @@ func TestMetaDb_DefaultDb(t *testing.T) {
 		// t.Log(gokit.PrettifyJson(meta.Instance().GetRegionInstInfo("us-east-1"), true))
 		t.Log(gokit.PrettifyJson(meta.Image().ListImagesByRegion("us-east-1"), true))
 	})
+}
+
+func TestALi(t *testing.T) {
+	type fields struct {
+		consul     *gokit.Consul
+		identifier CloudIdentifier
+		mutex      *sync.RWMutex
+		set        *DbSetALi
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &MetaDbALi{
+				consul:     tt.fields.consul,
+				identifier: tt.fields.identifier,
+				mutex:      tt.fields.mutex,
+				set:        tt.fields.set,
+			}
+			if got := m.TestALi(); got != tt.want {
+				t.Errorf("TestALi() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }

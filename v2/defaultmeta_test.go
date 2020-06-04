@@ -1,6 +1,7 @@
 package v2
 
 import (
+	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
 )
@@ -16,6 +17,19 @@ func TestDefaultAWSMetaDb(t *testing.T) {
 	})
 }
 
+
+
 func TestInitialize(t *testing.T) {
 	Initialize("abc")
+}
+
+func TestDefaultALiMetaDb(t *testing.T) {
+	Convey("test", t, func() {
+		meta := DefaultALiMetaDb()
+		So(meta, ShouldNotBeNil)
+		fmt.Print(meta)
+		So(meta.TestALi(), ShouldBeTrue)
+		meta = DefaultALiMetaDb()
+		meta = DefaultALiMetaDb()
+	})
 }
