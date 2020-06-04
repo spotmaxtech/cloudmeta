@@ -28,8 +28,5 @@ func TestDefaultALiMetaDb(t *testing.T) {
 		meta := DefaultALiMetaDb()
 		So(meta, ShouldNotBeNil)
 		fmt.Print(meta)
-		So(meta.TestALi(), ShouldBeTrue)
-		meta = DefaultALiMetaDb()
-		meta = DefaultALiMetaDb()
 	})
 }
