@@ -16,25 +16,25 @@ func TestDbSet_Consistent(t *testing.T) {
 	})
 }
 
-func TestMetaDb(t *testing.T) {
-	Convey("test meta db", t, func() {
-		meta, err := NewMetaDb(AWS, TestConsulAddress)
-		So(err, ShouldBeNil)
-		meta.Interrupt()
-		So(meta.Region().GetRegionInfo("us-east-1").Name, ShouldEqual, "us-east-1")
-	})
-}
+//func TestMetaDb(t *testing.T) {
+//	Convey("test meta db", t, func() {
+//		meta, err := NewMetaDb(AWS, TestConsulAddress)
+//		So(err, ShouldBeNil)
+//		meta.Interrupt()
+//		So(meta.Region().GetRegionInfo("us-east-1").Name, ShouldEqual, "us-east-1")
+//	})
+//}
 
-func TestMetaDb_Update(t *testing.T) {
-	Convey("test update", t, func() {
-		meta, err := NewMetaDb(AWS, TestConsulAddress)
-		So(err, ShouldBeNil)
-		So(meta.Update(), ShouldBeNil)
-		So(meta.Update(), ShouldBeNil)
-		So(meta.Update(), ShouldBeNil)
-		So(meta.Region().GetRegionInfo("us-east-1").Name, ShouldEqual, "us-east-1")
-	})
-}
+//func TestMetaDb_Update(t *testing.T) {
+//	Convey("test update", t, func() {
+//		meta, err := NewMetaDb(AWS, TestConsulAddress)
+//		So(err, ShouldBeNil)
+//		So(meta.Update(), ShouldBeNil)
+//		So(meta.Update(), ShouldBeNil)
+//		So(meta.Update(), ShouldBeNil)
+//		So(meta.Region().GetRegionInfo("us-east-1").Name, ShouldEqual, "us-east-1")
+//	})
+//}
 
 func TestMetaDb_DefaultDb(t *testing.T) {
 	Convey("test instance", t, func() {

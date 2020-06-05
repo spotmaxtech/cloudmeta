@@ -9,6 +9,7 @@ const (
 	ALiConsulRegionKey       = "cloudmeta/aliyun/region.json"
 	ALiConsulSpotPriceKey    = "cloudmeta/aliyun/spotprice.json"
 	ALiConsulOdPriceKey      = "cloudmeta/aliyun/odprice.json"
+	ALiConsulInstanceKey     = "cloudmeta/aliyun/instance.json"
 	ALiConsulSpotInstanceKey = "cloudmeta/aliyun/spotInstances"
 )
 

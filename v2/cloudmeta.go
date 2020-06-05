@@ -15,9 +15,9 @@ type DbSet struct {
 
 type DbSetALi struct {
 	Region    cloudmeta.Region
-	Instance  *cloudmeta.AliInstance
 	SpotPrice cloudmeta.SpotPriceALi
 	OdPrice   cloudmeta.ODPriceALi
+	SpotInstance  cloudmeta.SpotInstanceALi
 }
 
 // fetch all the meta data
@@ -38,16 +38,13 @@ func (s *DbSetALi) fetch(consul *gokit.Consul) error {
 	if err := s.Region.Fetch(consul); err != nil {
 		return err
 	}
-	if err := s.Instance.FetchAli(consul); err != nil {
-		fmt.Print("instance", err.Error())
+	if err := s.SpotInstance.FetchALiSpot(consul); err != nil {
 		return err
 	}
 	if err := s.SpotPrice.FetchAli(consul); err != nil {
-		fmt.Print("spot", err.Error())
 		return err
 	}
 	if err := s.OdPrice.FetchAli(consul); err != nil {
-		fmt.Print("od", err.Error())
 		return err
 	}
 	return nil
@@ -96,12 +93,12 @@ func (s *DbSetALi) consistent() error {
 func (s *DbSetALi) instanceConsistent() error {
 	for _, region := range s.Region.List() {
 		fmt.Print(region.Name)
-		instances := s.Instance.List(region.Name)
-		if len(instances) == 0 {
+		instances := s.SpotInstance.GetInstByRegion(region.Name)
+		fmt.Print(instances)
+		if instances == nil {
 			return fmt.Errorf("no instance in %s", region.Name)
 		}
 	}
-
 	return nil
 }
 
@@ -124,13 +121,14 @@ func newAWSDbSet() *DbSet {
 
 func newALiDbSet() *DbSetALi {
 	region := cloudmeta.NewCommonRegion(ALiConsulRegionKey)
-	instance := cloudmeta.NewAliInstance(ALiConsulSpotInstanceKey, region)
+	spotinstance := cloudmeta.NewALiSpotInstance(ALiConsulSpotInstanceKey, region)
 	spotprice := cloudmeta.NewAliSpotPrice(ALiConsulSpotPriceKey)
 	odprice := cloudmeta.NewAliOdPrice(ALiConsulOdPriceKey)
 
+
 	set := &DbSetALi{
 		Region:    region,
-		Instance:  instance,
+		SpotInstance:  spotinstance,
 		SpotPrice: spotprice,
 		OdPrice:   odprice,
 	}
@@ -200,10 +198,10 @@ func (m *MetaDb) Instance() *AWSInstance {
 	return m.set.Instance
 }
 
-func (m *MetaDbALi) Instance() *cloudmeta.AliInstance {
+func (m *MetaDbALi) Instance() cloudmeta.SpotInstanceALi {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
-	return m.set.Instance
+	return m.set.SpotInstance
 }
 
 func (m *MetaDbALi) SpotPrice() cloudmeta.SpotPriceALi {

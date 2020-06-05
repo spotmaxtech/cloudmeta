@@ -91,10 +91,16 @@ type SpotInstanceInfoAli struct {
 	Desc          string  `json:"desc"`
 }
 
-type SpotInstanceAli interface {
-	FetchAli(consul *gokit.Consul) error
-	List(region string) []*InstInfo
-	ListByZone(region string, zone string) []*InstInfo
+//type SpotInstanceAli interface {
+//	FetchAli(consul *gokit.Consul) error
+//	List(region string) []*InstInfo
+//	ListByZone(region string, zone string) []*InstInfo
+//}
+
+type SpotInstanceALi interface {
+	FetchALiSpot(consul *gokit.Consul) error
+	GetInstByRegion(region string) map[string]map[string]map[string]*SpotInstanceInfoAli
+	GetInstByRegionAndZones(region string, zone string) *[]*SpotInstanceInfoAli
 }
 
 type InterruptInfoAli struct {

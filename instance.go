@@ -109,46 +109,43 @@ type AliInstanceData struct {
 
 type AliInstance struct {
 	key    string
-	Region Region
 	AliInstanceData
 }
 
-func NewAliInstance(key string, region Region) *AliInstance {
+func NewAliInstance(key string) *AliInstance {
 	aliinst := AliInstance{
 		key:    key,
-		Region: region,
 	}
 	return &aliinst
 }
 
 func (i *AliInstance) FetchAli(consul *gokit.Consul) error {
-	//fmt.Print(i.key)
-	//value, err := consul.GetKey(i.key)
-	//if err != nil {
-	//	return err
-	//}
-	//var tempData map[string]map[string]map[string]*InstInfo
-	//if err = json.Unmarshal(value, &tempData); err != nil {
-	//	return err
-	//}
-	//i.data = tempData
-	//return nil
-
-	i.data = make(map[string]map[string]map[string]*InstInfo)
-	for _, r := range i.Region.List() {
-		//i.data[r.Name] = make(map[string]map[string]*InstInfo)
-		value, err := consul.GetKey(fmt.Sprintf("%s/%s/spotinstance.json", i.key, r.Name))
-		if err != nil {
-			fmt.Println(err)
-			return err
-		}
-		var tempData map[string]map[string]map[string]*InstInfo
-		if err = json.Unmarshal(value, &tempData); err != nil {
-			return err
-		}
-		i.data = tempData
+	value, err := consul.GetKey(i.key)
+	if err != nil {
+		return err
 	}
+	var tempData map[string]map[string]map[string]*InstInfo
+	if err = json.Unmarshal(value, &tempData); err != nil {
+		return err
+	}
+	i.data = tempData
 	return nil
+
+	//i.data = make(map[string]map[string]map[string]*InstInfo)
+	//for _, r := range i.Region.List() {
+	//	//i.data[r.Name] = make(map[string]map[string]*InstInfo)
+	//	value, err := consul.GetKey(fmt.Sprintf("%s/%s/spotinstance.json", i.key, r.Name))
+	//	if err != nil {
+	//		fmt.Println(err)
+	//		return err
+	//	}
+	//	var tempData map[string]map[string]map[string]*InstInfo
+	//	if err = json.Unmarshal(value, &tempData); err != nil {
+	//		return err
+	//	}
+	//	i.data = tempData
+	//}
+	//return nil
 }
 
 func (i *AliInstance) List(region string) []*InstInfo {
@@ -172,4 +169,52 @@ func (i *AliInstance) ListByZone(region string, zone string) []*InstInfo {
 	}
 
 	return values
+}
+
+
+type ALiSpotInstance struct {
+	key    string
+	region Region
+	data   map[string]map[string]map[string]map[string]*SpotInstanceInfoAli
+}
+
+func NewALiSpotInstance(key string, region Region) *ALiSpotInstance {
+	alispot := ALiSpotInstance{
+		key:    key,
+		region: region,
+	}
+	return &alispot
+}
+
+func (s *ALiSpotInstance)FetchALiSpot(consul *gokit.Consul) error {
+	s.data = make(map[string]map[string]map[string]map[string]*SpotInstanceInfoAli)
+	for _, r := range s.region.List() {
+		s.data[r.Name] = make(map[string]map[string]map[string]*SpotInstanceInfoAli)
+		values, err := consul.GetKey(fmt.Sprintf("%s/%s/spotinstance.json", s.key, r.Name))
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		var tempData map[string]map[string]map[string]*SpotInstanceInfoAli
+		if err = json.Unmarshal(values, &tempData); err != nil {
+			return err
+		}
+		s.data[r.Name] = tempData
+	}
+	return nil
+}
+
+func (s *ALiSpotInstance)GetInstByRegion(region string) map[string]map[string]map[string]*SpotInstanceInfoAli{
+	if _, OK := s.data[region]; !OK {
+		return nil
+	}
+	return s.data[region]
+}
+
+func (s *ALiSpotInstance)GetInstByRegionAndZones(region string, zone string) *[]*SpotInstanceInfoAli {
+	var insts []*SpotInstanceInfoAli
+	for _, v := range s.data[region][region][zone] {
+		insts = append(insts, v)
+	}
+	return &insts
 }

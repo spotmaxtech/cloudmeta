@@ -20,7 +20,7 @@ type DbSetALi struct {
 	Region       Region
 	SpotPrice    SpotPriceALi
 	ODPrice      ODPriceALi
-	SpotInstance SpotInstanceAli
+	SpotInstance SpotInstanceALi
 }
 
 // fetch all the meta data
@@ -61,7 +61,7 @@ func (s *DbSetALi) fetch(consul *gokit.Consul) error {
 	if err := s.ODPrice.FetchAli(consul); err != nil {
 		return err
 	}
-	if err := s.SpotInstance.FetchAli(consul); err != nil {
+	if err := s.SpotInstance.FetchALiSpot(consul); err != nil {
 		return err
 	}
 	return nil
@@ -141,7 +141,7 @@ func newAliDbSet() *DbSetALi {
 	region := NewCommonRegion(ALiConsulRegionKey)
 	spotprice := NewAliSpotPrice(ALiConsulSpotPriceKey)
 	odprice := NewAliOdPrice(ALiConsulOdPriceKey)
-	spotinstance := NewAliInstance(ALiConsulSpotInstanceKey, region)
+	spotinstance := NewALiSpotInstance(ALiConsulSpotInstanceKey, region)
 
 	set := &DbSetALi{
 		Region:       region,
@@ -210,7 +210,7 @@ func (m *MetaDb) Instance() Instance {
 	return m.set.Instance
 }
 
-func (m *ALiMetaDB) SpotInstance() SpotInstanceAli {
+func (m *ALiMetaDB) SpotInstance() SpotInstanceALi {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	return m.set.SpotInstance
