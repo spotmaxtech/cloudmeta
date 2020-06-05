@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/spotmaxtech/gokit"
+	"strings"
 )
 
 type AWSInstanceData struct {
@@ -217,4 +218,16 @@ func (s *ALiSpotInstance)GetInstByRegionAndZones(region string, zone string) *[]
 		insts = append(insts, v)
 	}
 	return &insts
+}
+
+func (s *ALiSpotInstance)GetInstInfoByTypes(region string, zone string, inst []string) *map[string]*SpotInstanceInfoAli {
+	var instinfo = make(map[string]*SpotInstanceInfoAli)
+	for _, v := range s.data[region][region][zone] {
+		for _, i := range inst {
+			if strings.ReplaceAll(v.InstType, "ecs.","") == i {
+				instinfo[i] = v
+			}
+		}
+	}
+	return &instinfo
 }

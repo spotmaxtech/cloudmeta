@@ -101,6 +101,7 @@ type SpotInstanceALi interface {
 	FetchALiSpot(consul *gokit.Consul) error
 	GetInstByRegion(region string) map[string]map[string]map[string]*SpotInstanceInfoAli
 	GetInstByRegionAndZones(region string, zone string) *[]*SpotInstanceInfoAli
+	GetInstInfoByTypes(region string, zone string, inst []string) *map[string]*SpotInstanceInfoAli
 }
 
 type InterruptInfoAli struct {
