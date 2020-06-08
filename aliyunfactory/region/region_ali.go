@@ -13,6 +13,11 @@ const (
 	RegionKey  = "cloudmeta/aliyun/region.json"
 )
 
+type RegionInfo struct {
+	Text     string  `json:"text"`
+	RegionId string  `json:"regionId"`
+}
+
 type Region struct {
 	Conn *connections.ConnectionsAli
 }
@@ -21,6 +26,26 @@ func NewRegion(connections *connections.ConnectionsAli) *Region {
 	return &Region{
 		Conn: connections,
 	}
+}
+
+func (r *Region) getAvailableRegions() []RegionInfo {
+	var regions []RegionInfo
+	request := ecs.CreateDescribeRegionsRequest()
+	request.Scheme = "https"
+	response, err := r.Conn.ECS.DescribeRegions(request)
+	if err != nil {
+		fmt.Print(err.Error())
+	}
+	if response != nil {
+		for _, v := range response.Regions.Region {
+			var r = RegionInfo{
+				Text:   v.LocalName,
+				RegionId: v.RegionId,
+			}
+			regions = append(regions, r)
+		}
+	}
+	return regions
 }
 
 func (r *Region) getAvailableZones(regionId string) []string {
@@ -51,22 +76,30 @@ func main() {
 	data := make(map[string]*MsData)
 	conn := *connections.NewAli("cn-hangzhou", "", "")
 	r := Region{Conn: &conn}
-	data["cn-beijing"] = &MsData{
-		Text:  "China (Beijing)",
-		Zones: r.getAvailableZones("cn-beijing"),
+
+	for _, v := range r.getAvailableRegions() {
+		data[v.RegionId] = &MsData{
+			Text:  v.Text,
+			Zones: r.getAvailableZones(v.RegionId),
+		}
 	}
-	data["cn-hangzhou"] = &MsData{
-		Text:  "China (Hangzhou)",
-		Zones: r.getAvailableZones("cn-hangzhou"),
-	}
-	data["cn-hongkong"] = &MsData{
-		Text:  "China (Hong Kong)",
-		Zones: r.getAvailableZones("cn-hongkong"),
-	}
-	data["ap-southeast-1"] = &MsData{
-		Text:  "Singapore",
-		Zones: r.getAvailableZones("ap-southeast-1"),
-	}
+
+	//data["cn-beijing"] = &MsData{
+	//	Text:  "China (Beijing)",
+	//	Zones: r.getAvailableZones("cn-beijing"),
+	//}
+	//data["cn-hangzhou"] = &MsData{
+	//	Text:  "China (Hangzhou)",
+	//	Zones: r.getAvailableZones("cn-hangzhou"),
+	//}
+	//data["cn-hongkong"] = &MsData{
+	//	Text:  "China (Hong Kong)",
+	//	Zones: r.getAvailableZones("cn-hongkong"),
+	//}
+	//data["ap-southeast-1"] = &MsData{
+	//	Text:  "Singapore",
+	//	Zones: r.getAvailableZones("ap-southeast-1"),
+	//}
 	//data["ap-southeast-2"] = &MsData{
 	//	Text: "Australia (Sydney)",
 	//	Zones: r.getAvailableZones("ap-southeast-2"),
@@ -75,14 +108,14 @@ func main() {
 	//	Text: "US (Silicon Valley)",
 	//	Zones: r.getAvailableZones("us-west-1"),
 	//}
-	data["us-east-1"] = &MsData{
-		Text:  "US (Virginia)",
-		Zones: r.getAvailableZones("us-east-1"),
-	}
-	data["eu-central-1"] = &MsData{
-		Text:  "Germany (Frankfurt)",
-		Zones: r.getAvailableZones("eu-central-1"),
-	}
+	//data["us-east-1"] = &MsData{
+	//	Text:  "US (Virginia)",
+	//	Zones: r.getAvailableZones("us-east-1"),
+	//}
+	//data["eu-central-1"] = &MsData{
+	//	Text:  "Germany (Frankfurt)",
+	//	Zones: r.getAvailableZones("eu-central-1"),
+	//}
 
 	bytes, err := json.MarshalIndent(data, "", "    ")
 	if err != nil {

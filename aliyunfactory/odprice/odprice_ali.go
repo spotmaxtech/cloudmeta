@@ -26,7 +26,7 @@ type ODPrice struct {
 	data map[string]map[string]*cloudmeta.ODPriceAli
 }
 
-func (odp *ODPriceUtil) FetchODPrice(regionId string, inst string) *cloudmeta.ODPriceAli {
+func (odp *ODPriceUtil) FetchODPrice(regionId string,zone string, inst string) *cloudmeta.ODPriceAli {
 	request := ecs.CreateDescribePriceRequest()
 	request.Scheme = "https"
 	request.ResourceType = "instance"
@@ -39,17 +39,18 @@ func (odp *ODPriceUtil) FetchODPrice(regionId string, inst string) *cloudmeta.OD
 	if response != nil {
 		var desc string
 		var origin_price float64
-		if response.IsSuccess() {
-			desc = response.PriceInfo.Rules.Rule[0].Description
-			origin_price = response.PriceInfo.Price.DiscountPrice
-		} else {
+		origin_price = response.PriceInfo.Price.OriginalPrice
+		if origin_price == 0 {
 			desc = "The specified instanceType exceeds the maximum limit for the POSTPaid instances."
 			metaData := cloudmeta.NewAliSpotPrice(SpotPriceKey)
 			if err := metaData.FetchAli(gokit.NewConsul(ConsulAddr)); err != nil {
 				panic(err)
 			}
-			if _, ok := metaData.ListAli(regionId)[inst]; ok {
-				origin_price = metaData.ListAli(regionId)[inst].OriginPrice
+
+			for k, v := range metaData.ListAli(regionId, zone) {
+				if k == inst {
+					origin_price = v.OriginPrice
+				}
 			}
 		}
 		opi := cloudmeta.ODPriceAli{
@@ -83,7 +84,7 @@ func main() {
 	for _, region := range metaRegion.List() {
 		odPrice.data[region.Name] = make(map[string]*cloudmeta.ODPriceAli)
 		for _, inst := range metaInstances.List(region.Name) {
-			odPriceInfo := odpu.FetchODPrice(region.Name, inst.Name)
+			odPriceInfo := odpu.FetchODPrice(region.Name,region.Zones[0], inst.Name)
 			if odPriceInfo != nil {
 				logrus.Debugf("fetch region %s : instance %s", region.Name, inst.Name)
 				odPrice.data[region.Name][inst.Name] = odPriceInfo

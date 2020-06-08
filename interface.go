@@ -60,7 +60,7 @@ type SpotPrice interface {
 
 type SpotPriceALi interface {
 	FetchAli(consul *gokit.Consul) error
-	ListAli(region string) map[string]*SpotPriceInfoAli
+	ListAli(region string,zone string) map[string]*SpotPriceInfoAli
 }
 
 type InterruptInfo struct {

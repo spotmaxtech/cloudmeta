@@ -23,7 +23,7 @@ type CommonSpotPriceData struct {
 }
 
 type AliSpotPriceData struct {
-	data map[string]map[string]*SpotPriceInfoAli
+	data map[string]map[string]map[string]*SpotPriceInfoAli
 }
 
 type CommonSpotPrice struct {
@@ -57,7 +57,7 @@ func (i *AliSpotPrice) FetchAli(consul *gokit.Consul) error {
 		return err
 	}
 
-	var tempData map[string]map[string]*SpotPriceInfoAli
+	var tempData map[string]map[string]map[string]*SpotPriceInfoAli
 	if err = json.Unmarshal(value, &tempData); err != nil {
 		return err
 	}
@@ -74,9 +74,9 @@ func (i *CommonSpotPrice) List(region string) []*SpotPriceInfo {
 	return values
 }
 
-func (i *AliSpotPrice) ListAli(region string) map[string]*SpotPriceInfoAli {
+func (i *AliSpotPrice) ListAli(region string, zone string) map[string]*SpotPriceInfoAli {
 	var values = make(map[string]*SpotPriceInfoAli)
-	for key, v := range i.data[region] {
+	for key, v := range i.data[region][zone] {
 		values[key] = v
 	}
 	return values

@@ -2,7 +2,6 @@ package cloudmeta
 
 import (
 	"encoding/json"
-
 	"github.com/spotmaxtech/gokit"
 )
 
