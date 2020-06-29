@@ -125,3 +125,9 @@ type ImageALi struct {
 	OSType         string   `json:"osType"`
 	Platform       string   `json:"platform"`
 }
+
+type ImageInfoALi interface {
+	FetchALiImage(consul *gokit.Consul) error
+	ListImageByRegion (region string) *map[string]map[string]*ImageALi
+	ListImageByRegionAndOS (region string, os string) *map[string]*ImageALi
+}

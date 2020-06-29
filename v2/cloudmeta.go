@@ -18,6 +18,7 @@ type DbSetALi struct {
 	SpotPrice cloudmeta.SpotPriceALi
 	OdPrice   cloudmeta.ODPriceALi
 	SpotInstance  cloudmeta.SpotInstanceALi
+	Image     cloudmeta.ImageInfoALi
 }
 
 // fetch all the meta data
@@ -45,6 +46,9 @@ func (s *DbSetALi) fetch(consul *gokit.Consul) error {
 		return err
 	}
 	if err := s.OdPrice.FetchAli(consul); err != nil {
+		return err
+	}
+	if err := s.Image.FetchALiImage(consul); err != nil {
 		return err
 	}
 	return nil
@@ -124,6 +128,7 @@ func newALiDbSet() *DbSetALi {
 	spotinstance := cloudmeta.NewALiSpotInstance(ALiConsulSpotInstanceKey, region)
 	spotprice := cloudmeta.NewAliSpotPrice(ALiConsulSpotPriceKey)
 	odprice := cloudmeta.NewAliOdPrice(ALiConsulOdPriceKey)
+	image := cloudmeta.NewALiImage(ALiConsulImageKey, region)
 
 
 	set := &DbSetALi{
@@ -131,6 +136,7 @@ func newALiDbSet() *DbSetALi {
 		SpotInstance:  spotinstance,
 		SpotPrice: spotprice,
 		OdPrice:   odprice,
+		Image:     image,
 	}
 	return set
 }
@@ -217,6 +223,12 @@ func (m *MetaDbALi) OdPrice() cloudmeta.ODPriceALi {
 }
 
 func (m *MetaDb) Image() cloudmeta.Image {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+	return m.set.Image
+}
+
+func (m *MetaDbALi) Image() cloudmeta.ImageInfoALi {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	return m.set.Image
