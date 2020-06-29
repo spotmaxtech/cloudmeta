@@ -11,6 +11,8 @@ const (
 	ConsulAddr = "consul.spotmaxtech.com"
 	RegionKey  = "cloudmeta/aws/region.json"
 	ImageKey   = "cloudmeta/aws/image.json"
+	ALiImageKey = "cloudmeta/aliyun/image"
+	ALiRegionKey = "cloudmeta/aliyun/region.json"
 )
 
 func TestAWSImage_FetchImage(t *testing.T) {
@@ -39,4 +41,22 @@ func TestAWSImage_ListImagesByRegionAndType(t *testing.T) {
 		fmt.Println(*values)
 		So(*values, ShouldNotBeNil)
 	})
+}
+
+func TestALiImage_ListImageByRegion(t *testing.T) {
+	consul := gokit.NewConsul(ConsulAddr)
+	region := NewCommonRegion(ALiRegionKey)
+	_ = region.Fetch(consul)
+	meta := NewALiImage(ALiImageKey, region)
+	_ = meta.FetchALiImage(consul)
+	t.Log(gokit.Prettify(meta.ListImageByRegion("ap-northeast-1")))
+}
+
+func TestALiImage_ListImageByRegionAndOS(t *testing.T) {
+	consul := gokit.NewConsul(ConsulAddr)
+	region := NewCommonRegion(ALiRegionKey)
+	_ = region.Fetch(consul)
+	meta := NewALiImage(ALiImageKey, region)
+	_ = meta.FetchALiImage(consul)
+	t.Log(gokit.Prettify(meta.ListImageByRegionAndOS("ap-northeast-1","linux")))
 }

@@ -114,3 +114,14 @@ type Image interface {
 	ListImagesByRegion(region string) *map[string]map[string]*ec2.Image
 	ListImagesByRegionAndType(region string, imagetype string) *map[string]*ec2.Image
 }
+
+type ImageALi struct {
+	ImageId        string   `json:"imageId"`
+	ImageName      string   `json:"imageName"`
+	Architecture   string   `json:"architecture"`
+	Size           int      `json:"size"`
+	OSName         string   `json:"osName"`
+	Status         string   `json:"status"`
+	OSType         string   `json:"osType"`
+	Platform       string   `json:"platform"`
+}
