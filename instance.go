@@ -231,3 +231,87 @@ func (s *ALiSpotInstance)GetInstInfoByTypes(region string, zone string, inst []s
 	}
 	return &instinfo
 }
+
+type ALiInstanceMatrix struct {
+	key    string
+	Region Region
+	data   map[string]map[string]map[string][]string
+}
+
+func NewALiInstanceMatrix (key string, region Region) *ALiInstanceMatrix{
+	aliMatrix := ALiInstanceMatrix{
+		key:    key,
+		Region: region,
+	}
+	return &aliMatrix
+}
+
+func (imatrix *ALiInstanceMatrix) FetchALiMatrix (consul *gokit.Consul) error {
+	imatrix.data = make(map[string]map[string]map[string][]string)
+	for _, r := range imatrix.Region.List() {
+		value, err := consul.GetKey(fmt.Sprintf("%s/%s/instanceMatrix.json", imatrix.key, r.Name))
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		var tempData map[string]map[string][]string
+		if err = json.Unmarshal(value, &tempData); err != nil {
+			return err
+		}
+		imatrix.data[r.Name] = tempData
+	}
+	return nil
+}
+
+func (imatrix *ALiInstanceMatrix) ListInstanceMatrixByRegion (region string) *map[string]map[string][]string {
+	var values = make(map[string]map[string][]string)
+	for k, v := range imatrix.data {
+		if k == region {
+			values = v
+			return &values
+		}
+	}
+	return &values
+}
+
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
+
+func (imatrix *ALiInstanceMatrix) ListInstanceMatrixByRegionV2 (region string) *map[string][]string {
+	var values = make(map[string][]string)
+	for k, v := range imatrix.data {
+		if k == region {
+			for _, resource := range v {
+				for t, m := range resource {
+					for _, ok := range m {
+						if !contains(values[t], ok) {
+							values[t] = append(values[t], ok)
+						}
+					}
+				}
+			}
+		}
+	}
+	return &values
+}
+
+func (imatrix *ALiInstanceMatrix) ListInstanceMatrixByRegionAndZone(region string, zone string) *map[string][]string {
+	var values = make(map[string][]string)
+	for k, v := range imatrix.data {
+		if k == region {
+			for z, t := range v {
+				if z == zone {
+					values = t
+					return &values
+				}
+			}
+		}
+	}
+	return &values
+}

@@ -12,6 +12,7 @@ const (
 	ALiConsulInstanceKey     = "cloudmeta/aliyun/instance.json"
 	ALiConsulSpotInstanceKey = "cloudmeta/aliyun/spotInstances"
 	ALiConsulImageKey        = "cloudmeta/aliyun/image"
+	ALiConsulInstanceMatrixKey = "cloudmeta/aliyun/instanceMatrix"
 )
 
 type CloudIdentifier int

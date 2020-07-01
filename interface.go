@@ -131,3 +131,10 @@ type ImageInfoALi interface {
 	ListImageByRegion (region string) *map[string]map[string]*ImageALi
 	ListImageByRegionAndOS (region string, os string) *map[string]*ImageALi
 }
+
+type InstanceMatrixALi interface {
+	FetchALiMatrix (consul *gokit.Consul) error
+	ListInstanceMatrixByRegion (region string) *map[string]map[string][]string
+	ListInstanceMatrixByRegionAndZone(region string, zone string) *map[string][]string
+	ListInstanceMatrixByRegionV2 (region string) *map[string][]string
+}
