@@ -119,7 +119,9 @@ func main(){
 			im.data[z] = make(map[string][]string)
 			for k, v := range *m {
 				for _, t := range v {
-					im.data[z][k] = *imc.getAvailableInstance(region.Name, z, t)
+					if imc.getAvailableInstance(region.Name, z, t) != nil {
+						im.data[z][k] = append(im.data[z][k], *imc.getAvailableInstance(region.Name, z, t)...)
+					}
 				}
 				key := fmt.Sprintf("cloudmeta/aliyun/instanceMatrix/%s/instanceMatrix.json", region.Name)
 				bytes, err := json.MarshalIndent(im.data, "", "    ")
