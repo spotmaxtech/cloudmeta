@@ -77,3 +77,21 @@ func TestSpot(t *testing.T) {
 	output, err := conn.EC2.DescribeSpotPriceHistory(apiInput)
 	fmt.Println(output.SpotPriceHistory, err)
 }
+
+func TestSpotAli(t *testing.T) {
+	meta := DefaultAliMetaDb()
+	spotPriceInfoAli := make(map[string]*SpotPriceInfoAli)
+	instanceTypes := []string{
+		"ecs.c5.3xlarge",
+		"ecs.ce4.xlarge",
+	}
+	for _, inst := range instanceTypes {
+		info := meta.SpotPrice().ListAli("cn-hangzhou", "cn-hangzhou-f")
+		if info != nil {
+			spotPriceInfoAli = info
+		} else {
+			t.Log("no interrupt info for instance ", inst)
+		}
+	}
+	t.Log(spotPriceInfoAli)
+}
