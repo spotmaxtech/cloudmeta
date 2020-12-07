@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: cloudmeta-awsfactory-instance
 spec:
-  schedule: "20 * * * *"
+  schedule: "30 */12 * * *"
   jobTemplate:
     spec:
       template:
