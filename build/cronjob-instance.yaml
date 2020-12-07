@@ -14,7 +14,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: main
-              image: liuzoxan/cloudmeta:v0.1.10-1-g0fe7260
+              image: liuzoxan/cloudmeta:v0.1.23-0-g66d62ad
               imagePullPolicy: Always
               command: ["./awsfactory"]
               args: ["instance"]
@@ -28,4 +28,14 @@ spec:
                   valueFrom:
                     secretKeyRef:
                       name: aws-key
+                      key: secret
+                - name: CHINA_AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-key-china
+                      key: key
+                - name: CHINA_AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-key-china
                       key: secret

@@ -14,7 +14,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: main
-              image: liuzoxan/cloudmeta:v0.1.7-1-g7c63ca2
+              image: liuzoxan/cloudmeta:v0.1.23-0-g66d62ad
               imagePullPolicy: Always
               command: ["./awsfactory"]
               args: ["region"]
