@@ -14,8 +14,8 @@ const (
 )
 
 type RegionInfo struct {
-	Text     string  `json:"text"`
-	RegionId string  `json:"regionId"`
+	Text     string `json:"text"`
+	RegionId string `json:"regionId"`
 }
 
 type Region struct {
@@ -39,7 +39,7 @@ func (r *Region) getAvailableRegions() []RegionInfo {
 	if response != nil {
 		for _, v := range response.Regions.Region {
 			var r = RegionInfo{
-				Text:   v.LocalName,
+				Text:     v.LocalName,
 				RegionId: v.RegionId,
 			}
 			regions = append(regions, r)

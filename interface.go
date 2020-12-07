@@ -60,7 +60,7 @@ type SpotPrice interface {
 
 type SpotPriceALi interface {
 	FetchAli(consul *gokit.Consul) error
-	ListAli(region string,zone string) map[string]*SpotPriceInfoAli
+	ListAli(region string, zone string) map[string]*SpotPriceInfoAli
 }
 
 type InterruptInfo struct {
@@ -116,25 +116,25 @@ type Image interface {
 }
 
 type ImageALi struct {
-	ImageId        string   `json:"imageId"`
-	ImageName      string   `json:"imageName"`
-	Architecture   string   `json:"architecture"`
-	Size           int      `json:"size"`
-	OSName         string   `json:"osName"`
-	Status         string   `json:"status"`
-	OSType         string   `json:"osType"`
-	Platform       string   `json:"platform"`
+	ImageId      string `json:"imageId"`
+	ImageName    string `json:"imageName"`
+	Architecture string `json:"architecture"`
+	Size         int    `json:"size"`
+	OSName       string `json:"osName"`
+	Status       string `json:"status"`
+	OSType       string `json:"osType"`
+	Platform     string `json:"platform"`
 }
 
 type ImageInfoALi interface {
 	FetchALiImage(consul *gokit.Consul) error
-	ListImageByRegion (region string) *map[string]map[string]*ImageALi
-	ListImageByRegionAndOS (region string, os string) *map[string]*ImageALi
+	ListImageByRegion(region string) *map[string]map[string]*ImageALi
+	ListImageByRegionAndOS(region string, os string) *map[string]*ImageALi
 }
 
 type InstanceMatrixALi interface {
-	FetchALiMatrix (consul *gokit.Consul) error
-	ListInstanceMatrixByRegion (region string) *map[string]map[string][]string
+	FetchALiMatrix(consul *gokit.Consul) error
+	ListInstanceMatrixByRegion(region string) *map[string]map[string][]string
 	ListInstanceMatrixByRegionAndZone(region string, zone string) *map[string][]string
-	ListInstanceMatrixByRegionV2 (region string) *map[string][]string
+	ListInstanceMatrixByRegionV2(region string) *map[string][]string
 }

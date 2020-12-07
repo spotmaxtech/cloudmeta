@@ -47,7 +47,7 @@ func FetchSpotInstance(regionId string) *SpotInstance {
 			spot.data[region.Name] = make(map[string]map[string]*cloudmeta.SpotInstanceInfoAli)
 			for _, zone := range region.Zones {
 				spot.data[region.Name][zone] = make(map[string]*cloudmeta.SpotInstanceInfoAli)
-				for _, ins := range metaInstances.ListByZone(region.Name,zone) {
+				for _, ins := range metaInstances.ListByZone(region.Name, zone) {
 					logrus.Debugf("spot instance %s", ins.Name)
 					var op, tp, dp, sp float64
 					if _, ok := metaODPrice.ListAli(region.Name)[ins.Name]; ok {
@@ -56,9 +56,9 @@ func FetchSpotInstance(regionId string) *SpotInstance {
 						dp = metaODPrice.ListAli(region.Name)[ins.Name].DiscountPrice
 					}
 
-					if _, ok := metaSpotPrice.ListAli(region.Name,zone)[ins.Name]; ok {
-						sp = metaSpotPrice.ListAli(region.Name,zone)[ins.Name].Avg
-						op = metaSpotPrice.ListAli(region.Name,zone)[ins.Name].OriginPrice
+					if _, ok := metaSpotPrice.ListAli(region.Name, zone)[ins.Name]; ok {
+						sp = metaSpotPrice.ListAli(region.Name, zone)[ins.Name].Avg
+						op = metaSpotPrice.ListAli(region.Name, zone)[ins.Name].OriginPrice
 					}
 
 					spotali := &cloudmeta.SpotInstanceInfoAli{

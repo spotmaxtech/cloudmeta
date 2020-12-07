@@ -109,13 +109,13 @@ type AliInstanceData struct {
 }
 
 type AliInstance struct {
-	key    string
+	key string
 	AliInstanceData
 }
 
 func NewAliInstance(key string) *AliInstance {
 	aliinst := AliInstance{
-		key:    key,
+		key: key,
 	}
 	return &aliinst
 }
@@ -172,7 +172,6 @@ func (i *AliInstance) ListByZone(region string, zone string) []*InstInfo {
 	return values
 }
 
-
 type ALiSpotInstance struct {
 	key    string
 	region Region
@@ -187,7 +186,7 @@ func NewALiSpotInstance(key string, region Region) *ALiSpotInstance {
 	return &alispot
 }
 
-func (s *ALiSpotInstance)FetchALiSpot(consul *gokit.Consul) error {
+func (s *ALiSpotInstance) FetchALiSpot(consul *gokit.Consul) error {
 	s.data = make(map[string]map[string]map[string]map[string]*SpotInstanceInfoAli)
 	for _, r := range s.region.List() {
 		s.data[r.Name] = make(map[string]map[string]map[string]*SpotInstanceInfoAli)
@@ -205,14 +204,14 @@ func (s *ALiSpotInstance)FetchALiSpot(consul *gokit.Consul) error {
 	return nil
 }
 
-func (s *ALiSpotInstance)GetInstByRegion(region string) map[string]map[string]map[string]*SpotInstanceInfoAli{
+func (s *ALiSpotInstance) GetInstByRegion(region string) map[string]map[string]map[string]*SpotInstanceInfoAli {
 	if _, OK := s.data[region]; !OK {
 		return nil
 	}
 	return s.data[region]
 }
 
-func (s *ALiSpotInstance)GetInstByRegionAndZones(region string, zone string) *[]*SpotInstanceInfoAli {
+func (s *ALiSpotInstance) GetInstByRegionAndZones(region string, zone string) *[]*SpotInstanceInfoAli {
 	var insts []*SpotInstanceInfoAli
 	for _, v := range s.data[region][region][zone] {
 		insts = append(insts, v)
@@ -220,11 +219,11 @@ func (s *ALiSpotInstance)GetInstByRegionAndZones(region string, zone string) *[]
 	return &insts
 }
 
-func (s *ALiSpotInstance)GetInstInfoByTypes(region string, zone string, inst []string) *map[string]*SpotInstanceInfoAli {
+func (s *ALiSpotInstance) GetInstInfoByTypes(region string, zone string, inst []string) *map[string]*SpotInstanceInfoAli {
 	var instinfo = make(map[string]*SpotInstanceInfoAli)
 	for _, v := range s.data[region][region][zone] {
 		for _, i := range inst {
-			if strings.ReplaceAll(v.InstType, "ecs.","") == i {
+			if strings.ReplaceAll(v.InstType, "ecs.", "") == i {
 				instinfo[i] = v
 			}
 		}
@@ -238,7 +237,7 @@ type ALiInstanceMatrix struct {
 	data   map[string]map[string]map[string][]string
 }
 
-func NewALiInstanceMatrix (key string, region Region) *ALiInstanceMatrix{
+func NewALiInstanceMatrix(key string, region Region) *ALiInstanceMatrix {
 	aliMatrix := ALiInstanceMatrix{
 		key:    key,
 		Region: region,
@@ -246,7 +245,7 @@ func NewALiInstanceMatrix (key string, region Region) *ALiInstanceMatrix{
 	return &aliMatrix
 }
 
-func (imatrix *ALiInstanceMatrix) FetchALiMatrix (consul *gokit.Consul) error {
+func (imatrix *ALiInstanceMatrix) FetchALiMatrix(consul *gokit.Consul) error {
 	imatrix.data = make(map[string]map[string]map[string][]string)
 	for _, r := range imatrix.Region.List() {
 		value, err := consul.GetKey(fmt.Sprintf("%s/%s/instanceMatrix.json", imatrix.key, r.Name))
@@ -263,7 +262,7 @@ func (imatrix *ALiInstanceMatrix) FetchALiMatrix (consul *gokit.Consul) error {
 	return nil
 }
 
-func (imatrix *ALiInstanceMatrix) ListInstanceMatrixByRegion (region string) *map[string]map[string][]string {
+func (imatrix *ALiInstanceMatrix) ListInstanceMatrixByRegion(region string) *map[string]map[string][]string {
 	var values = make(map[string]map[string][]string)
 	for k, v := range imatrix.data {
 		if k == region {
@@ -283,7 +282,7 @@ func contains(s []string, e string) bool {
 	return false
 }
 
-func (imatrix *ALiInstanceMatrix) ListInstanceMatrixByRegionV2 (region string) *map[string][]string {
+func (imatrix *ALiInstanceMatrix) ListInstanceMatrixByRegionV2(region string) *map[string][]string {
 	var values = make(map[string][]string)
 	for k, v := range imatrix.data {
 		if k == region {

@@ -74,6 +74,6 @@ func TestALiSpotInstance_FetchALiSpot(t *testing.T) {
 		meta := DefaultAliMetaDb()
 		//fmt.Print(gokit.Prettify(meta.SpotInstance().GetInstByRegion("ap-southeast-1")))
 
-		fmt.Print(len(*meta.SpotInstance().GetInstByRegionAndZones("ap-southeast-1","ap-southeast-1a")))
+		fmt.Print(len(*meta.SpotInstance().GetInstByRegionAndZones("ap-southeast-1", "ap-southeast-1a")))
 	})
 }

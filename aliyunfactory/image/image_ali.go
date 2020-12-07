@@ -40,7 +40,7 @@ func (i *ImageUtil) getALiImage(region string, ostype string) (*[]string, error)
 				images = append(images, v.ImageId)
 			}
 			if (result.PageNumber * result.PageSize) < result.TotalCount {
-				request.PageNumber = requests.NewInteger(result.PageNumber+1)
+				request.PageNumber = requests.NewInteger(result.PageNumber + 1)
 				result, err = i.Conn.ECS.DescribeImages(request)
 				if err != nil {
 					return nil, err
@@ -79,7 +79,7 @@ func (i *ImageUtil) getALiImageById(region string, id string) (*cloudmeta.ImageA
 	return nil, nil
 }
 
-func main(){
+func main() {
 	logrus.SetLevel(logrus.DebugLevel)
 	consul := gokit.NewConsul(ConsulAddr)
 	metaRegion := cloudmeta.NewCommonRegion(RegionKey)
@@ -91,17 +91,17 @@ func main(){
 		logrus.Debugf("fetch %s image,", region.Name)
 		conn := *connections.NewAli(region.Name, "", "")
 		i := ImageUtil{Conn: &conn}
-		imagesLinux, _ := i.getALiImage(region.Name,"linux")
+		imagesLinux, _ := i.getALiImage(region.Name, "linux")
 		aliImage.data["linux"] = make(map[string]*cloudmeta.ImageALi)
 		for _, v := range *imagesLinux {
-			image,_ := i.getALiImageById(region.Name, v)
+			image, _ := i.getALiImageById(region.Name, v)
 			aliImage.data["linux"][v] = image
 		}
 
 		imagesWindows, _ := i.getALiImage(region.Name, "windows")
 		aliImage.data["windows"] = make(map[string]*cloudmeta.ImageALi)
 		for _, v := range *imagesWindows {
-			image,_ := i.getALiImageById(region.Name, v)
+			image, _ := i.getALiImageById(region.Name, v)
 			aliImage.data["windows"][v] = image
 		}
 		bytes, err := json.MarshalIndent(aliImage.data, "", "    ")

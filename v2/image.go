@@ -77,7 +77,7 @@ type ALiImage struct {
 
 func NewALiImage(key string, region cloudmeta.Region) *ALiImage {
 	aliImage := ALiImage{
-		key: key,
+		key:    key,
 		Region: region,
 	}
 	return &aliImage
@@ -101,7 +101,7 @@ func (image *ALiImage) FetchALiImage(consul *gokit.Consul) error {
 	return nil
 }
 
-func (image *ALiImage) ListImageByRegion (region string) *map[string]map[string]*cloudmeta.ImageALi {
+func (image *ALiImage) ListImageByRegion(region string) *map[string]map[string]*cloudmeta.ImageALi {
 	var values = make(map[string]map[string]*cloudmeta.ImageALi)
 	for k, v := range image.data {
 		if k == region {
@@ -112,7 +112,7 @@ func (image *ALiImage) ListImageByRegion (region string) *map[string]map[string]
 	return &values
 }
 
-func (image *ALiImage) ListImageByRegionAndOS (region string, os string) *map[string]*cloudmeta.ImageALi {
+func (image *ALiImage) ListImageByRegionAndOS(region string, os string) *map[string]*cloudmeta.ImageALi {
 	var values = make(map[string]*cloudmeta.ImageALi)
 	for k, v := range image.data[region] {
 		if k == os {

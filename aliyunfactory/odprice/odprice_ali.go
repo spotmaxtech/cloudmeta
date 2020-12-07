@@ -26,7 +26,7 @@ type ODPrice struct {
 	data map[string]map[string]*cloudmeta.ODPriceAli
 }
 
-func (odp *ODPriceUtil) FetchODPrice(regionId string,zone string, inst string) *cloudmeta.ODPriceAli {
+func (odp *ODPriceUtil) FetchODPrice(regionId string, zone string, inst string) *cloudmeta.ODPriceAli {
 	request := ecs.CreateDescribePriceRequest()
 	request.Scheme = "https"
 	request.ResourceType = "instance"
@@ -84,7 +84,7 @@ func main() {
 	for _, region := range metaRegion.List() {
 		odPrice.data[region.Name] = make(map[string]*cloudmeta.ODPriceAli)
 		for _, inst := range metaInstances.List(region.Name) {
-			odPriceInfo := odpu.FetchODPrice(region.Name,region.Zones[0], inst.Name)
+			odPriceInfo := odpu.FetchODPrice(region.Name, region.Zones[0], inst.Name)
 			if odPriceInfo != nil {
 				logrus.Debugf("fetch region %s : instance %s", region.Name, inst.Name)
 				odPrice.data[region.Name][inst.Name] = odPriceInfo

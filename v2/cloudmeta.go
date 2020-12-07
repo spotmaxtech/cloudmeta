@@ -14,11 +14,11 @@ type DbSet struct {
 }
 
 type DbSetALi struct {
-	Region    cloudmeta.Region
-	SpotPrice cloudmeta.SpotPriceALi
-	OdPrice   cloudmeta.ODPriceALi
-	SpotInstance  cloudmeta.SpotInstanceALi
-	Image     cloudmeta.ImageInfoALi
+	Region         cloudmeta.Region
+	SpotPrice      cloudmeta.SpotPriceALi
+	OdPrice        cloudmeta.ODPriceALi
+	SpotInstance   cloudmeta.SpotInstanceALi
+	Image          cloudmeta.ImageInfoALi
 	InstanceMatrix cloudmeta.InstanceMatrixALi
 }
 
@@ -135,13 +135,12 @@ func newALiDbSet() *DbSetALi {
 	image := cloudmeta.NewALiImage(ALiConsulImageKey, region)
 	instanceMatrix := cloudmeta.NewALiInstanceMatrix(ALiConsulInstanceMatrixKey, region)
 
-
 	set := &DbSetALi{
-		Region:    region,
-		SpotInstance:  spotinstance,
-		SpotPrice: spotprice,
-		OdPrice:   odprice,
-		Image:     image,
+		Region:         region,
+		SpotInstance:   spotinstance,
+		SpotPrice:      spotprice,
+		OdPrice:        odprice,
+		Image:          image,
 		InstanceMatrix: instanceMatrix,
 	}
 	return set

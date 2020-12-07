@@ -8,10 +8,10 @@ import (
 )
 
 const (
-	ConsulAddr = "consul.spotmaxtech.com"
-	RegionKey  = "cloudmeta/aws/region.json"
-	ImageKey   = "cloudmeta/aws/image.json"
-	ALiImageKey = "cloudmeta/aliyun/image"
+	ConsulAddr   = "consul.spotmaxtech.com"
+	RegionKey    = "cloudmeta/aws/region.json"
+	ImageKey     = "cloudmeta/aws/image.json"
+	ALiImageKey  = "cloudmeta/aliyun/image"
 	ALiRegionKey = "cloudmeta/aliyun/region.json"
 )
 
@@ -58,5 +58,5 @@ func TestALiImage_ListImageByRegionAndOS(t *testing.T) {
 	_ = region.Fetch(consul)
 	meta := NewALiImage(ALiImageKey, region)
 	_ = meta.FetchALiImage(consul)
-	t.Log(gokit.Prettify(meta.ListImageByRegionAndOS("ap-northeast-1","linux")))
+	t.Log(gokit.Prettify(meta.ListImageByRegionAndOS("ap-northeast-1", "linux")))
 }

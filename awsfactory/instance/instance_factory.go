@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/pricing"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -11,6 +13,7 @@ import (
 	connections "github.com/spotmaxtech/cloudconnections"
 	"github.com/spotmaxtech/cloudmeta"
 	"github.com/spotmaxtech/gokit"
+	gOS "os"
 	"regexp"
 	"strconv"
 	"time"
@@ -60,7 +63,15 @@ func validInstance(inst InstanceProduct) bool {
 
 func (o *InstUtil) FetchInstance(region *cloudmeta.RegionInfo, os string, family string) ([]*cloudmeta.InstInfo, error) {
 	// region conn for spot price
+	// * china region special case
 	regionConn := connections.New(region.Name)
+	if strings.HasPrefix(region.Name, "cn-") {
+		sess := session.Must(session.NewSession(&aws.Config{
+			Region:      aws.String(region.Name),
+			Credentials: credentials.NewStaticCredentials(gOS.Getenv("CHINA_AWS_ACCESS_KEY_ID"), gOS.Getenv("CHINA_AWS_SECRET_ACCESS_KEY"), ""),
+		}))
+		regionConn = connections.NewFromSession(sess)
+	}
 
 	// 去重
 	duplicated := gokit.NewSet()
@@ -174,6 +185,9 @@ func (o *InstUtil) FetchInstance(region *cloudmeta.RegionInfo, os string, family
 				priceUnit := id1.(map[string]interface{})["priceDimensions"].(map[string]interface{})
 				for _, id2 := range priceUnit {
 					priceStr := id2.(map[string]interface{})["pricePerUnit"].(map[string]interface{})["USD"]
+					if strings.Contains(region.Text, "China") {
+						priceStr = id2.(map[string]interface{})["pricePerUnit"].(map[string]interface{})["CNY"]
+					}
 					odPrice, _ = strconv.ParseFloat(priceStr.(string), 32)
 					if odPrice == 0.0 {
 						// fmt.Printf("0 price %s", gokit.PrettifyJson(priceInfo, true))
@@ -279,6 +293,10 @@ func instanceFactory() error {
 	}
 	for _, region := range metaRegion.List() {
 		log.Infof("[%s] start fetch instance", region.Text)
+		// if !strings.Contains(region.Text, "China") {
+		// 	fmt.Println(region.Text)
+		// 	continue
+		// }
 		for _, os := range oss {
 			for family, short := range families {
 				instMap := make(map[string]*cloudmeta.InstInfo)

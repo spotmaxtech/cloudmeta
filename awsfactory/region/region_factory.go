@@ -87,6 +87,14 @@ func regionFactory() error {
 		Text: "South America (Sao Paulo)",
 	}
 
+	// China
+	data["cn-north-1"] = &MsData{
+		Text: "China (Beijing)",
+	}
+	data["cn-northwest-1"] = &MsData{
+		Text: "China (Ningxia)",
+	}
+
 	bytes, err := json.MarshalIndent(data, "", "    ")
 	if err != nil {
 		return err
