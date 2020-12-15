@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"fmt"
 )
 
 const (
@@ -168,46 +169,35 @@ func (o *InstUtil) FetchInstance(region string, family string) []*cloudmeta.Inst
 
 func main() {
 	logrus.SetLevel(logrus.DebugLevel)
-	// consul
 	consul := gokit.NewConsul(ConsulAddr)
-
-	// region
 	metaRegion := cloudmeta.NewCommonRegion(RegionKey)
 	if err := metaRegion.Fetch(consul); err != nil {
 		panic(err)
 	}
-
 	util := InstUtil{
 		// pricing is global
 		Conn: connections.New("us-east-1"),
 	}
-
-	instMap := make(map[string]map[string]*cloudmeta.InstInfo)
-
 	families := []string{
 		"Compute Optimized",
 		"Memory Optimized",
 		"General Purpose",
 	}
 	for _, region := range metaRegion.List() {
-		if _, OK := instMap[region.Name]; !OK {
-			instMap[region.Name] = make(map[string]*cloudmeta.InstInfo)
-		}
+		var result []*cloudmeta.InstInfo
 		logrus.Debugf("fetch region instance: %s", region.Text)
 		for _, family := range families {
 			instances := util.FetchInstance(region.Text, family)
-			for _, i := range instances {
-				instMap[region.Name][i.Name] = i
-			}
+			result = append(result, instances...)
 		}
-	}
-
-	bytes, err := json.MarshalIndent(instMap, "", "    ")
-	if err != nil {
-		panic(err)
-	}
-
-	if err := consul.PutKey(InstanceKey, bytes); err != nil {
-		panic(err)
+		bytes, err := json.MarshalIndent(result, "", "    ")
+		if err != nil {
+			panic(err)
+		}
+		k := fmt.Sprintf("cloudmeta/aws/instances/%s/instance.json", region.Name)
+		
+		if err := consul.PutKey(k, bytes); err != nil {
+			panic(err)
+		}
 	}
 }
