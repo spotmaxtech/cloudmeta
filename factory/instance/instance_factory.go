@@ -142,9 +142,9 @@ func (o *InstUtil) FetchInstance(region string, family string) []*cloudmeta.Inst
 		}
 
 		// filter as needed
-		if !validInstance(product) {
-			continue
-		}
+		// if !validInstance(product) {
+		// 	continue
+		// }
 
 		core, _ := strconv.ParseInt(product.Vcpu, 10, 8)
 		memStr := strings.TrimSpace(strings.Replace(product.Memory, "GiB", "", 1))
