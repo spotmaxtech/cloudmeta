@@ -184,11 +184,15 @@ func main() {
 		"General Purpose",
 	}
 	for _, region := range metaRegion.List() {
-		var result []*cloudmeta.InstInfo
+
+		result := make(map[string]*cloudmeta.InstInfo)
+
 		logrus.Debugf("fetch region instance: %s", region.Text)
 		for _, family := range families {
 			instances := util.FetchInstance(region.Text, family)
-			result = append(result, instances...)
+			for _, i := range instances {
+				result[i.Name] = i
+			}
 		}
 		bytes, err := json.MarshalIndent(result, "", "    ")
 		if err != nil {
