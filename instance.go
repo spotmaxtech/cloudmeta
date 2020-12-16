@@ -13,23 +13,41 @@ type AWSInstanceData struct {
 
 type AWSInstance struct {
 	key string
+	region Region
 	AWSInstanceData
 }
 
 func (i *AWSInstance) Fetch(consul *gokit.Consul) error {
-	value, err := consul.GetKey(i.key)
-	if err != nil {
-		return err
+	i.data = make(map[string]map[string]*InstInfo)
+	for _, r := range i.region.List() {
+		i.data[r.Name] = make(map[string]*InstInfo)
+		values, err := consul.GetKey(fmt.Sprintf("%s/%s/instance.json",i.key, r.Name))
+		if err != nil {
+			return err
+		}
+		var tempData map[string]*InstInfo
+		if err = json.Unmarshal(values, &tempData); err != nil {
+			return err
+		}
+		i.data[r.Name] = tempData
 	}
-
-	var tempData map[string]map[string]*InstInfo
-	if err = json.Unmarshal(value, &tempData); err != nil {
-		return err
-	}
-
-	i.data = tempData
+	
 	return nil
 }
+
+// func (i *AWSInstance) Fetch(consul *gokit.Consul) error {
+// 	value, err := consul.GetKey(i.key)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	var tempData map[string]map[string]*InstInfo
+// 	if err = json.Unmarshal(value, &tempData); err != nil {
+// 		return err
+// 	}
+
+// 	i.data = tempData
+// 	return nil
+// }
 
 func (i *AWSInstance) Keys(region string) gokit.Set {
 	keys := gokit.NewSet()
@@ -82,9 +100,10 @@ func (i *AWSInstance) Filter(list []*FilterType) *AWSInstanceData {
 	return &FilterData
 }
 
-func NewAWSInstance(key string) *AWSInstance {
+func NewAWSInstance(key string,region Region) *AWSInstance {
 	aws := AWSInstance{
 		key: key,
+		region: region,
 	}
 	/*aws.data = make(map[string]map[string]*InstInfo)
 

@@ -68,7 +68,7 @@ func (s *SpotPriceUtil) FetchSpotPrice(input *SpotPriceHistoryInput) error {
 
 const (
 	ConsulAddr   = "consul.spotmaxtech.com"
-	InstanceKey  = "cloudmeta/aws/instance.json"
+	InstanceKey =  "cloudmeta/aws/instances"
 	SpotPriceKey = "cloudmeta/aws/spotprice.json"
 	RegionKey    = "cloudmeta/aws/region.json"
 )
@@ -85,7 +85,7 @@ func main() {
 	regions := metaRegion.Keys()
 
 	// instance
-	metaInst := cloudmeta.NewAWSInstance(InstanceKey)
+	metaInst := cloudmeta.NewAWSInstance(InstanceKey, metaRegion)
 	if err := metaInst.Fetch(consul); err != nil {
 		panic(err)
 	}

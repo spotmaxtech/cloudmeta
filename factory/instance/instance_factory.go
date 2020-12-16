@@ -40,10 +40,10 @@ type InstanceProduct struct {
 
 func validInstance(inst InstanceProduct) bool {
 	// white filter
-	var valid = regexp.MustCompile(`^[cmrt][2-5][.].+$`)
-	if !valid.Match([]byte(inst.InstanceType)) {
-		return false
-	}
+	// var valid = regexp.MustCompile(`^[cmrt][2-5][.].+$`)
+	// if !valid.Match([]byte(inst.InstanceType)) {
+	// 	return false
+	// }
 
 	var noValid = regexp.MustCompile(`metal`)
 	if noValid.Match([]byte(inst.InstanceType)) {
@@ -142,10 +142,9 @@ func (o *InstUtil) FetchInstance(region string, family string) []*cloudmeta.Inst
 			panic(err)
 		}
 
-		// filter as needed
-		// if !validInstance(product) {
-		// 	continue
-		// }
+		if !validInstance(product) {
+			continue
+		}
 
 		core, _ := strconv.ParseInt(product.Vcpu, 10, 8)
 		memStr := strings.TrimSpace(strings.Replace(product.Memory, "GiB", "", 1))
@@ -160,10 +159,8 @@ func (o *InstUtil) FetchInstance(region string, family string) []*cloudmeta.Inst
 			Storage: product.Storage,
 			Family:  product.InstanceFamily,
 		}
-
 		instances = append(instances, inst)
 	}
-
 	return instances
 }
 
@@ -184,9 +181,7 @@ func main() {
 		"General Purpose",
 	}
 	for _, region := range metaRegion.List() {
-
 		result := make(map[string]*cloudmeta.InstInfo)
-
 		logrus.Debugf("fetch region instance: %s", region.Text)
 		for _, family := range families {
 			instances := util.FetchInstance(region.Text, family)
@@ -199,7 +194,6 @@ func main() {
 			panic(err)
 		}
 		k := fmt.Sprintf("cloudmeta/aws/instances/%s/instance.json", region.Name)
-		
 		if err := consul.PutKey(k, bytes); err != nil {
 			panic(err)
 		}

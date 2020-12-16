@@ -9,7 +9,7 @@ import (
 
 const (
 	ConsulAddr      = "consul.spotmaxtech.com"
-	InstanceKey     = "cloudmeta/aws/instance.json"
+	InstanceKey		= "cloudmeta/aws/instances"
 	InterruptKey    = "cloudmeta/aws/interruptrate.json"
 	RegionKey       = "cloudmeta/aws/region.json"
 	SpotInstanceKey = "cloudmeta/aws/spotinstance.json"
@@ -27,7 +27,7 @@ func main() {
 	}
 
 	// instance
-	metaInst := cloudmeta.NewAWSInstance(InstanceKey)
+	metaInst := cloudmeta.NewAWSInstance(InstanceKey,metaRegion)
 	if err := metaInst.Fetch(consul); err != nil {
 		panic(err)
 	}
@@ -61,11 +61,9 @@ func main() {
 			if inter == nil {
 				log.Warnf("no interrupt info found, %s - %s", r, i)
 			}
-
 			if price == nil || inter == nil {
 				continue
 			}
-
 			spotInstMap[r][i] = metaInst.GetInstInfo(r, i)
 		}
 	}

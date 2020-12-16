@@ -12,7 +12,7 @@ import (
 const (
 	AdvisorUrl   = "https://spot-bid-advisor.s3.amazonaws.com/spot-advisor-data.json"
 	ConsulAddr   = "consul.spotmaxtech.com"
-	InstanceKey  = "cloudmeta/aws/instance.json"
+	InstanceKey =  "cloudmeta/aws/instances"
 	InterruptKey = "cloudmeta/aws/interruptrate.json"
 	RegionKey    = "cloudmeta/aws/region.json"
 )
@@ -29,7 +29,7 @@ func main() {
 	regions := metaRegion.Keys()
 
 	// instance
-	metaInst := cloudmeta.NewAWSInstance(InstanceKey)
+	metaInst := cloudmeta.NewAWSInstance(InstanceKey, metaRegion)
 	if err := metaInst.Fetch(consul); err != nil {
 		panic(err)
 	}
