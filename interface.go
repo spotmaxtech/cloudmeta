@@ -35,6 +35,12 @@ type Instance interface {
 	GetInstInfo(region string, instance string) *InstInfo
 }
 
+type SpotInstanceAWS interface {
+	Fetch(consul *gokit.Consul) error
+	List(region string) []*InstInfo
+	GetInstInfo(region string, instance string) *InstInfo
+}
+
 type ODPrice interface {
 	Fetch(consul *gokit.Consul) error
 	GetPrice(region string, instance string) float64

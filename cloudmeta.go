@@ -9,7 +9,7 @@ import (
 type DbSet struct {
 	Region       Region
 	Instance     Instance
-	SpotInstance Instance
+	SpotInstance SpotInstanceAWS
 	Interrupt    Interrupt
 	ODPrice      ODPrice
 	SpotPrice    SpotPrice
@@ -119,7 +119,7 @@ func (s *DbSet) basicConsistent() error {
 func newAWSDbSet() *DbSet {
 	region := NewCommonRegion(ConsulRegionKey)
 	instance := NewAWSInstance(ConsulInstanceKey,region)
-	spotInstance := NewAWSInstance(ConsulSpotInstanceKey,region)
+	spotInstance := NewAWSSpotInstance(ConsulSpotInstanceKey,region)
 	interrupt := NewAWSInterrupt(ConsulInterruptRateKey)
 	odPrice := NewAWSOdPrice(ConsulOdPriceKey)
 	spotPrice := NewCommonSpotPrice(ConsulSpotPriceKey)

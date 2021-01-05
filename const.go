@@ -3,7 +3,7 @@ package cloudmeta
 const (
 	TestConsulAddress      = "consul.spotmaxtech.com"
 	ConsulRegionKey        = "cloudmeta/aws/region.json"
-	ConsulInstanceKey      = "cloudmeta/aws/instance.json"
+	ConsulInstanceKey      = "cloudmeta/aws/instances"
 	ConsulSpotInstanceKey  = "cloudmeta/aws/spotinstance.json"
 	ConsulInterruptRateKey = "cloudmeta/aws/interruptrate.json"
 	ConsulSpotPriceKey     = "cloudmeta/aws/spotprice.json"
