@@ -1,0 +1,31 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cloudmeta-awsfactory-awsinterruptv1
+spec:
+  schedule: "20 */12 * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: cloudmeta-awsfactory-awsinterruptv1
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: main
+              image: liuzoxan/cloudmeta:v0.1.23-0-g66d62ad
+              imagePullPolicy: Always
+              command: ["./awsfactory"]
+              args: ["awsinterrupt"]
+              env:
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-key
+                      key: key
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-key
+                      key: secret
