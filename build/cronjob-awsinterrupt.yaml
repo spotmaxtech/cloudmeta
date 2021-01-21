@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: cloudmeta-awsfactory-awsinterruptv1
 spec:
-  schedule: "20 */12 * * *"
+  schedule: "45 12 * * *"
   jobTemplate:
     spec:
       template:
@@ -14,7 +14,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: main
-              image: liuzoxan/cloudmeta:v0.1.23-0-g66d62ad
+              image: liuzoxan/cloudmeta:v0.1.26-2-g06308ef
               imagePullPolicy: Always
               command: ["./awsfactory"]
               args: ["awsinterrupt"]
