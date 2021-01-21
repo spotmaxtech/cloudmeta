@@ -5,10 +5,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/spotmaxtech/cloudmeta/awsfactory/image"
-	"github.com/spotmaxtech/cloudmeta/awsfactory/instance"
-	"github.com/spotmaxtech/cloudmeta/awsfactory/region"
-
 	"github.com/spotmaxtech/cloudmeta/factory/region"
 	"github.com/spotmaxtech/cloudmeta/factory/instance"
 	"github.com/spotmaxtech/cloudmeta/factory/interruptrate"
@@ -22,10 +18,10 @@ var (
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Print the version number of factory",
-	Long:  `Print the version number of factory`,
+	Short: "Print the version number of aws common factory V1",
+	Long:  `Print the version number of aws common factory V1`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Cloudmeta factory version v1.0")
+		fmt.Println("AWS V1 Cloudmeta factory version v1.0")
 	},
 }
 
@@ -33,25 +29,18 @@ func main() {
 	logrus.SetLevel(logrus.DebugLevel)
 	cobra.OnInitialize(initConfig)
 	rootCmd := &cobra.Command{
-		Use:   "awsfactory",
-		Short: "AWS meta data factory",
+		Use:   "awsmeta",
+		Short: "AWS V1 meta data factory",
 		Long:  `Run different factory to update different data`,
 	}
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ./cloudmeta.json)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ../awsfactory/cloudmeta.json)")
 
-	//v2 - For ManagedInstance
-	rootCmd.AddCommand(region.FactoryCmd)
-	rootCmd.AddCommand(instance.FactoryCmd)
-	rootCmd.AddCommand(image.FactoryCmd)
-
-	//v1
 	rootCmd.AddCommand(awsmetaregion.RegionFactoryCmd)
 	rootCmd.AddCommand(awsmetainstance.InstanceFactoryCmd)
 	rootCmd.AddCommand(awsmetainterrupt.InterruptFactoryCmd)
 	rootCmd.AddCommand(awsmetaodprice.OndemandPriceFactoryCmd)
 	rootCmd.AddCommand(awsmetaspotprice.SpotPriceFactoryCmd)
-
 	rootCmd.AddCommand(versionCmd)
 
 	if err := rootCmd.Execute(); err != nil {
@@ -64,7 +53,7 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	} else {
 		viper.AddConfigPath(".")
-		viper.SetConfigName("cloudmeta")
+		viper.SetConfigName("cloudmetav1")
 	}
 
 	viper.AutomaticEnv()

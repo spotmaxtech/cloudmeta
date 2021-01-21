@@ -1,21 +1,21 @@
-package main
+package awsmetaregion
 
 import (
 	"encoding/json"
-
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/aws/aws-sdk-go/aws/endpoints"
 	"github.com/spotmaxtech/gokit"
 )
 
 // factory for now manually
 const (
-	ConsulAddr = "consul.spotmaxtech.com"
 	RegionKey  = "cloudmeta/aws/region.json"
 )
 
-func main() {
+func awsRegionFactoryV1() error {
 	// consul
-	consul := gokit.NewConsul(ConsulAddr)
+	consul := gokit.NewConsul(viper.GetString("consulAddr"))
 
 	type MsData struct {
 		Text string `json:"text"`
@@ -41,4 +41,15 @@ func main() {
 	if err := consul.PutKey(RegionKey, bytes); err != nil {
 		panic(err)
 	}
+
+	return nil
+}
+
+var RegionFactoryCmd = &cobra.Command{
+	Use:   "awsregion",
+	Short: "Generate aws region data v1",
+	Long:  `Generate aws region data v1`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return awsRegionFactoryV1()
+	},
 }

@@ -1,7 +1,9 @@
-package main
+package awsmetainterrupt
 
 import (
 	"encoding/json"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/spotmaxtech/cloudmeta"
 	"github.com/spotmaxtech/gokit"
 	"io/ioutil"
@@ -11,15 +13,14 @@ import (
 
 const (
 	AdvisorUrl   = "https://spot-bid-advisor.s3.amazonaws.com/spot-advisor-data.json"
-	ConsulAddr   = "consul.spotmaxtech.com"
 	InstanceKey =  "cloudmeta/aws/instances"
 	InterruptKey = "cloudmeta/aws/interruptrate.json"
 	RegionKey    = "cloudmeta/aws/region.json"
 )
 
-func main() {
+func awsInterruptFactoryV1() error {
 	// consul
-	consul := gokit.NewConsul(ConsulAddr)
+	consul := gokit.NewConsul(viper.GetString("consulAddr"))
 
 	// region
 	metaRegion := cloudmeta.NewCommonRegion(RegionKey)
@@ -112,4 +113,15 @@ func main() {
 	}
 
 	log.Println(string(bytes))
+
+	return nil
+}
+
+var InterruptFactoryCmd = &cobra.Command{
+	Use:   "awsinterrupt",
+	Short: "Generate aws interrupt data v1",
+	Long:  `Generate aws interrupt data v1`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return awsInterruptFactoryV1()
+	},
 }

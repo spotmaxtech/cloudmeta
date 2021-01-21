@@ -1,7 +1,9 @@
-package main
+package awsmetaodprice
 
 import (
 	"encoding/json"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/pricing"
 	"github.com/sirupsen/logrus"
@@ -12,7 +14,6 @@ import (
 )
 
 const (
-	ConsulAddr  = "consul.spotmaxtech.com"
 	InstanceKey = "cloudmeta/aws/instances"
 	ODPriceKey  = "cloudmeta/aws/odprice.json"
 	RegionKey   = "cloudmeta/aws/region.json"
@@ -80,10 +81,10 @@ func (o *ODPriceUtil) FetchPrice(region string, instance string) float32 {
 	return 99
 }
 
-func main() {
+func awsOndemandFactoryV1() error {
 	logrus.SetLevel(logrus.DebugLevel)
 	// consul
-	consul := gokit.NewConsul(ConsulAddr)
+	consul := gokit.NewConsul(viper.GetString("consulAddr"))
 
 	// region
 	metaRegion := cloudmeta.NewCommonRegion(RegionKey)
@@ -124,4 +125,15 @@ func main() {
 	if err := consul.PutKey(ODPriceKey, bytes); err != nil {
 		panic(err)
 	}
+
+	return nil
+}
+
+var OndemandPriceFactoryCmd = &cobra.Command{
+	Use:   "awsodprice",
+	Short: "Generate aws ondemand price data v1",
+	Long:  `Generate aws ondemand price data v1`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return awsOndemandFactoryV1()
+	},
 }

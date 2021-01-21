@@ -1,7 +1,9 @@
-package main
+package awsmetainstance
 
 import (
 	"encoding/json"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/pricing"
 	"github.com/sirupsen/logrus"
@@ -15,7 +17,6 @@ import (
 )
 
 const (
-	ConsulAddr  = "consul.spotmaxtech.com"
 	InstanceKey = "cloudmeta/aws/instance.json"
 	RegionKey   = "cloudmeta/aws/region.json"
 )
@@ -164,9 +165,10 @@ func (o *InstUtil) FetchInstance(region string, family string) []*cloudmeta.Inst
 	return instances
 }
 
-func main() {
+func awsInstanceFactoryV1() error {
 	logrus.SetLevel(logrus.DebugLevel)
-	consul := gokit.NewConsul(ConsulAddr)
+	consul := gokit.NewConsul(viper.GetString("consulAddr"))
+	// consul := gokit.NewConsul(ConsulAddr)
 	metaRegion := cloudmeta.NewCommonRegion(RegionKey)
 	if err := metaRegion.Fetch(consul); err != nil {
 		panic(err)
@@ -198,4 +200,15 @@ func main() {
 			panic(err)
 		}
 	}
+
+	return nil
+}
+
+var InstanceFactoryCmd = &cobra.Command{
+	Use:   "awsinstance",
+	Short: "Generate aws instance data v1",
+	Long:  `Generate aws instance data v1`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return awsInstanceFactoryV1()
+	},
 }

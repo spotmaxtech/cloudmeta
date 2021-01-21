@@ -1,7 +1,9 @@
-package main
+package awsmetaspotprice
 
 import (
 	"encoding/json"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	connections "github.com/spotmaxtech/cloudconnections"
@@ -67,15 +69,14 @@ func (s *SpotPriceUtil) FetchSpotPrice(input *SpotPriceHistoryInput) error {
 }
 
 const (
-	ConsulAddr   = "consul.spotmaxtech.com"
 	InstanceKey =  "cloudmeta/aws/instances"
 	SpotPriceKey = "cloudmeta/aws/spotprice.json"
 	RegionKey    = "cloudmeta/aws/region.json"
 )
 
-func main() {
+func awsSpotPriceFactoryV1() error {
 	// consul
-	consul := gokit.NewConsul(ConsulAddr)
+	consul := gokit.NewConsul(viper.GetString("consulAddr"))
 
 	// region
 	metaRegion := cloudmeta.NewCommonRegion(RegionKey)
@@ -153,4 +154,15 @@ func main() {
 	if err := consul.PutKey(SpotPriceKey, bytes); err != nil {
 		panic(err)
 	}
+
+	return nil
+}
+
+var SpotPriceFactoryCmd = &cobra.Command{
+	Use:   "awsspotprice",
+	Short: "Generate aws spot price data v1",
+	Long:  `Generate aws spot price data v1`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return awsSpotPriceFactoryV1()
+	},
 }
